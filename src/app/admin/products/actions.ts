@@ -239,3 +239,21 @@ export async function archiveProduct(formData: FormData) {
   revalidatePath("/admin/products");
   redirect("/admin/products?success=Produk berhasil diarsipkan.");
 }
+
+export async function restoreProduct(formData: FormData) {
+  const productId = String(formData.get("product_id") ?? "");
+
+  if (!productId) {
+    redirect(`/admin/products?view=archived&error=${encodeURIComponent("ID produk tidak valid.")}`);
+  }
+
+  const supabase = await requireActiveAdmin();
+  const { error } = await supabase.rpc("admin_restore_product", { p_product_id: productId });
+
+  if (error) {
+    redirect(`/admin/products?view=archived&error=${encodeURIComponent(error.message)}`);
+  }
+
+  revalidatePath("/admin/products");
+  redirect("/admin/products?success=Produk dipulihkan sebagai draft.");
+}

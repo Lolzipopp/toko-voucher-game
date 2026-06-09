@@ -1,111 +1,43 @@
 import { loginAdmin } from "./actions";
 
-type LoginPageProps = {
-  searchParams: Promise<{
-    error?: string;
-  }>;
-};
+type LoginPageProps = { searchParams: Promise<{ error?: string }> };
 
-export default async function AdminLoginPage({
-  searchParams,
-}: LoginPageProps) {
-  const params = await searchParams;
-  const error = params.error;
-
+export default async function AdminLoginPage({ searchParams }: LoginPageProps) {
+  const { error } = await searchParams;
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-950 px-4 py-10">
-      <div className="absolute left-0 top-0 h-72 w-72 rounded-full bg-green-500/15 blur-3xl" />
-      <div className="absolute bottom-0 right-0 h-80 w-80 rounded-full bg-emerald-300/10 blur-3xl" />
+    <main className="relative grid min-h-screen overflow-hidden bg-[#07140f] px-4 py-10 lg:grid-cols-2 lg:px-8">
+      <div className="pointer-events-none absolute -left-32 -top-32 h-96 w-96 rounded-full bg-emerald-400/15 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-32 right-0 h-96 w-96 rounded-full bg-green-300/10 blur-3xl" />
 
-      <div className="relative w-full max-w-md">
-        <div className="mb-7 text-center">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-white/20 bg-gradient-to-br from-green-400 to-green-700 text-3xl shadow-2xl shadow-green-500/20">
-            🎮
+      <section className="relative hidden items-end p-10 lg:flex">
+        <div className="max-w-xl pb-10">
+          <div className="mb-8 inline-flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white backdrop-blur">
+            <span className="grid h-10 w-10 place-items-center rounded-xl bg-emerald-400 text-lg">🎮</span>
+            <div><p className="text-sm font-black tracking-[0.2em]">RIKU STORE</p><p className="text-xs text-white/40">Admin Control Center</p></div>
           </div>
-
-          <h1 className="mt-4 text-3xl font-bold tracking-tight text-white">
-            RIKU STORE
-          </h1>
-
-          <p className="mt-2 text-sm text-slate-400">
-            Secure Admin Dashboard
-          </p>
+          <h1 className="text-5xl font-black leading-tight tracking-tight text-white">Kelola toko digitalmu dengan lebih cepat dan aman.</h1>
+          <p className="mt-5 max-w-lg text-base leading-7 text-white/45">Produk, stok akun terenkripsi, dan operasional toko berada dalam satu dashboard yang terstruktur.</p>
+          <div className="mt-10 flex gap-8 text-sm"><div><p className="font-black text-emerald-300">Encrypted</p><p className="mt-1 text-white/35">Credential storage</p></div><div><p className="font-black text-emerald-300">Role based</p><p className="mt-1 text-white/35">Admin access</p></div></div>
         </div>
+      </section>
 
-        <div className="rounded-3xl border border-white/10 bg-white/5 p-1 shadow-2xl backdrop-blur-xl">
-          <div className="rounded-[22px] bg-white p-6 sm:p-7">
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-green-600">
-              Admin Access
-            </p>
+      <section className="relative flex items-center justify-center">
+        <div className="w-full max-w-md rounded-[2rem] border border-white/10 bg-white p-6 shadow-2xl shadow-black/35 sm:p-8">
+          <div className="lg:hidden"><span className="grid h-12 w-12 place-items-center rounded-2xl bg-[#103d2b] text-xl">🎮</span></div>
+          <p className="mt-6 text-[11px] font-black uppercase tracking-[0.22em] text-emerald-700 lg:mt-0">Secure access</p>
+          <h2 className="mt-2 text-3xl font-black tracking-tight text-slate-950">Masuk ke admin</h2>
+          <p className="mt-2 text-sm leading-6 text-slate-500">Gunakan akun yang terdaftar sebagai admin aktif RIKU STORE.</p>
 
-            <h2 className="mt-1 text-xl font-bold text-slate-900">
-              Selamat datang kembali
-            </h2>
+          {error ? <div className="mt-5 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{error}</div> : null}
 
-            <p className="mt-1 text-sm text-slate-500">
-              Masuk menggunakan akun admin RIKU STORE.
-            </p>
-
-            {error ? (
-              <div className="mt-5 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
-                {error}
-              </div>
-            ) : null}
-
-            <form action={loginAdmin} className="mt-6 space-y-4">
-              <div>
-                <label
-                  htmlFor="email"
-                  className="mb-1.5 block text-xs font-semibold text-slate-600"
-                >
-                  Email admin
-                </label>
-
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  required
-                  autoComplete="email"
-                  placeholder="rikustore3@gmail.com"
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-3 text-sm text-slate-900 outline-none transition focus:border-green-500 focus:bg-white focus:ring-4 focus:ring-green-100"
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="password"
-                  className="mb-1.5 block text-xs font-semibold text-slate-600"
-                >
-                  Password
-                </label>
-
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  required
-                  autoComplete="current-password"
-                  placeholder="Masukkan password"
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-3 text-sm text-slate-900 outline-none transition focus:border-green-500 focus:bg-white focus:ring-4 focus:ring-green-100"
-                />
-              </div>
-
-              <button
-                type="submit"
-                className="w-full rounded-xl bg-green-600 py-3 text-sm font-semibold text-white shadow-lg shadow-green-600/20 transition hover:bg-green-700"
-              >
-                Masuk
-              </button>
-            </form>
-
-            <p className="mt-5 text-center text-[10px] leading-5 text-slate-400">
-              Akses hanya diberikan kepada akun yang terdaftar sebagai admin
-              aktif.
-            </p>
-          </div>
+          <form action={loginAdmin} className="mt-7 space-y-5">
+            <div><label htmlFor="email" className="mb-2 block text-xs font-bold text-slate-600">Email admin</label><input id="email" name="email" type="email" required autoComplete="email" placeholder="rikustore3@gmail.com" className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-100" /></div>
+            <div><label htmlFor="password" className="mb-2 block text-xs font-bold text-slate-600">Password</label><input id="password" name="password" type="password" required autoComplete="current-password" placeholder="Masukkan password" className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-100" /></div>
+            <button type="submit" className="w-full rounded-2xl bg-[#103d2b] py-3.5 text-sm font-black text-white shadow-xl shadow-emerald-950/15 transition hover:bg-[#0b2f21]">Masuk ke dashboard</button>
+          </form>
+          <p className="mt-6 text-center text-[11px] leading-5 text-slate-400">Akses dibatasi untuk owner dan admin operasional yang aktif.</p>
         </div>
-      </div>
+      </section>
     </main>
   );
 }

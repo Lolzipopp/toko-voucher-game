@@ -35,6 +35,7 @@ export type InventoryRow = {
 type InventoryClientProps = {
   products: InventoryProduct[];
   inventory: InventoryRow[];
+  initialStatus?: string;
 };
 
 type ParsedRow = {
@@ -111,7 +112,7 @@ function parsePreview(raw: string): ParsedRow[] {
 function getStatusClasses(status: string) {
   switch (status) {
     case "available":
-      return "border-green-200 bg-green-50 text-green-700";
+      return "border-green-200 bg-emerald-50 text-emerald-700";
     case "reserved":
       return "border-amber-200 bg-amber-50 text-amber-700";
     case "sold":
@@ -130,12 +131,13 @@ function getStatusClasses(status: string) {
 export default function InventoryClient({
   products,
   inventory,
+  initialStatus = "",
 }: InventoryClientProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
   const [productFilter, setProductFilter] = useState("");
-  const [statusFilter, setStatusFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState(initialStatus);
   const [supplierFilter, setSupplierFilter] = useState("");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
@@ -275,7 +277,7 @@ export default function InventoryClient({
         <div
           className={`mb-4 rounded-2xl border px-4 py-3 text-sm font-medium ${
             message.type === "success"
-              ? "border-green-200 bg-green-50 text-green-800"
+              ? "border-emerald-200 bg-emerald-50 text-emerald-800"
               : "border-red-200 bg-red-50 text-red-800"
           }`}
         >
@@ -283,9 +285,9 @@ export default function InventoryClient({
         </div>
       ) : null}
 
-      <section className="mb-5 rounded-3xl border border-green-100 bg-white p-5 shadow-sm">
+      <section className="mb-5 rounded-3xl border border-slate-200/80 bg-white p-5 shadow-sm">
         <div className="mb-4">
-          <p className="text-xs font-bold uppercase tracking-widest text-green-600">
+          <p className="text-xs font-bold uppercase tracking-widest text-emerald-700">
             Bulk Paste
           </p>
           <h2 className="mt-1 text-lg font-bold text-slate-900">
@@ -304,7 +306,7 @@ export default function InventoryClient({
             <select
               value={bulkProductId}
               onChange={(event) => setBulkProductId(event.target.value)}
-              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-3 text-sm outline-none focus:border-green-500 focus:bg-white focus:ring-4 focus:ring-green-100"
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-3 text-sm outline-none focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-100"
             >
               <option value="">Pilih produk</option>
               {products
@@ -327,7 +329,7 @@ export default function InventoryClient({
               step="1"
               value={purchaseCost}
               onChange={(event) => setPurchaseCost(event.target.value)}
-              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-3 text-sm outline-none focus:border-green-500 focus:bg-white focus:ring-4 focus:ring-green-100"
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-3 text-sm outline-none focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-100"
             />
           </div>
         </div>
@@ -343,7 +345,7 @@ export default function InventoryClient({
             placeholder={
               "USER:PW|username1:password1\nUSER:PW|username2:password2"
             }
-            className="w-full resize-y rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-3 font-mono text-sm leading-6 outline-none focus:border-green-500 focus:bg-white focus:ring-4 focus:ring-green-100"
+            className="w-full resize-y rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-3 font-mono text-sm leading-6 outline-none focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-100"
           />
         </div>
 
@@ -351,7 +353,7 @@ export default function InventoryClient({
           <span className="rounded-lg bg-slate-100 px-2 py-1 text-slate-600">
             {previewRows.length} baris
           </span>
-          <span className="rounded-lg bg-green-50 px-2 py-1 text-green-700">
+          <span className="rounded-lg bg-emerald-50 px-2 py-1 text-emerald-700">
             {validPreviewCount} valid
           </span>
           <span className="rounded-lg bg-red-50 px-2 py-1 text-red-700">
@@ -375,7 +377,7 @@ export default function InventoryClient({
                 </span>
                 <span
                   className={`flex-shrink-0 font-semibold ${
-                    row.valid ? "text-green-700" : "text-red-600"
+                    row.valid ? "text-emerald-700" : "text-red-600"
                   }`}
                 >
                   {row.valid ? "VALID" : row.reason}
@@ -395,7 +397,7 @@ export default function InventoryClient({
               value={supplier}
               onChange={(event) => setSupplier(event.target.value)}
               placeholder="Opsional"
-              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-3 text-sm outline-none focus:border-green-500 focus:bg-white focus:ring-4 focus:ring-green-100"
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-3 text-sm outline-none focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-100"
             />
           </div>
 
@@ -408,7 +410,7 @@ export default function InventoryClient({
               value={notes}
               onChange={(event) => setNotes(event.target.value)}
               placeholder="Opsional"
-              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-3 text-sm outline-none focus:border-green-500 focus:bg-white focus:ring-4 focus:ring-green-100"
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-3 text-sm outline-none focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-100"
             />
           </div>
         </div>
@@ -418,14 +420,14 @@ export default function InventoryClient({
             type="button"
             disabled={isPending}
             onClick={submitBulkImport}
-            className="rounded-xl bg-green-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-green-600/20 transition hover:bg-green-700 disabled:opacity-60"
+            className="rounded-xl bg-[#103d2b] px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-green-600/20 transition hover:bg-[#0b2f21] disabled:opacity-60"
           >
             {isPending ? "Memproses..." : "Konfirmasi & Simpan Semua"}
           </button>
         </div>
       </section>
 
-      <section className="mb-4 rounded-3xl border border-green-100 bg-white p-5 shadow-sm">
+      <section className="mb-4 rounded-3xl border border-slate-200/80 bg-white p-5 shadow-sm">
         <div className="grid gap-3 md:grid-cols-4">
           <select
             value={productFilter}
@@ -526,7 +528,7 @@ export default function InventoryClient({
 
       <section className="space-y-3">
         {filteredInventory.length === 0 ? (
-          <div className="rounded-3xl border border-green-100 bg-white p-10 text-center text-sm text-slate-400">
+          <div className="rounded-3xl border border-slate-200/80 bg-white p-10 text-center text-sm text-slate-400">
             Tidak ada stok yang cocok dengan filter.
           </div>
         ) : (
@@ -546,7 +548,7 @@ export default function InventoryClient({
                   checked={selectedIds.includes(item.id)}
                   disabled={!selectable}
                   onChange={() => toggleSelection(item.id)}
-                  className="h-4 w-4 accent-green-600 disabled:opacity-30"
+                  className="h-4 w-4 accent-emerald-600 disabled:opacity-30"
                 />
 
                 <div className="min-w-0 flex-1">
@@ -594,7 +596,7 @@ export default function InventoryClient({
                   ? "Alasan opsional"
                   : "Alasan wajib"
               }
-              className="mt-4 w-full resize-none rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-3 text-sm outline-none focus:border-green-500 focus:bg-white focus:ring-4 focus:ring-green-100"
+              className="mt-4 w-full resize-none rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-3 text-sm outline-none focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-100"
             />
 
             <div className="mt-5 flex justify-end gap-2">
@@ -613,7 +615,7 @@ export default function InventoryClient({
                 type="button"
                 disabled={isPending}
                 onClick={submitStatusChange}
-                className="rounded-xl bg-green-600 px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
+                className="rounded-xl bg-[#103d2b] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
               >
                 {isPending ? "Memproses..." : "Konfirmasi"}
               </button>
