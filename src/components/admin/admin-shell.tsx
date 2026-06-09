@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import { logoutAdmin } from "@/app/admin/actions";
 
 type AdminShellProps = {
-  active: "dashboard" | "products" | "inventory";
+  active: "dashboard" | "products" | "inventory" | "orders";
   admin: {
     full_name: string | null;
     email: string;
@@ -24,6 +24,10 @@ function BoxIcon({ className = "" }: IconProps) {
 function KeyIcon({ className = "" }: IconProps) {
   return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="8" cy="15" r="4"/><path d="m11 12 8-8M15 8l2 2M18 5l2 2"/></svg>;
 }
+
+function ReceiptIcon({ className = "" }: IconProps) {
+  return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M6 3h12a2 2 0 0 1 2 2v16l-3-2-3 2-3-2-3 2-3-2V5a2 2 0 0 1 2-2Z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>;
+}
 function LogOutIcon({ className = "" }: IconProps) {
   return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M10 17l5-5-5-5M15 12H3"/><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/></svg>;
 }
@@ -32,6 +36,7 @@ const navItems = [
   { key: "dashboard" as const, href: "/admin", label: "Dashboard", icon: GridIcon },
   { key: "products" as const, href: "/admin/products", label: "Produk", icon: BoxIcon },
   { key: "inventory" as const, href: "/admin/inventory", label: "Stok", icon: KeyIcon },
+  { key: "orders" as const, href: "/admin/orders", label: "Pesanan", icon: ReceiptIcon },
 ];
 
 export default function AdminShell({ active, admin, children }: AdminShellProps) {
@@ -95,7 +100,7 @@ export default function AdminShell({ active, admin, children }: AdminShellProps)
         <main className="mx-auto w-full max-w-[1500px] px-4 pb-28 pt-5 sm:px-6 lg:px-10 lg:pb-10 lg:pt-8">{children}</main>
       </div>
 
-      <nav className="fixed inset-x-3 bottom-3 z-50 grid grid-cols-3 rounded-2xl border border-slate-200/80 bg-white/95 p-1.5 shadow-2xl shadow-slate-900/10 backdrop-blur-xl lg:hidden">
+      <nav className="fixed inset-x-3 bottom-3 z-50 grid grid-cols-4 rounded-2xl border border-slate-200/80 bg-white/95 p-1.5 shadow-2xl shadow-slate-900/10 backdrop-blur-xl lg:hidden">
         {navItems.map((item) => {
           const Icon = item.icon;
           const selected = active === item.key;
