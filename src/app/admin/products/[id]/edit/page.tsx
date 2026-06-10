@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { notFound, redirect } from "next/navigation";
 
 import AdminShell from "@/components/admin/admin-shell";
@@ -10,6 +11,7 @@ import { deleteProductImage, setPrimaryProductImage, updateProduct, uploadProduc
 
 type Props = { params: Promise<{ id: string }>; searchParams: Promise<{ error?: string; success?: string }> };
 type Attr = { attribute_key: string; attribute_value: string; display_order: number };
+type ProductImage = { id: string; storage_path: string; alt_text: string | null; is_primary: boolean; sort_order: number };
 
 export default async function EditProductPage({ params, searchParams }: Props) {
   const { id } = await params;
@@ -51,11 +53,11 @@ export default async function EditProductPage({ params, searchParams }: Props) {
           </form>
 
           <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {(product.product_images ?? []).sort((a: any,b: any) => Number(b.is_primary)-Number(a.is_primary) || a.sort_order-b.sort_order).map((image: any) => {
+            {([...(product.product_images ?? [])] as ProductImage[]).sort((a, b) => Number(b.is_primary) - Number(a.is_primary) || a.sort_order - b.sort_order).map((image) => {
               const publicUrl = supabase.storage.from("product-images").getPublicUrl(image.storage_path).data.publicUrl;
               return (
                 <article key={image.id} className="overflow-hidden rounded-2xl border border-slate-200">
-                  <img src={publicUrl} alt={image.alt_text || product.name} className="aspect-video w-full object-cover" />
+                  <Image src={publicUrl} alt={image.alt_text || product.name} width={1200} height={675} unoptimized className="aspect-video w-full object-cover" />
                   <div className="flex items-center justify-between gap-2 p-3">
                     <span className={`rounded-full px-2 py-1 text-[10px] font-black ${image.is_primary ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-500"}`}>
                       {image.is_primary ? "Utama" : "Galeri"}

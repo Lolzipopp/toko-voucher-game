@@ -6,6 +6,7 @@ import PageTitle from "@/components/admin/page-title";
 import { createClient } from "@/lib/supabase/server";
 
 import TestOrderPanel from "./test-order-panel";
+import { INTERNAL_TEST_TOOLS_ENABLED } from "@/lib/config/store";
 
 type OrdersPageProps = {
   searchParams: Promise<{
@@ -33,6 +34,8 @@ type OrderRow = {
   created_at: string;
   order_items: { id: string; quantity: number }[] | null;
 };
+
+const SERVER_RENDER_TIME: number = new Date().getTime();
 
 const FILTERS = ["all", "pending", "processing", "paid", "failed", "expired", "refunded"] as const;
 
@@ -162,12 +165,14 @@ export default async function AdminOrdersPage({ searchParams }: OrdersPageProps)
   return (
     <AdminShell active="orders" admin={admin}>
       <PageTitle
-        eyebrow="Order Operations"
+        eyebrow="Operasional Pesanan"
         title="Pesanan"
-        description="Pantau order, pembayaran, reservasi stok, dan status pengiriman dari satu tempat."
+        description="Pantau order, pembayaran, stok yang ditahan, dan status pengiriman dari satu tempat."
       />
 
-      <TestOrderPanel products={testProducts} />
+      {INTERNAL_TEST_TOOLS_ENABLED ? (
+        <TestOrderPanel products={testProducts} />
+      ) : null}
 
       <section className="mb-5 rounded-3xl border border-slate-200/80 bg-white p-4 shadow-sm sm:p-5">
         <form className="flex flex-col gap-3 sm:flex-row">
@@ -219,7 +224,7 @@ export default async function AdminOrdersPage({ searchParams }: OrdersPageProps)
           {filteredOrders.map((order) => {
             const unitCount = (order.order_items ?? []).reduce((sum, item) => sum + item.quantity, 0);
             const reservationExpired =
-              order.reservation_expires_at && new Date(order.reservation_expires_at).getTime() < Date.now();
+              order.reservation_expires_at && new Date(order.reservation_expires_at).getTime() < SERVER_RENDER_TIME;
 
             return (
               <Link

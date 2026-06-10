@@ -191,6 +191,18 @@ export async function simulateTestPaidDelivery(
     };
   }
 
+  const { error: promoError } = await supabase.rpc(
+    "admin_finalize_test_order_promo",
+    { p_order_id: orderId },
+  );
+
+  if (promoError) {
+    return {
+      ok: false,
+      message: "Order terkirim, tetapi pencatatan promo gagal. Periksa audit log.",
+    };
+  }
+
   return {
     ok: true,
     orderId,

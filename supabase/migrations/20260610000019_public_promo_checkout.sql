@@ -407,7 +407,7 @@ BEGIN
     WHEN v_order.payment_status = 'paid' AND v_order.delivery_status = 'delivered' THEN 'delivered'
     WHEN v_order.payment_status = 'paid' THEN 'paid'
     WHEN v_order.status = 'expired' OR v_order.payment_status = 'expired' THEN 'expired'
-    WHEN v_order.payment_status IN ('failed', 'cancelled') THEN 'failed'
+    WHEN v_order.payment_status = 'failed' THEN 'failed'
     ELSE 'awaiting_payment' END;
 
   RETURN jsonb_build_object(

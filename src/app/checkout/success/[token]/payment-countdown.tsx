@@ -104,9 +104,13 @@ export default function PaymentCountdown({
   }, [refreshStatus, status.state]);
 
   useEffect(() => {
-    if (status.state === "awaiting_payment" && remaining === 0) {
+    if (status.state !== "awaiting_payment" || remaining !== 0) return;
+
+    const timeout = window.setTimeout(() => {
       void refreshStatus();
-    }
+    }, 0);
+
+    return () => window.clearTimeout(timeout);
   }, [refreshStatus, remaining, status.state]);
 
   const content = useMemo(() => {

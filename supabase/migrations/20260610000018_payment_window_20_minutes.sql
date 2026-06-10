@@ -267,7 +267,7 @@ BEGIN
     INTO v_order
   FROM public.orders
   WHERE access_token = btrim(p_access_token)
-    AND internal_notes = 'PUBLIC CHECKOUT V1'
+    AND internal_notes IN ('PUBLIC CHECKOUT V1', 'PUBLIC CHECKOUT V2')
   LIMIT 1
   FOR UPDATE;
 
@@ -311,7 +311,7 @@ BEGIN
     WHEN v_order.status = 'expired'
       OR v_order.payment_status = 'expired'
       THEN 'expired'
-    WHEN v_order.payment_status IN ('failed', 'cancelled')
+    WHEN v_order.payment_status = 'failed'
       THEN 'failed'
     ELSE 'awaiting_payment'
   END;

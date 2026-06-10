@@ -6,6 +6,7 @@ import PageTitle from "@/components/admin/page-title";
 import { createClient } from "@/lib/supabase/server";
 
 import PaidDeliveryPanel from "./paid-delivery-panel";
+import { INTERNAL_TEST_TOOLS_ENABLED } from "@/lib/config/store";
 import EmailDeliveryPanel from "./email-delivery-panel";
 
 type OrderDetailPageProps = {
@@ -244,6 +245,7 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
       <PaidDeliveryPanel
         orderId={order.id}
         isTestOrder={
+          INTERNAL_TEST_TOOLS_ENABLED &&
           order.internal_notes ===
           "INTERNAL TEST ORDER — not a real customer transaction"
         }
