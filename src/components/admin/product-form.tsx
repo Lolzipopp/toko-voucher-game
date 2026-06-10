@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 type Game = { id: string; name: string };
-type Defaults = { gameId?: string; name?: string; productCode?: string; productType?: string; priceNormal?: number; status?: string; attributes?: string };
+type Defaults = { gameId?: string; name?: string; productCode?: string; productType?: string; priceNormal?: number; status?: string; attributes?: string; description?: string; pricePromo?: number | null; promoEndsAt?: string | null; warrantyDays?: number; isPopular?: boolean; sortOrder?: number };
 type Props = { games: Game[]; action: (formData: FormData) => void | Promise<void>; submitLabel: string; defaults?: Defaults };
 
 const field = "w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm text-slate-900 outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-100";
@@ -15,6 +15,19 @@ export default function ProductForm({ games, action, submitLabel, defaults = {} 
       </div>
 
       <div><label htmlFor="name" className="mb-2 block text-xs font-bold text-slate-600">Nama produk</label><input id="name" name="name" type="text" required defaultValue={defaults.name} placeholder="Akun Blox Fruits Level Max" className={field}/></div>
+      <div><label htmlFor="description" className="mb-2 block text-xs font-bold text-slate-600">Deskripsi publik</label><textarea id="description" name="description" rows={4} defaultValue={defaults.description} placeholder="Jelaskan produk dengan bahasa yang mudah dipahami pembeli." className={`${field} resize-y`}/></div>
+
+      <div className="grid gap-5 sm:grid-cols-2">
+        <div><label htmlFor="price_promo" className="mb-2 block text-xs font-bold text-slate-600">Harga promo (opsional)</label><input id="price_promo" name="price_promo" type="number" min="1" step="1" defaultValue={defaults.pricePromo ?? undefined} placeholder="Kosongkan jika tidak promo" className={field}/></div>
+        <div><label htmlFor="promo_ends_at" className="mb-2 block text-xs font-bold text-slate-600">Promo berakhir</label><input id="promo_ends_at" name="promo_ends_at" type="datetime-local" defaultValue={defaults.promoEndsAt ? defaults.promoEndsAt.slice(0,16) : undefined} className={field}/></div>
+      </div>
+
+      <div className="grid gap-5 sm:grid-cols-3">
+        <div><label htmlFor="warranty_days" className="mb-2 block text-xs font-bold text-slate-600">Garansi (hari)</label><input id="warranty_days" name="warranty_days" type="number" min="0" max="365" step="1" defaultValue={defaults.warrantyDays ?? 3} className={field}/></div>
+        <div><label htmlFor="sort_order" className="mb-2 block text-xs font-bold text-slate-600">Urutan katalog</label><input id="sort_order" name="sort_order" type="number" min="0" step="1" defaultValue={defaults.sortOrder ?? 100} className={field}/></div>
+        <label className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm font-bold text-slate-700"><input name="is_popular" type="checkbox" defaultChecked={defaults.isPopular} className="h-4 w-4 accent-emerald-600"/> Tandai populer</label>
+      </div>
+
 
       <div className="grid gap-5 sm:grid-cols-2">
         <div><label htmlFor="product_code" className="mb-2 block text-xs font-bold text-slate-600">Kode produk</label><input id="product_code" name="product_code" type="text" required defaultValue={defaults.productCode} placeholder="BF-MAX-001" className={`${field} uppercase`}/></div>

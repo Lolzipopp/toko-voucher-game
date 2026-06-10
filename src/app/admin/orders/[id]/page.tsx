@@ -6,6 +6,7 @@ import PageTitle from "@/components/admin/page-title";
 import { createClient } from "@/lib/supabase/server";
 
 import PaidDeliveryPanel from "./paid-delivery-panel";
+import EmailDeliveryPanel from "./email-delivery-panel";
 
 type OrderDetailPageProps = {
   params: Promise<{ id: string }>;
@@ -44,6 +45,13 @@ type Payment = {
   created_at: string;
 };
 
+type EmailDeliveryLog = {
+  id: string;
+  status: string;
+  sent_at: string | null;
+  created_at: string;
+};
+
 type Reservation = {
   id: string;
   inventory_account_id: string;
@@ -76,6 +84,7 @@ type OrderDetail = {
   order_items: OrderItem[] | null;
   payments: Payment[] | null;
   stock_reservations: Reservation[] | null;
+  order_email_deliveries: EmailDeliveryLog[] | null;
 };
 
 function formatRupiah(value: number) {
@@ -181,6 +190,7 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
         expired_at,
         created_at
       ),
+      order_email_deliveries(id, status, sent_at, created_at),
       stock_reservations(
         id,
         inventory_account_id,
@@ -198,6 +208,7 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
   const order = data as OrderDetail;
   const itemCount = (order.order_items ?? []).reduce((sum, item) => sum + item.quantity, 0);
   const activeReservations = (order.stock_reservations ?? []).filter((row) => !row.released_at);
+  const lastSentEmail = (order.order_email_deliveries ?? []).filter((row) => row.status === "sent").sort((a, b) => new Date(b.sent_at ?? b.created_at).getTime() - new Date(a.sent_at ?? a.created_at).getTime())[0] ?? null;
 
   return (
     <AdminShell active="orders" admin={admin}>
@@ -238,6 +249,13 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
         }
         paymentStatus={order.payment_status}
         deliveryStatus={order.delivery_status}
+      />
+
+      <EmailDeliveryPanel
+        orderId={order.id}
+        recipient={order.customer_email}
+        enabled={order.payment_status === "paid" && order.delivery_status === "delivered"}
+        lastSentAt={lastSentEmail?.sent_at ?? null}
       />
 
       {order.payment_status === "paid" &&

@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import { logoutAdmin } from "@/app/admin/actions";
 
 type AdminShellProps = {
-  active: "dashboard" | "products" | "inventory" | "orders";
+  active: "dashboard" | "products" | "inventory" | "orders" | "promos";
   admin: {
     full_name: string | null;
     email: string;
@@ -28,6 +28,9 @@ function KeyIcon({ className = "" }: IconProps) {
 function ReceiptIcon({ className = "" }: IconProps) {
   return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M6 3h12a2 2 0 0 1 2 2v16l-3-2-3 2-3-2-3 2-3-2V5a2 2 0 0 1 2-2Z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>;
 }
+function TagIcon({ className = "" }: IconProps) {
+  return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M20 13 13 20a2 2 0 0 1-2.8 0L4 13.8A2 2 0 0 1 3.6 12V5a2 2 0 0 1 2-2h7a2 2 0 0 1 1.4.6L20 9.6a2 2 0 0 1 0 2.8Z"/><circle cx="8.5" cy="8.5" r="1.2"/></svg>;
+}
 function LogOutIcon({ className = "" }: IconProps) {
   return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M10 17l5-5-5-5M15 12H3"/><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/></svg>;
 }
@@ -37,6 +40,7 @@ const navItems = [
   { key: "products" as const, href: "/admin/products", label: "Produk", icon: BoxIcon },
   { key: "inventory" as const, href: "/admin/inventory", label: "Stok", icon: KeyIcon },
   { key: "orders" as const, href: "/admin/orders", label: "Pesanan", icon: ReceiptIcon },
+  { key: "promos" as const, href: "/admin/promos", label: "Promo", icon: TagIcon },
 ];
 
 export default function AdminShell({ active, admin, children }: AdminShellProps) {
@@ -100,7 +104,7 @@ export default function AdminShell({ active, admin, children }: AdminShellProps)
         <main className="mx-auto w-full max-w-[1500px] px-4 pb-28 pt-5 sm:px-6 lg:px-10 lg:pb-10 lg:pt-8">{children}</main>
       </div>
 
-      <nav className="fixed inset-x-3 bottom-3 z-50 grid grid-cols-4 rounded-2xl border border-slate-200/80 bg-white/95 p-1.5 shadow-2xl shadow-slate-900/10 backdrop-blur-xl lg:hidden">
+      <nav className="fixed inset-x-3 bottom-3 z-50 grid grid-cols-5 rounded-2xl border border-slate-200/80 bg-white/95 p-1.5 shadow-2xl shadow-slate-900/10 backdrop-blur-xl lg:hidden">
         {navItems.map((item) => {
           const Icon = item.icon;
           const selected = active === item.key;
