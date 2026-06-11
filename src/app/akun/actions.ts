@@ -21,10 +21,11 @@ function safeNext(value: FormDataEntryValue | null) {
 export async function sendCustomerOtp(formData: FormData) {
   const email = normalizeEmail(formData.get("email"));
   const next = safeNext(formData.get("next"));
+  const mode = String(formData.get("mode") ?? "login") === "register" ? "register" : "login";
 
   if (!email || !email.includes("@") || email.length > 254) {
     redirect(
-      `/akun/login?error=${encodeURIComponent(
+      `/akun/login?mode=${mode}&error=${encodeURIComponent(
         "Masukkan alamat email yang valid.",
       )}&next=${encodeURIComponent(next)}`,
     );
@@ -49,14 +50,14 @@ export async function sendCustomerOtp(formData: FormData) {
         : "Kode belum dapat dikirim. Periksa email lalu coba lagi.";
 
     redirect(
-      `/akun/login?error=${encodeURIComponent(
+      `/akun/login?mode=${mode}&error=${encodeURIComponent(
         message,
       )}&next=${encodeURIComponent(next)}`,
     );
   }
 
   redirect(
-    `/akun/login?step=verify&email=${encodeURIComponent(
+    `/akun/login?mode=${mode}&step=verify&email=${encodeURIComponent(
       email,
     )}&sent=1&next=${encodeURIComponent(next)}`,
   );
@@ -68,10 +69,11 @@ export async function verifyCustomerOtp(formData: FormData) {
     .replace(/\s/g, "")
     .trim();
   const next = safeNext(formData.get("next"));
+  const mode = String(formData.get("mode") ?? "login") === "register" ? "register" : "login";
 
   if (!email || !/^\d{6,10}$/.test(token)) {
     redirect(
-      `/akun/login?step=verify&email=${encodeURIComponent(
+      `/akun/login?mode=${mode}&step=verify&email=${encodeURIComponent(
         email,
       )}&error=${encodeURIComponent(
         "Masukkan kode angka yang dikirim ke email.",
@@ -89,7 +91,7 @@ export async function verifyCustomerOtp(formData: FormData) {
 
   if (error) {
     redirect(
-      `/akun/login?step=verify&email=${encodeURIComponent(
+      `/akun/login?mode=${mode}&step=verify&email=${encodeURIComponent(
         email,
       )}&error=${encodeURIComponent(
         "Kode salah atau sudah kedaluwarsa. Minta kode baru.",

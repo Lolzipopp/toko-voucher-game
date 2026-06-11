@@ -55,6 +55,8 @@ export default async function PromosPage({ searchParams }: Props) {
 
   const field = "w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-100";
 
+  // Waktu evaluasi promo diambil sekali untuk satu request halaman admin.
+  // eslint-disable-next-line react-hooks/purity
   const now = Date.now();
   const manageablePromos = ((promos ?? []) as Promo[]).filter(
     (promo) => !promo.valid_until || new Date(promo.valid_until).getTime() > now,

@@ -48,3 +48,26 @@ button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
 .legal-content strong {
   color: #0f172a;
 }
+
+.gaming-grid {
+  background-image:
+    linear-gradient(rgba(52, 211, 153, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(56, 189, 248, 0.045) 1px, transparent 1px);
+  background-size: 42px 42px;
+  mask-image: linear-gradient(to bottom, black, transparent 92%);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .gaming-grid {
+    animation: gaming-grid-move 22s linear infinite;
+  }
+}
+
+@keyframes gaming-grid-move {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 42px 42px;
+  }
+}

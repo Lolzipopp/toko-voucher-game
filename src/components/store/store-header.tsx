@@ -1,30 +1,163 @@
-import Link from "next/link";
+"use client";
 
-import { createClient } from "@/lib/supabase/server";
+import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
+
+import {
+  DEFAULT_CLIENT_SETTINGS,
+  fetchPublicSettings,
+} from "@/lib/public-store/client-settings";
 
 import CartLink from "./cart-link";
+import SectionLink from "./section-link";
 
-type PublicSettings = { store_name?: string; store_tagline?: string };
+export default function StoreHeader() {
+  const [settings, setSettings] = useState(DEFAULT_CLIENT_SETTINGS);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
 
-export default async function StoreHeader() {
-  const supabase = await createClient();
-  const { data } = await supabase.rpc("get_public_store_settings");
-  const settings = (data ?? {}) as PublicSettings;
+  useEffect(() => {
+    const controller = new AbortController();
+    void fetchPublicSettings(controller.signal).then(setSettings);
+    return () => controller.abort();
+  }, []);
+
+  useEffect(() => {
+    function closeOutside(event: MouseEvent) {
+      if (!menuRef.current?.contains(event.target as Node)) {
+        setMenuOpen(false);
+      }
+    }
+
+    function closeWithEscape(event: KeyboardEvent) {
+      if (event.key === "Escape") setMenuOpen(false);
+    }
+
+    document.addEventListener("mousedown", closeOutside);
+    document.addEventListener("keydown", closeWithEscape);
+    return () => {
+      document.removeEventListener("mousedown", closeOutside);
+      document.removeEventListener("keydown", closeWithEscape);
+    };
+  }, []);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-emerald-950/10 bg-[#f7fbf8]/90 backdrop-blur-xl">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6">
-        <Link href="/" className="flex items-center gap-3">
-          <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#103d2b] text-xl shadow-lg shadow-emerald-950/15">🎮</span>
-          <span><span className="block text-sm font-black tracking-tight text-slate-950">{settings.store_name || "RIKU STORE"}</span><span className="block text-[10px] font-bold uppercase tracking-[0.16em] text-emerald-700">{settings.store_tagline || "Akun Roblox Instan"}</span></span>
+    <header className="sticky top-0 z-50 border-b border-emerald-400/15 bg-[#06111f]/94 text-white backdrop-blur-xl">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
+        <Link href="/" className="group flex min-w-0 items-center gap-3">
+          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl border border-emerald-400/35 bg-emerald-400/10 text-xl font-black text-emerald-300 shadow-[0_0_28px_rgba(52,211,153,.16)] transition group-hover:border-emerald-300/70">
+            R
+          </span>
+          <span className="min-w-0">
+            <span className="block truncate text-base font-black italic tracking-tight">
+              {settings.store_name}
+            </span>
+            <span className="hidden truncate text-[9px] font-black uppercase tracking-[0.2em] text-emerald-300/80 sm:block">
+              {settings.store_tagline}
+            </span>
+          </span>
         </Link>
-        <nav className="flex items-center gap-1 sm:gap-2">
-          <Link href="/#produk" className="hidden rounded-xl px-3 py-2 text-sm font-bold text-slate-600 transition hover:bg-white sm:inline-flex">Produk</Link>
-          <Link href="/tentang-kontak" className="hidden rounded-xl px-3 py-2 text-sm font-bold text-slate-600 transition hover:bg-white lg:inline-flex">Tentang</Link>
-          <Link href="/akun" className="rounded-xl px-2.5 py-2 text-xs font-bold text-slate-600 transition hover:bg-white sm:px-3 sm:text-sm">Akun Saya</Link>
+
+        <div className="flex items-center gap-2">
           <CartLink />
-          <Link href="/admin/login" className="hidden rounded-xl border border-emerald-950/10 bg-white px-3 py-2 text-sm font-bold text-slate-600 shadow-sm transition hover:border-emerald-300 md:inline-flex">Admin</Link>
-        </nav>
+
+          <div className="relative" ref={menuRef}>
+            <button
+              type="button"
+              aria-label="Buka menu"
+              aria-expanded={menuOpen}
+              onClick={() => setMenuOpen((open) => !open)}
+              className="grid h-11 w-11 place-items-center rounded-xl border border-white/10 bg-white/5 transition hover:border-emerald-300/40 hover:bg-emerald-400/10"
+            >
+              <span className="space-y-1.5">
+                <span className="block h-0.5 w-5 rounded-full bg-white" />
+                <span className="block h-0.5 w-5 rounded-full bg-white" />
+                <span className="block h-0.5 w-5 rounded-full bg-white" />
+              </span>
+            </button>
+
+            {menuOpen ? (
+              <div className="absolute right-0 mt-3 w-[min(21rem,calc(100vw-2rem))] overflow-hidden rounded-3xl border border-white/10 bg-[#0a1828] p-3 shadow-[0_25px_80px_rgba(0,0,0,.55)]">
+                <div className="rounded-2xl border border-emerald-400/15 bg-emerald-400/8 p-4">
+                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-300">
+                    Akun Pembeli
+                  </p>
+                  <p className="mt-1 text-sm text-slate-300">
+                    Masuk untuk melihat pesanan, atau daftar gratis dengan email.
+                  </p>
+                  <div className="mt-3 grid grid-cols-2 gap-2">
+                    <Link
+                      href="/akun/login?mode=login"
+                      onClick={() => setMenuOpen(false)}
+                      className="rounded-xl bg-emerald-400 px-3 py-2.5 text-center text-xs font-black text-emerald-950"
+                    >
+                      Masuk
+                    </Link>
+                    <Link
+                      href="/akun/login?mode=register"
+                      onClick={() => setMenuOpen(false)}
+                      className="rounded-xl border border-emerald-400/25 bg-emerald-400/10 px-3 py-2.5 text-center text-xs font-black text-emerald-200"
+                    >
+                      Daftar
+                    </Link>
+                  </div>
+                  <Link
+                    href="/akun"
+                    onClick={() => setMenuOpen(false)}
+                    className="mt-2 block rounded-xl px-3 py-2 text-center text-xs font-bold text-slate-300 hover:bg-white/5"
+                  >
+                    Buka akun & pesanan saya
+                  </Link>
+                </div>
+
+                <nav className="mt-2 grid gap-1 text-sm font-bold">
+                  <SectionLink
+                    href="/#kebutuhan"
+                    onNavigate={() => setMenuOpen(false)}
+                    className="rounded-xl px-4 py-3 text-slate-200 hover:bg-white/5"
+                  >
+                    Pilih kebutuhanmu
+                  </SectionLink>
+                  <SectionLink
+                    href="/#exclusive-offer"
+                    onNavigate={() => setMenuOpen(false)}
+                    className="rounded-xl px-4 py-3 text-slate-200 hover:bg-white/5"
+                  >
+                    Exclusive Offer
+                  </SectionLink>
+                  <SectionLink
+                    href="/#produk"
+                    onNavigate={() => setMenuOpen(false)}
+                    className="rounded-xl px-4 py-3 text-slate-200 hover:bg-white/5"
+                  >
+                    Semua akun
+                  </SectionLink>
+                  <SectionLink
+                    href="/#faq"
+                    onNavigate={() => setMenuOpen(false)}
+                    className="rounded-xl px-4 py-3 text-slate-200 hover:bg-white/5"
+                  >
+                    FAQ
+                  </SectionLink>
+                  <Link
+                    href="/favorit"
+                    onClick={() => setMenuOpen(false)}
+                    className="rounded-xl px-4 py-3 text-slate-200 hover:bg-white/5"
+                  >
+                    Favorit
+                  </Link>
+                  <Link
+                    href="/tentang-kontak"
+                    onClick={() => setMenuOpen(false)}
+                    className="rounded-xl px-4 py-3 text-slate-200 hover:bg-white/5"
+                  >
+                    Kontak & bantuan
+                  </Link>
+                </nav>
+              </div>
+            ) : null}
+          </div>
+        </div>
       </div>
     </header>
   );

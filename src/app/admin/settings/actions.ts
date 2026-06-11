@@ -29,3 +29,35 @@ export async function updateStoreSettings(formData: FormData) {
   revalidatePath("/admin/settings");
   redirect("/admin/settings?success=Pengaturan toko berhasil disimpan.");
 }
+
+
+export async function updateManualSalesSettings(formData: FormData) {
+  const { supabase } = await requireAdmin();
+
+  const enabled = formData.get("manual_sales_enabled") === "on";
+  const instructions = String(
+    formData.get("manual_payment_instructions") ?? "",
+  ).trim();
+
+  const { error } = await supabase.rpc(
+    "admin_update_manual_sales_settings",
+    {
+      p_enabled: enabled,
+      p_instructions: instructions,
+    },
+  );
+
+  if (error) {
+    redirect(
+      `/admin/settings?error=${encodeURIComponent(error.message)}`,
+    );
+  }
+
+  revalidatePath("/");
+  revalidatePath("/checkout");
+  revalidatePath("/admin/settings");
+
+  redirect(
+    "/admin/settings?success=Mode penjualan manual berhasil disimpan.",
+  );
+}

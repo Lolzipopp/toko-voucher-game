@@ -1,72 +1,461 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+
+import HomeBannerCarousel, { type HomeBanner } from "@/components/store/home-banner-carousel";
 import ProductCard from "@/components/store/product-card";
+import SectionLink from "@/components/store/section-link";
 import StoreFooter from "@/components/store/store-footer";
 import StoreHeader from "@/components/store/store-header";
+import RecentlyViewedSection from "@/components/store/recently-viewed-section";
+import { getPublicStoreSettings, whatsappUrl } from "@/lib/public-store/settings";
 import { createClient } from "@/lib/supabase/server";
 import type { PublicCatalogProduct } from "@/lib/public-store/types";
 
 export const metadata: Metadata = {
-  title: "RIKU STORE — Akun Roblox Instan",
-  description: "Akun Roblox dengan spesifikasi jelas, stok nyata, pengiriman instan, dan garansi tiga hari.",
+  title: "RIKU STORE — Akun Game Digital",
+  description:
+    "Akun game digital dengan spesifikasi jelas, stok nyata, checkout aman, dan garansi.",
 };
+
 export const dynamic = "force-dynamic";
 
-type HomeProps = { searchParams: Promise<{ q?: string; game?: string }> };
+type HomeProps = {
+  searchParams: Promise<{
+    q?: string;
+    game?: string;
+  }>;
+};
+
+
 
 export default async function Home({ searchParams }: HomeProps) {
   const query = await searchParams;
   const supabase = await createClient();
-  const [{ data, error }, { data: games }] = await Promise.all([
-    supabase.rpc("get_public_catalog", { p_game_slug: query.game ?? null, p_search: query.q ?? null }),
-    supabase.from("games").select("name, slug").eq("is_active", true).order("sort_order"),
+
+  const [
+    { data, error },
+    { data: games },
+    settings,
+    { data: announcements },
+    { data: testimonials },
+    { data: faqItems },
+  ] = await Promise.all([
+    supabase.rpc("get_public_catalog", {
+      p_game_slug: query.game ?? null,
+      p_search: query.q ?? null,
+    }),
+    supabase
+      .from("games")
+      .select("name, slug")
+      .eq("is_active", true)
+      .order("sort_order"),
+    getPublicStoreSettings(),
+    supabase
+      .from("site_announcements")
+      .select("id, title, message, button_label, button_url, tone, image_path")
+      .order("sort_order")
+      .limit(3),
+    supabase
+      .from("customer_testimonials")
+      .select("id, customer_name, customer_role, content, rating, product_label, is_featured")
+      .eq("is_approved", true)
+      .order("is_featured", { ascending: false })
+      .order("sort_order")
+      .limit(6),
+    supabase
+      .from("faq_items")
+      .select("id, question, answer")
+      .eq("is_active", true)
+      .order("sort_order")
+      .limit(12),
   ]);
-  if (error) throw new Error(`Gagal memuat katalog: ${error.message}`);
+
+  if (error) {
+    throw new Error(`Gagal memuat katalog: ${error.message}`);
+  }
+
   const products = (data ?? []) as PublicCatalogProduct[];
+  const promoProducts = products.filter((product) => product.price_promo);
+  const availableProducts = products.filter(
+    (product) => product.available_stock > 0,
+  );
+  const totalAvailableStock = products.reduce(
+    (total, product) => total + Number(product.available_stock),
+    0,
+  );
+
+  const whatsapp = whatsappUrl(
+    settings.whatsapp_number,
+    `Halo ${settings.store_name}, saya ingin bertanya mengenai produk akun game.`,
+  );
 
   return (
-    <main className="min-h-screen bg-[#f7fbf8] text-slate-950">
+    <main className="min-h-screen overflow-hidden bg-[#06111f] text-white">
       <StoreHeader />
-      <section className="relative overflow-hidden bg-[#103d2b] text-white">
-        <div className="absolute -left-24 -top-24 h-80 w-80 rounded-full bg-emerald-400/20 blur-3xl" />
-        <div className="absolute -bottom-32 right-0 h-96 w-96 rounded-full bg-lime-300/10 blur-3xl" />
-        <div className="relative mx-auto grid max-w-7xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[1.15fr_.85fr] lg:py-24">
+
+      <HomeBannerCarousel
+        banners={(announcements ?? []).map((announcement) => {
+          const imagePath = announcement.image_path as string | null;
+          const imageUrl = imagePath
+            ? supabase.storage.from("product-images").getPublicUrl(imagePath).data.publicUrl
+            : null;
+
+          return {
+            id: announcement.id,
+            title: announcement.title,
+            message: announcement.message,
+            button_label: announcement.button_label,
+            button_url: announcement.button_url,
+            tone: announcement.tone,
+            image_url: imageUrl,
+          } satisfies HomeBanner;
+        })}
+      />
+
+      <section
+        id="kebutuhan"
+        className="scroll-mt-20 mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:py-16"
+      >
+        <div className="text-center">
+          <p className="text-xs font-black uppercase tracking-[0.22em] text-emerald-300">
+            Layanan RIKU STORE
+          </p>
+          <h2 className="mt-3 text-3xl font-black italic sm:text-4xl">
+            PILIH KEBUTUHANMU
+          </h2>
+        </div>
+
+        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <SectionLink
+            href="/#produk"
+            className="group rounded-3xl border border-emerald-400/25 bg-[radial-gradient(circle_at_80%_0%,rgba(52,211,153,.18),transparent_45%),#0a1a2e] p-6 transition hover:-translate-y-1 hover:border-emerald-300/60"
+          >
+            <span className="text-4xl">🎮</span>
+            <h3 className="mt-7 text-xl font-black italic">BELI AKUN</h3>
+            <p className="mt-2 text-sm leading-6 text-slate-400">
+              Cari akun berdasarkan game, harga, dan spesifikasi.
+            </p>
+            <span className="mt-6 inline-flex text-xs font-black uppercase tracking-wider text-emerald-300">
+              Lihat produk →
+            </span>
+          </SectionLink>
+
+          <SectionLink
+            href="/#exclusive-offer"
+            className="group rounded-3xl border border-amber-400/20 bg-[radial-gradient(circle_at_80%_0%,rgba(251,191,36,.16),transparent_45%),#0a1a2e] p-6 transition hover:-translate-y-1 hover:border-amber-300/55"
+          >
+            <span className="text-4xl">🎁</span>
+            <h3 className="mt-7 text-xl font-black italic">EXCLUSIVE OFFER</h3>
+            <p className="mt-2 text-sm leading-6 text-slate-400">
+              Cek akun dengan harga khusus yang sedang aktif.
+            </p>
+            <span className="mt-6 inline-flex text-xs font-black uppercase tracking-wider text-amber-300">
+              {promoProducts.length ? `${promoProducts.length} penawaran tersedia →` : "Cek penawaran →"}
+            </span>
+          </SectionLink>
+
+          <Link
+            href="/akun"
+            className="group rounded-3xl border border-sky-400/20 bg-[radial-gradient(circle_at_80%_0%,rgba(56,189,248,.16),transparent_45%),#0a1a2e] p-6 transition hover:-translate-y-1 hover:border-sky-300/55"
+          >
+            <span className="text-4xl">🔐</span>
+            <h3 className="mt-7 text-xl font-black italic">CEK PESANAN</h3>
+            <p className="mt-2 text-sm leading-6 text-slate-400">
+              Masuk lewat email untuk melihat order dan data akun.
+            </p>
+            <span className="mt-6 inline-flex text-xs font-black uppercase tracking-wider text-sky-300">
+              Buka akun →
+            </span>
+          </Link>
+
+          {whatsapp ? (
+            <a
+              href={whatsapp}
+              target="_blank"
+              rel="noreferrer"
+              className="group rounded-3xl border border-violet-400/20 bg-[radial-gradient(circle_at_80%_0%,rgba(167,139,250,.16),transparent_45%),#0a1a2e] p-6 transition hover:-translate-y-1 hover:border-violet-300/55"
+            >
+              <span className="text-4xl">💬</span>
+              <h3 className="mt-7 text-xl font-black italic">JUAL / CARI AKUN</h3>
+              <p className="mt-2 text-sm leading-6 text-slate-400">
+                Hubungi admin jika ingin menjual akun atau mencari spesifikasi khusus.
+              </p>
+              <span className="mt-6 inline-flex text-xs font-black uppercase tracking-wider text-violet-300">
+                Chat WhatsApp →
+              </span>
+            </a>
+          ) : (
+            <div className="rounded-3xl border border-white/10 bg-[#091625] p-6 opacity-70">
+              <span className="text-4xl">💬</span>
+              <h3 className="mt-7 text-xl font-black italic">JUAL / CARI AKUN</h3>
+              <p className="mt-2 text-sm leading-6 text-slate-500">
+                Kontak WhatsApp admin belum diatur.
+              </p>
+            </div>
+          )}
+        </div>
+      </section>
+
+      <section
+        id="exclusive-offer"
+        className="scroll-mt-20 border-y border-amber-300/15 bg-[linear-gradient(90deg,rgba(251,191,36,.06),transparent,rgba(251,191,36,.06))]"
+      >
+        <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6">
+          <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+            <div>
+              <p className="text-xs font-black uppercase tracking-[0.22em] text-amber-300">
+                Penawaran terbatas
+              </p>
+              <h2 className="mt-2 text-3xl font-black italic">
+                EXCLUSIVE OFFER
+              </h2>
+              <p className="mt-3 text-sm text-slate-400">
+                Harga khusus hanya tampil ketika promo produk benar-benar aktif.
+              </p>
+            </div>
+            <SectionLink href="/#produk" className="text-sm font-black text-amber-300">
+              Lihat semua produk →
+            </SectionLink>
+          </div>
+
+          {promoProducts.length ? (
+            <div className="mt-7 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+              {promoProducts.slice(0, 3).map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          ) : (
+            <div className="mt-7 rounded-3xl border border-dashed border-amber-300/20 bg-amber-300/5 p-8 text-center">
+              <p className="font-black text-amber-100">Belum ada exclusive offer aktif</p>
+              <p className="mt-2 text-sm text-slate-400">
+                Bagian ini otomatis terisi saat admin mengaktifkan harga promo pada produk.
+              </p>
+            </div>
+          )}
+        </div>
+      </section>
+
+      <section
+        id="produk"
+        className="scroll-mt-20 mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:py-20"
+      >
+        <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
           <div>
-            <span className="inline-flex rounded-full border border-white/15 bg-white/10 px-4 py-2 text-[11px] font-black uppercase tracking-[0.2em] text-emerald-200">Akun Roblox • Instan • Bergaransi</span>
-            <h1 className="mt-6 max-w-3xl text-4xl font-black leading-tight tracking-tight sm:text-6xl">Cari akun, bayar, lalu langsung main.</h1>
-            <p className="mt-5 max-w-2xl text-base leading-8 text-white/70 sm:text-lg">Spesifikasi jelas, stok nyata, pengiriman instan, dan garansi tiga hari dari RIKU STORE.</p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link href="#produk" className="rounded-2xl bg-emerald-400 px-6 py-3.5 text-sm font-black text-emerald-950 shadow-xl shadow-black/15 transition hover:bg-emerald-300">Lihat produk</Link>
-              <span className="rounded-2xl border border-white/15 bg-white/5 px-6 py-3.5 text-sm font-bold text-white/80">Checkout tanpa login</span>
+            <p className="text-xs font-black uppercase tracking-[0.22em] text-emerald-300">
+              Pilihan stok
+            </p>
+            <h2 className="mt-2 text-3xl font-black italic sm:text-4xl">
+              AKUN YANG TERSEDIA
+            </h2>
+            <p className="mt-3 text-sm text-slate-400">
+              {availableProducts.length} produk aktif dengan total {" "}
+              {totalAvailableStock} akun tersedia.
+            </p>
+          </div>
+
+          <form
+            className="flex w-full max-w-xl gap-2 rounded-2xl border border-white/10 bg-white/5 p-2"
+            action="/"
+            method="get"
+          >
+            {query.game ? (
+              <input type="hidden" name="game" value={query.game} />
+            ) : null}
+            <input
+              name="q"
+              defaultValue={query.q ?? ""}
+              placeholder="Cari level, fruit, sword, bonus..."
+              className="min-w-0 flex-1 bg-transparent px-3 py-2 text-sm text-white outline-none placeholder:text-slate-500"
+            />
+            <button className="rounded-xl bg-emerald-400 px-5 py-2.5 text-sm font-black text-emerald-950">
+              Cari
+            </button>
+          </form>
+        </div>
+
+        <div className="mt-7 flex gap-2 overflow-x-auto pb-2">
+          <Link
+            href={query.q ? `/?q=${encodeURIComponent(query.q)}` : "/"}
+            className={`whitespace-nowrap rounded-2xl border px-4 py-2.5 text-xs font-black ${
+              !query.game
+                ? "border-emerald-400 bg-emerald-400 text-emerald-950 shadow-[0_0_20px_rgba(52,211,153,.18)]"
+                : "border-white/10 bg-white/5 text-slate-300"
+            }`}
+          >
+            Semua game
+          </Link>
+          {(games ?? []).map((game) => (
+            <Link
+              key={game.slug}
+              href={`/?game=${game.slug}${
+                query.q ? `&q=${encodeURIComponent(query.q)}` : ""
+              }#produk`}
+              className={`whitespace-nowrap rounded-2xl border px-4 py-2.5 text-xs font-black ${
+                query.game === game.slug
+                  ? "border-emerald-400 bg-emerald-400 text-emerald-950"
+                  : "border-white/10 bg-white/5 text-slate-300"
+              }`}
+            >
+              {game.name}
+            </Link>
+          ))}
+        </div>
+
+        {products.length ? (
+          <div className="mt-8 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+            {products.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        ) : (
+          <div className="mt-8 rounded-3xl border border-dashed border-white/15 bg-white/5 p-12 text-center">
+            <p className="text-lg font-black">Produk tidak ditemukan</p>
+            <p className="mt-2 text-sm text-slate-400">
+              Coba kata kunci lain atau lihat semua game.
+            </p>
+            <Link
+              href="/#produk"
+              className="mt-5 inline-flex rounded-xl bg-emerald-400 px-4 py-2.5 text-sm font-black text-emerald-950"
+            >
+              Reset pencarian
+            </Link>
+          </div>
+        )}
+      </section>
+
+
+      <RecentlyViewedSection />
+
+      {(testimonials ?? []).length ? (
+        <section
+          id="testimoni"
+          className="border-y border-white/8 bg-[#071320]"
+        >
+          <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6">
+            <div className="text-center">
+              <p className="text-xs font-black uppercase tracking-[0.22em] text-emerald-300">
+                Testimoni pembeli
+              </p>
+              <h2 className="mt-2 text-3xl font-black italic sm:text-4xl">
+                PENGALAMAN PEMBELI ASLI
+              </h2>
+              <p className="mt-3 text-sm text-slate-400">
+                Hanya testimoni yang telah diperiksa admin yang ditampilkan.
+              </p>
+            </div>
+
+            <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+              {(testimonials ?? []).map((testimonial) => (
+                <article
+                  key={testimonial.id}
+                  className={`rounded-3xl border p-6 ${
+                    testimonial.is_featured
+                      ? "border-emerald-400/35 bg-emerald-400/[.07]"
+                      : "border-white/10 bg-white/[.035]"
+                  }`}
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <p className="font-black text-white">
+                        {testimonial.customer_name}
+                      </p>
+                      <p className="mt-1 text-xs text-slate-500">
+                        {testimonial.customer_role ||
+                          testimonial.product_label ||
+                          "Pembeli RIKU STORE"}
+                      </p>
+                    </div>
+                    <span className="text-sm tracking-wider text-amber-300">
+                      {"★".repeat(testimonial.rating)}
+                    </span>
+                  </div>
+
+                  <p className="mt-5 text-sm leading-7 text-slate-300">
+                    “{testimonial.content}”
+                  </p>
+
+                  {testimonial.product_label ? (
+                    <span className="mt-5 inline-flex rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-[10px] font-black text-emerald-200">
+                      {testimonial.product_label}
+                    </span>
+                  ) : null}
+                </article>
+              ))}
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-3 self-end">
-            {[['⚡','Pengiriman instan'],['🛡️','Garansi 3 hari'],['🔒','Data aman'],['📦','Stok nyata']].map(([icon,label]) => (
-              <div key={label} className="rounded-3xl border border-white/10 bg-white/8 p-5 backdrop-blur">
-                <p className="text-2xl">{icon}</p><p className="mt-3 text-sm font-black">{label}</p>
+        </section>
+      ) : null}
+
+      <section
+        id="faq"
+        className="border-y border-white/8 bg-[#081625]"
+      >
+        <div className="mx-auto grid max-w-7xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[.72fr_1.28fr] lg:items-center">
+          <div>
+            <div className="relative mx-auto grid h-64 w-64 place-items-center rounded-full border border-emerald-400/20 bg-emerald-400/5 shadow-[0_0_80px_rgba(16,185,129,.15)]">
+              <div className="grid h-40 w-40 place-items-center rounded-[3rem] border border-emerald-400/30 bg-emerald-400/10 text-7xl">
+                🛡
               </div>
-            ))}
+            </div>
+          </div>
+
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.22em] text-emerald-300">
+              Bantuan
+            </p>
+            <h2 className="mt-2 text-3xl font-black italic sm:text-4xl">
+              PERTANYAAN YANG SERING DITANYAKAN
+            </h2>
+
+            <div className="mt-7 space-y-3">
+              {(faqItems ?? []).map((item) => (
+                <details
+                  key={item.id}
+                  className="group rounded-2xl border border-white/10 bg-white/[.035] p-4 open:border-emerald-400/30 open:bg-emerald-400/5"
+                >
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-black text-slate-200">
+                    {item.question}
+                    <span className="text-xl text-emerald-300 transition group-open:rotate-45">
+                      +
+                    </span>
+                  </summary>
+                  <p className="mt-3 pr-8 text-sm leading-7 text-slate-400">
+                    {item.answer}
+                  </p>
+                </details>
+              ))}
+
+              {(faqItems ?? []).length === 0 ? (
+                <div className="rounded-2xl border border-dashed border-white/15 bg-white/[.03] p-6 text-sm text-slate-400">
+                  FAQ sedang disiapkan.
+                </div>
+              ) : null}
+            </div>
           </div>
         </div>
       </section>
 
-      <section id="produk" className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:py-16">
-        <div className="flex flex-col justify-between gap-5 lg:flex-row lg:items-end">
-          <div><p className="text-xs font-black uppercase tracking-[0.2em] text-emerald-700">Katalog</p><h2 className="mt-2 text-3xl font-black tracking-tight">Pilih akun yang cocok</h2><p className="mt-2 text-sm text-slate-500">{products.length} produk tersedia untuk ditelusuri.</p></div>
-          <form className="flex w-full max-w-xl gap-2" action="/" method="get">
-            {query.game ? <input type="hidden" name="game" value={query.game} /> : null}
-            <input name="q" defaultValue={query.q ?? ""} placeholder="Cari level, fruit, sword, bonus..." className="min-w-0 flex-1 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100" />
-            <button className="rounded-2xl bg-[#103d2b] px-5 py-3 text-sm font-black text-white">Cari</button>
-          </form>
+      <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
+        <div className="grid gap-5 rounded-[2rem] border border-emerald-400/20 bg-[linear-gradient(120deg,rgba(16,185,129,.12),rgba(56,189,248,.05))] p-6 sm:p-8 lg:grid-cols-[1fr_auto] lg:items-center">
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.2em] text-emerald-300">
+              Transparan sebelum bayar
+            </p>
+            <h2 className="mt-2 text-2xl font-black italic">
+              HARGA PRODUK, DISKON, DAN BIAYA DITAMPILKAN DI CHECKOUT
+            </h2>
+            <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-400">
+              Payment gateway sedang dipersiapkan. Metode pembayaran
+              baru akan ditampilkan setelah benar-benar aktif dan telah diuji.
+            </p>
+          </div>
+          <span className="rounded-2xl border border-amber-300/25 bg-amber-300/10 px-5 py-3 text-center text-xs font-black uppercase tracking-wider text-amber-200">
+            Midtrans segera hadir
+          </span>
         </div>
-        <div className="mt-6 flex gap-2 overflow-x-auto pb-2">
-          <Link href={query.q ? `/?q=${encodeURIComponent(query.q)}` : "/"} className={`whitespace-nowrap rounded-full px-4 py-2 text-xs font-black ${!query.game ? 'bg-[#103d2b] text-white' : 'bg-white text-slate-600'}`}>Semua game</Link>
-          {(games ?? []).map((game) => <Link key={game.slug} href={`/?game=${game.slug}${query.q ? `&q=${encodeURIComponent(query.q)}` : ''}#produk`} className={`whitespace-nowrap rounded-full px-4 py-2 text-xs font-black ${query.game === game.slug ? 'bg-[#103d2b] text-white' : 'border border-slate-200 bg-white text-slate-600'}`}>{game.name}</Link>)}
-        </div>
-        {products.length ? <div className="mt-7 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">{products.map((product) => <ProductCard key={product.id} product={product} />)}</div> : <div className="mt-8 rounded-3xl border border-dashed border-slate-300 bg-white p-12 text-center"><p className="text-lg font-black">Produk tidak ditemukan</p><p className="mt-2 text-sm text-slate-500">Coba kata kunci lain atau lihat semua game.</p><Link href="/#produk" className="mt-5 inline-flex rounded-xl bg-[#103d2b] px-4 py-2.5 text-sm font-black text-white">Reset pencarian</Link></div>}
       </section>
-      <footer className="border-t border-emerald-950/10 bg-white"><div className="mx-auto flex max-w-7xl flex-col justify-between gap-3 px-4 py-8 text-sm text-slate-500 sm:flex-row sm:px-6"><p className="font-black text-slate-900">RIKU STORE</p><p>© 2026 • Akun Roblox instan dan bergaransi.</p></div></footer>
-          <StoreFooter />
-</main>
+
+      <StoreFooter />
+    </main>
   );
 }

@@ -17,6 +17,7 @@ type Props = {
     error?: string;
     sent?: string;
     next?: string;
+    mode?: string;
   }>;
 };
 
@@ -35,6 +36,7 @@ export default async function CustomerLoginPage({
   }
 
   const verifyStep = query.step === "verify" && Boolean(query.email);
+  const mode = query.mode === "register" ? "register" : "login";
   const next =
     query.next?.startsWith("/") && !query.next.startsWith("//")
       ? query.next
@@ -58,14 +60,37 @@ export default async function CustomerLoginPage({
           </p>
 
           <h1 className="mt-2 text-center text-3xl font-black">
-            {verifyStep ? "Masukkan kode dari email" : "Masuk atau buat akun"}
+            {verifyStep
+              ? "Masukkan kode dari email"
+              : mode === "register"
+                ? "Daftar akun pembeli"
+                : "Masuk ke akun pembeli"}
           </h1>
 
           <p className="mx-auto mt-2 max-w-sm text-center text-sm leading-6 text-slate-500">
             {verifyStep
-              ? `Kami mengirim kode 6 digit ke ${query.email}.`
-              : "Gunakan email yang sama seperti saat checkout. Akun akan dibuat otomatis tanpa password."}
+              ? `Kami mengirim kode masuk ke ${query.email}.`
+              : mode === "register"
+                ? "Daftar gratis menggunakan email. Tidak perlu membuat password."
+                : "Masukkan email yang pernah dipakai checkout agar semua pesananmu terhubung."}
           </p>
+
+          {!verifyStep ? (
+            <div className="mt-6 grid grid-cols-2 rounded-2xl bg-slate-100 p-1">
+              <Link
+                href={`/akun/login?mode=login&next=${encodeURIComponent(next)}`}
+                className={`rounded-xl px-4 py-3 text-center text-sm font-black transition ${mode === "login" ? "bg-white text-emerald-800 shadow-sm" : "text-slate-500"}`}
+              >
+                Masuk
+              </Link>
+              <Link
+                href={`/akun/login?mode=register&next=${encodeURIComponent(next)}`}
+                className={`rounded-xl px-4 py-3 text-center text-sm font-black transition ${mode === "register" ? "bg-white text-emerald-800 shadow-sm" : "text-slate-500"}`}
+              >
+                Daftar gratis
+              </Link>
+            </div>
+          ) : null}
 
           {query.sent ? (
             <div className="mt-5 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800">
@@ -82,6 +107,7 @@ export default async function CustomerLoginPage({
           {!verifyStep ? (
             <form action={sendCustomerOtp} className="mt-6 space-y-4">
               <input type="hidden" name="next" value={next} />
+              <input type="hidden" name="mode" value={mode} />
 
               <div>
                 <label className="mb-2 block text-xs font-bold text-slate-600">
@@ -98,7 +124,7 @@ export default async function CustomerLoginPage({
               </div>
 
               <button className="w-full rounded-2xl bg-[#103d2b] px-5 py-3.5 text-sm font-black text-white transition hover:bg-emerald-800">
-                Kirim kode masuk
+                {mode === "register" ? "Kirim kode pendaftaran" : "Kirim kode masuk"}
               </button>
             </form>
           ) : (
@@ -106,6 +132,7 @@ export default async function CustomerLoginPage({
               <form action={verifyCustomerOtp} className="space-y-4">
                 <input type="hidden" name="email" value={query.email} />
                 <input type="hidden" name="next" value={next} />
+                <input type="hidden" name="mode" value={mode} />
 
                 <div>
                   <label className="mb-2 block text-xs font-bold text-slate-600">
@@ -133,13 +160,14 @@ export default async function CustomerLoginPage({
                 <form action={sendCustomerOtp}>
                   <input type="hidden" name="email" value={query.email} />
                   <input type="hidden" name="next" value={next} />
+                  <input type="hidden" name="mode" value={mode} />
                   <button className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-xs font-black text-slate-600 hover:bg-slate-50">
                     Kirim ulang
                   </button>
                 </form>
 
                 <Link
-                  href={`/akun/login?next=${encodeURIComponent(next)}`}
+                  href={`/akun/login?mode=${mode}&next=${encodeURIComponent(next)}`}
                   className="rounded-2xl border border-slate-200 px-4 py-3 text-center text-xs font-black text-slate-600 hover:bg-slate-50"
                 >
                   Ganti email
@@ -149,7 +177,7 @@ export default async function CustomerLoginPage({
           )}
 
           <p className="mt-6 text-center text-xs leading-5 text-slate-400">
-            Dengan masuk, semua pesanan yang memakai email ini otomatis
+            Setelah verifikasi, semua pesanan yang memakai email ini otomatis
             terhubung ke akunmu.
           </p>
         </section>

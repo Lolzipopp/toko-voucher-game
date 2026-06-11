@@ -211,3 +211,75 @@ export async function simulateTestPaidDelivery(
       : `Pembayaran dummy paid dan ${result.delivered_count ?? 0} stok berhasil dikirim.`,
   };
 }
+
+
+export async function confirmManualPaymentAndDeliver(input: {
+  orderId: string;
+  paymentReference: string;
+  adminNotes: string;
+}): Promise<TestOrderActionResult> {
+  if (!input.orderId) {
+    return { ok: false, message: "ID order tidak valid." };
+  }
+
+  const { supabase, error: authError } =
+    await getActiveAdminClient();
+
+  if (!supabase) {
+    return {
+      ok: false,
+      message: authError ?? "Akses ditolak.",
+    };
+  }
+
+  const { data, error } = await supabase.rpc(
+    "admin_confirm_manual_payment_and_deliver",
+    {
+      p_order_id: input.orderId,
+      p_payment_reference:
+        input.paymentReference.trim() || null,
+      p_admin_notes: input.adminNotes.trim() || null,
+    },
+  );
+
+  if (error) {
+    const message = error.message.includes("reservation_expired")
+      ? "Waktu pesanan sudah habis. Minta pembeli membuat order baru."
+      : error.message.includes("order_not_payable")
+        ? "Order ini sudah expired, gagal, atau refunded."
+        : error.message;
+
+    return { ok: false, message };
+  }
+
+  const result = data as {
+    ok?: boolean;
+    already_processed?: boolean;
+    delivered_count?: number;
+    message?: string;
+  } | null;
+
+  revalidatePath("/admin");
+  revalidatePath("/admin/orders");
+  revalidatePath(`/admin/orders/${input.orderId}`);
+  revalidatePath("/admin/inventory");
+
+  if (!result?.ok) {
+    return {
+      ok: false,
+      message:
+        result?.message ??
+        "Pembayaran tercatat, tetapi pengiriman akun gagal.",
+    };
+  }
+
+  return {
+    ok: true,
+    orderId: input.orderId,
+    message: result.already_processed
+      ? "Order sudah pernah dikonfirmasi dan dikirim."
+      : `Pembayaran dikonfirmasi dan ${
+          result.delivered_count ?? 0
+        } akun berhasil dikirim.`,
+  };
+}

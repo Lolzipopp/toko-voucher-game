@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 type Game = { id: string; name: string };
-type Defaults = { gameId?: string; name?: string; productCode?: string; productType?: string; priceNormal?: number; status?: string; attributes?: string; description?: string; pricePromo?: number | null; promoEndsAt?: string | null; warrantyDays?: number; isPopular?: boolean; sortOrder?: number };
+type Defaults = { gameId?: string; name?: string; productCode?: string; productType?: string; priceNormal?: number; status?: string; attributes?: string; description?: string; pricePromo?: number | null; promoEndsAt?: string | null; warrantyDays?: number; isPopular?: boolean; sortOrder?: number; allowNegotiation?: boolean; negotiationMinPrice?: number | null };
 type Props = { games: Game[]; action: (formData: FormData) => void | Promise<void>; submitLabel: string; defaults?: Defaults };
 
 const field = "w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm text-slate-900 outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-100";
@@ -32,6 +32,52 @@ export default function ProductForm({ games, action, submitLabel, defaults = {} 
       <div className="grid gap-5 sm:grid-cols-2">
         <div><label htmlFor="product_code" className="mb-2 block text-xs font-bold text-slate-600">Kode produk</label><input id="product_code" name="product_code" type="text" required defaultValue={defaults.productCode} placeholder="BF-MAX-001" className={`${field} uppercase`}/></div>
         <div><label htmlFor="price_normal" className="mb-2 block text-xs font-bold text-slate-600">Harga IDR</label><input id="price_normal" name="price_normal" type="number" required min="1" step="1" defaultValue={defaults.priceNormal} placeholder="15000" className={field}/></div>
+      </div>
+
+
+      <div className="rounded-3xl border border-emerald-200 bg-emerald-50 p-5">
+        <label className="flex items-center gap-3 text-sm font-black text-emerald-950">
+          <input
+            name="allow_negotiation"
+            type="checkbox"
+            defaultChecked={defaults.allowNegotiation}
+            className="h-5 w-5 accent-emerald-600"
+          />
+          Izinkan pembeli mengajukan nego
+        </label>
+
+        <p className="mt-2 text-xs leading-5 text-emerald-900/65">
+          Nego dilakukan melalui WhatsApp. Harga produk di
+          checkout tidak berubah otomatis sampai kamu menyetujui
+          kesepakatan dan membuat promo atau mengubah harga.
+        </p>
+
+        <div className="mt-4">
+          <label
+            htmlFor="negotiation_min_price"
+            className="mb-2 block text-xs font-bold text-slate-600"
+          >
+            Batas minimum penawaran (opsional)
+          </label>
+
+          <input
+            id="negotiation_min_price"
+            name="negotiation_min_price"
+            type="number"
+            min="1"
+            step="1"
+            defaultValue={
+              defaults.negotiationMinPrice ?? undefined
+            }
+            placeholder="Contoh: 12000"
+            className={field}
+          />
+
+          <p className="mt-2 text-[11px] leading-5 text-slate-500">
+            Nilai ini tidak ditampilkan sebagai harga pasti.
+            Penawaran di bawah batas akan ditolak oleh form.
+          </p>
+        </div>
       </div>
 
       <div><label htmlFor="status" className="mb-2 block text-xs font-bold text-slate-600">Status</label><select id="status" name="status" required defaultValue={defaults.status ?? "active"} className={field}><option value="active">Aktif</option><option value="draft">Draft</option><option value="preorder">Preorder</option><option value="out_of_stock">Habis</option></select></div>

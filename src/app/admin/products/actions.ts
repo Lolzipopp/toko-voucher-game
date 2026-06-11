@@ -25,6 +25,8 @@ type ProductFormValues = {
   warrantyDays: number;
   isPopular: boolean;
   sortOrder: number;
+  allowNegotiation: boolean;
+  negotiationMinPrice: number | null;
 };
 
 function parseAttributes(raw: string): ProductAttribute[] {
@@ -84,6 +86,14 @@ function validateProductForm(formData: FormData): ProductFormValues {
   const warrantyDays = Number(formData.get("warranty_days") ?? 3);
   const isPopular = formData.get("is_popular") === "on";
   const sortOrder = Number(formData.get("sort_order") ?? 100);
+  const allowNegotiation =
+    formData.get("allow_negotiation") === "on";
+  const negotiationMinPriceRaw = String(
+    formData.get("negotiation_min_price") ?? "",
+  ).trim();
+  const negotiationMinPrice = negotiationMinPriceRaw
+    ? Number(negotiationMinPriceRaw)
+    : null;
 
   if (!gameId || !name || !productCode || !productType || !status) {
     throw new Error("Semua kolom wajib harus diisi.");
@@ -106,6 +116,34 @@ function validateProductForm(formData: FormData): ProductFormValues {
     throw new Error("Status produk tidak valid.");
   }
 
+
+  if (
+    negotiationMinPrice !== null &&
+    (
+      !Number.isSafeInteger(negotiationMinPrice) ||
+      negotiationMinPrice <= 0
+    )
+  ) {
+    throw new Error(
+      "Batas minimum nego harus berupa angka lebih dari nol.",
+    );
+  }
+
+  const effectivePrice =
+    pricePromoRaw && Number(pricePromoRaw) > 0
+      ? Number(pricePromoRaw)
+      : priceNormal;
+
+  if (
+    allowNegotiation &&
+    negotiationMinPrice !== null &&
+    negotiationMinPrice >= effectivePrice
+  ) {
+    throw new Error(
+      "Batas minimum nego harus lebih rendah dari harga jual.",
+    );
+  }
+
   return {
     gameId,
     name,
@@ -120,6 +158,9 @@ function validateProductForm(formData: FormData): ProductFormValues {
     warrantyDays: Number.isFinite(warrantyDays) ? Math.floor(warrantyDays) : 3,
     isPopular,
     sortOrder: Number.isFinite(sortOrder) ? Math.floor(sortOrder) : 100,
+    allowNegotiation,
+    negotiationMinPrice:
+      allowNegotiation ? negotiationMinPrice : null,
   };
 }
 
@@ -194,6 +235,24 @@ export async function createProduct(formData: FormData) {
     if (merchError) {
       redirect(`/admin/products/${productId}/edit?error=${encodeURIComponent(merchError.message)}`);
     }
+
+    const { error: negotiationError } = await supabase.rpc(
+      "admin_update_product_negotiation",
+      {
+        p_product_id: productId,
+        p_allow_negotiation: values.allowNegotiation,
+        p_negotiation_min_price: values.negotiationMinPrice,
+      },
+    );
+
+    if (negotiationError) {
+      redirect(
+        `/admin/products/${productId}/edit?error=${encodeURIComponent(
+          negotiationError.message,
+        )}`,
+      );
+    }
+
   }
 
   revalidatePath("/");
@@ -253,6 +312,24 @@ export async function updateProduct(
 
   if (merchError) {
     redirect(`/admin/products/${productId}/edit?error=${encodeURIComponent(merchError.message)}`);
+  }
+
+
+  const { error: negotiationError } = await supabase.rpc(
+    "admin_update_product_negotiation",
+    {
+      p_product_id: productId,
+      p_allow_negotiation: values.allowNegotiation,
+      p_negotiation_min_price: values.negotiationMinPrice,
+    },
+  );
+
+  if (negotiationError) {
+    redirect(
+      `/admin/products/${productId}/edit?error=${encodeURIComponent(
+        negotiationError.message,
+      )}`,
+    );
   }
 
   revalidatePath("/");

@@ -46,12 +46,15 @@ export default async function CheckoutSuccessPage({
   }
 
   const supabase = await createClient();
-  const { data, error } = await supabase.rpc(
-    "get_public_checkout_status",
-    {
+  const [
+    { data, error },
+    { data: publicSettings },
+  ] = await Promise.all([
+    supabase.rpc("get_public_checkout_status", {
       p_access_token: token,
-    },
-  );
+    }),
+    supabase.rpc("get_public_store_settings"),
+  ]);
 
   if (error) {
     throw new Error("Gagal membuka status pesanan.");
@@ -63,6 +66,9 @@ export default async function CheckoutSuccessPage({
     notFound();
   }
 
+  const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3001").replace(/\/$/, "");
+  const statusUrl = `${siteUrl}/checkout/success/${encodeURIComponent(token)}`;
+
   return (
     <main className="min-h-screen bg-[#f7fbf8] text-slate-950">
       <StoreHeader />
@@ -70,6 +76,26 @@ export default async function CheckoutSuccessPage({
         <PaymentCountdown
           token={token}
           initialStatus={status}
+          statusUrl={statusUrl}
+          manualSales={{
+            enabled:
+              (publicSettings as {
+                manual_sales_enabled?: boolean;
+              } | null)?.manual_sales_enabled ?? true,
+            whatsappNumber:
+              (publicSettings as {
+                whatsapp_number?: string | null;
+              } | null)?.whatsapp_number ?? null,
+            storeName:
+              (publicSettings as {
+                store_name?: string | null;
+              } | null)?.store_name ?? "RIKU STORE",
+            instructions:
+              (publicSettings as {
+                manual_payment_instructions?: string | null;
+              } | null)?.manual_payment_instructions ??
+              "Pembayaran otomatis belum tersedia. Hubungi admin melalui WhatsApp untuk menerima instruksi pembayaran.",
+          }}
         />
       </div>
           <StoreFooter />

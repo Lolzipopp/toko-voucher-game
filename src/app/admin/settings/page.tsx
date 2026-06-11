@@ -5,7 +5,7 @@ import Notice from "@/components/admin/notice";
 import PageTitle from "@/components/admin/page-title";
 import { createClient } from "@/lib/supabase/server";
 
-import { updateStoreSettings } from "./actions";
+import { updateManualSalesSettings, updateStoreSettings } from "./actions";
 
 type Props = { searchParams: Promise<{ success?: string; error?: string }> };
 
@@ -17,6 +17,8 @@ type Settings = {
   payment_window_minutes: number;
   default_warranty_days: number;
   credential_visibility_days: number;
+  manual_sales_enabled?: boolean;
+  manual_payment_instructions?: string;
 };
 
 export default async function SettingsPage({ searchParams }: Props) {
@@ -53,6 +55,58 @@ export default async function SettingsPage({ searchParams }: Props) {
         </div>
         <div className="mt-6 flex justify-end"><button className="rounded-2xl bg-[#103d2b] px-6 py-3 text-sm font-black text-white">Simpan pengaturan</button></div>
       </form>
+
+      <form
+        action={updateManualSalesSettings}
+        className="mt-6 rounded-[2rem] border border-emerald-200 bg-emerald-50 p-5 shadow-sm sm:p-8"
+      >
+        <p className="text-xs font-black uppercase tracking-[0.18em] text-emerald-700">
+          Penjualan sebelum Midtrans
+        </p>
+
+        <h2 className="mt-2 text-xl font-black text-slate-950">
+          Mode pembayaran manual via WhatsApp
+        </h2>
+
+        <p className="mt-2 text-sm leading-6 text-slate-600">
+          Aktifkan agar pembeli tetap bisa membuat pesanan,
+          melihat total, lalu menghubungi admin untuk instruksi
+          pembayaran.
+        </p>
+
+        <label className="mt-5 flex items-center gap-3 rounded-2xl border border-emerald-200 bg-white px-4 py-4 text-sm font-black text-slate-700">
+          <input
+            name="manual_sales_enabled"
+            type="checkbox"
+            defaultChecked={settings.manual_sales_enabled ?? true}
+            className="h-5 w-5 accent-emerald-600"
+          />
+          Aktifkan penjualan manual
+        </label>
+
+        <div className="mt-4">
+          <label className="mb-2 block text-xs font-bold text-slate-600">
+            Instruksi untuk pembeli
+          </label>
+
+          <textarea
+            name="manual_payment_instructions"
+            rows={4}
+            defaultValue={
+              settings.manual_payment_instructions ??
+              "Pembayaran otomatis belum tersedia. Hubungi admin melalui WhatsApp untuk menerima instruksi pembayaran."
+            }
+            className={`${field} resize-y`}
+          />
+        </div>
+
+        <div className="mt-5 flex justify-end">
+          <button className="rounded-2xl bg-emerald-600 px-6 py-3 text-sm font-black text-white">
+            Simpan mode manual
+          </button>
+        </div>
+      </form>
+
     </AdminShell>
   );
 }

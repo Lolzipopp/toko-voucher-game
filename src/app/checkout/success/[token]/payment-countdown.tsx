@@ -28,6 +28,13 @@ type CheckoutStatus = {
 type Props = {
   token: string;
   initialStatus: CheckoutStatus;
+  manualSales: {
+    enabled: boolean;
+    whatsappNumber: string | null;
+    storeName: string;
+    instructions: string;
+  };
+  statusUrl: string;
 };
 
 function formatRupiah(value = 0) {
@@ -55,6 +62,8 @@ function formatTimer(totalSeconds: number) {
 export default function PaymentCountdown({
   token,
   initialStatus,
+  manualSales,
+  statusUrl,
 }: Props) {
   const [status, setStatus] = useState(initialStatus);
   const [remaining, setRemaining] = useState(() =>
@@ -172,6 +181,43 @@ export default function PaymentCountdown({
     }
   }, [status]);
 
+
+  const manualWhatsappUrl = useMemo(() => {
+    if (
+      status.state !== "awaiting_payment" ||
+      !manualSales.enabled ||
+      !manualSales.whatsappNumber
+    ) {
+      return null;
+    }
+
+    const number = manualSales.whatsappNumber.replace(/\D/g, "");
+    if (!number) return null;
+
+    const message = [
+      `Halo ${manualSales.storeName} 👋`,
+      "Saya ingin melanjutkan pembayaran untuk pesanan berikut:",
+      "",
+      `🧾 Nomor order: ${status.order_number ?? "-"}`,
+      `💰 Total pembayaran: ${formatRupiah(status.total_amount)}`,
+      "",
+      "Email pembeli sudah saya isi saat checkout.",
+      `🔗 Link status pesanan: ${statusUrl}`,
+      "",
+      "Mohon kirimkan instruksi pembayarannya. Terima kasih.",
+    ].join("\n");
+
+    return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
+  }, [
+    manualSales.enabled,
+    manualSales.storeName,
+    manualSales.whatsappNumber,
+    status.order_number,
+    status.state,
+    status.total_amount,
+    statusUrl,
+  ]);
+
   const toneClasses =
     content.tone === "emerald"
       ? "border-emerald-200 bg-emerald-50 text-emerald-800"
@@ -254,9 +300,29 @@ export default function PaymentCountdown({
       </dl>
 
       {status.state === "awaiting_payment" ? (
-        <div className="mt-5 rounded-2xl border border-blue-200 bg-blue-50 px-4 py-3 text-left text-sm text-blue-800">
-          Payment gateway belum diaktifkan pada mode pengujian. Setelah
-          terhubung, tombol dan QR pembayaran akan muncul di bagian ini.
+        <div className="mt-5 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-4 text-left text-sm text-amber-900">
+          <p className="font-black">
+            Pembayaran otomatis belum tersedia
+          </p>
+          <p className="mt-1 leading-6">
+            {manualSales.instructions}
+          </p>
+
+          {manualWhatsappUrl ? (
+            <a
+              href={manualWhatsappUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-4 flex w-full items-center justify-center rounded-2xl bg-emerald-600 px-5 py-3.5 text-sm font-black text-white transition hover:bg-emerald-700"
+            >
+              Lanjut pembayaran lewat WhatsApp
+            </a>
+          ) : (
+            <p className="mt-3 rounded-xl bg-white/70 px-3 py-2 text-xs font-bold text-red-700">
+              Nomor WhatsApp toko belum diatur. Hubungi toko melalui
+              halaman Kontak.
+            </p>
+          )}
         </div>
       ) : null}
 

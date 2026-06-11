@@ -11,6 +11,8 @@ export type PublicCatalogProduct = {
   promo_ends_at: string | null;
   warranty_days: number;
   is_popular: boolean;
+  allow_negotiation: boolean;
+  negotiation_min_price: number | null;
   game: PublicGame;
   available_stock: number;
   primary_image_path: string | null;

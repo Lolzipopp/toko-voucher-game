@@ -6,6 +6,7 @@ import PageTitle from "@/components/admin/page-title";
 import { createClient } from "@/lib/supabase/server";
 
 import PaidDeliveryPanel from "./paid-delivery-panel";
+import ManualPaymentPanel from "./manual-payment-panel";
 import { INTERNAL_TEST_TOOLS_ENABLED } from "@/lib/config/store";
 import EmailDeliveryPanel from "./email-delivery-panel";
 
@@ -80,6 +81,7 @@ type OrderDetail = {
   credentials_hidden_at: string | null;
   access_token: string;
   internal_notes: string | null;
+  order_source: string;
   created_at: string;
   updated_at: string;
   order_items: OrderItem[] | null;
@@ -161,6 +163,7 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
       credentials_hidden_at,
       access_token,
       internal_notes,
+      order_source,
       created_at,
       updated_at,
       order_items(
@@ -249,6 +252,14 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
           </div>
         ))}
       </section>
+
+
+      <ManualPaymentPanel
+        orderId={order.id}
+        paymentStatus={order.payment_status}
+        deliveryStatus={order.delivery_status}
+        isPublicOrder={order.order_source === "public"}
+      />
 
       <PaidDeliveryPanel
         orderId={order.id}
