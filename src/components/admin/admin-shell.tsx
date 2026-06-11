@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import { logoutAdmin } from "@/app/admin/actions";
 
 type AdminShellProps = {
-  active: "dashboard" | "products" | "inventory" | "orders" | "promos";
+  active: "dashboard" | "products" | "inventory" | "orders" | "promos" | "finance" | "settings";
   admin: {
     full_name: string | null;
     email: string;
@@ -31,6 +31,12 @@ function ReceiptIcon({ className = "" }: IconProps) {
 function TagIcon({ className = "" }: IconProps) {
   return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M20 13 13 20a2 2 0 0 1-2.8 0L4 13.8A2 2 0 0 1 3.6 12V5a2 2 0 0 1 2-2h7a2 2 0 0 1 1.4.6L20 9.6a2 2 0 0 1 0 2.8Z"/><circle cx="8.5" cy="8.5" r="1.2"/></svg>;
 }
+function WalletIcon({ className = "" }: IconProps) {
+  return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M4 6.5A2.5 2.5 0 0 1 6.5 4H18a2 2 0 0 1 2 2v13H6.5A2.5 2.5 0 0 1 4 16.5v-10Z"/><path d="M4 8h16"/><path d="M15 12h6v4h-6a2 2 0 0 1 0-4Z"/></svg>;
+}
+function SettingsIcon({ className = "" }: IconProps) {
+  return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6 1.7 1.7 0 0 0-.4 1.1V21h-4v-.1A1.7 1.7 0 0 0 8.6 19.4a1.7 1.7 0 0 0-1.88.34l-.06.06-2.83-2.83.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-.6-1 1.7 1.7 0 0 0-1.1-.4H3v-4h.1A1.7 1.7 0 0 0 4.6 8.6a1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.83-2.83.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-.6 1.7 1.7 0 0 0 .4-1.1V3h4v.1A1.7 1.7 0 0 0 15.4 4.6a1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06A1.7 1.7 0 0 0 19.4 9c.23.36.54.66.9.9.33.22.72.34 1.1.34h.1v4h-.1c-.38 0-.77.12-1.1.34-.36.24-.67.54-.9.9Z"/></svg>;
+}
 function LogOutIcon({ className = "" }: IconProps) {
   return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M10 17l5-5-5-5M15 12H3"/><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/></svg>;
 }
@@ -41,6 +47,8 @@ const navItems = [
   { key: "inventory" as const, href: "/admin/inventory", label: "Stok", icon: KeyIcon },
   { key: "orders" as const, href: "/admin/orders", label: "Pesanan", icon: ReceiptIcon },
   { key: "promos" as const, href: "/admin/promos", label: "Promo", icon: TagIcon },
+  { key: "finance" as const, href: "/admin/finance", label: "Keuangan", icon: WalletIcon },
+  { key: "settings" as const, href: "/admin/settings", label: "Pengaturan", icon: SettingsIcon },
 ];
 
 export default function AdminShell({ active, admin, children }: AdminShellProps) {
@@ -62,7 +70,7 @@ export default function AdminShell({ active, admin, children }: AdminShellProps)
 
         <nav className="flex-1 space-y-2 px-4 py-6">
           <p className="px-3 pb-2 text-[10px] font-bold uppercase tracking-[0.22em] text-white/35">Workspace</p>
-          {navItems.map((item) => {
+          {navItems.filter((item) => item.key !== "settings").map((item) => {
             const Icon = item.icon;
             const selected = active === item.key;
             return (
@@ -97,14 +105,30 @@ export default function AdminShell({ active, admin, children }: AdminShellProps)
               <span className="grid h-9 w-9 place-items-center rounded-xl bg-[#103d2b] text-base">🎮</span>
               <div><p className="text-xs font-black tracking-[0.16em]">RIKU STORE</p><p className="text-[10px] text-slate-400">Admin</p></div>
             </Link>
-            <form action={logoutAdmin}><button className="grid h-9 w-9 place-items-center rounded-xl border border-slate-200 text-slate-500"><LogOutIcon className="h-4 w-4" /></button></form>
+            <div className="flex items-center gap-2">
+              <Link
+                href="/admin/settings"
+                aria-label="Pengaturan toko"
+                className="grid h-9 w-9 place-items-center rounded-xl border border-slate-200 text-slate-500"
+              >
+                <SettingsIcon className="h-4 w-4" />
+              </Link>
+              <form action={logoutAdmin}>
+                <button
+                  aria-label="Keluar"
+                  className="grid h-9 w-9 place-items-center rounded-xl border border-slate-200 text-slate-500"
+                >
+                  <LogOutIcon className="h-4 w-4" />
+                </button>
+              </form>
+            </div>
           </div>
         </header>
 
         <main className="mx-auto w-full max-w-[1500px] px-4 pb-28 pt-5 sm:px-6 lg:px-10 lg:pb-10 lg:pt-8">{children}</main>
       </div>
 
-      <nav className="fixed inset-x-3 bottom-3 z-50 grid grid-cols-5 rounded-2xl border border-slate-200/80 bg-white/95 p-1.5 shadow-2xl shadow-slate-900/10 backdrop-blur-xl lg:hidden">
+      <nav className="fixed inset-x-3 bottom-3 z-50 grid grid-cols-6 rounded-2xl border border-slate-200/80 bg-white/95 p-1.5 shadow-2xl shadow-slate-900/10 backdrop-blur-xl lg:hidden">
         {navItems.map((item) => {
           const Icon = item.icon;
           const selected = active === item.key;

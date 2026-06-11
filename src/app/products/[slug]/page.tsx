@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import StoreFooter from "@/components/store/store-footer";
 import StoreHeader from "@/components/store/store-header";
 import AddToCartButton from "@/components/store/add-to-cart-button";
 import { formatRupiah, productImageUrl } from "@/lib/public-store/format";
@@ -63,5 +64,6 @@ export default async function ProductDetailPage({ params }: Props) {
           </div>
         </aside>
       </div>
-    </div></main>;
+    </div>      <StoreFooter />
+</main>;
 }

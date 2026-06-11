@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 
+import StoreFooter from "@/components/store/store-footer";
 import StoreHeader from "@/components/store/store-header";
 import { createClient } from "@/lib/supabase/server";
 
@@ -71,6 +72,7 @@ export default async function CheckoutSuccessPage({
           initialStatus={status}
         />
       </div>
-    </main>
+          <StoreFooter />
+</main>
   );
 }

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 
+import StoreFooter from "@/components/store/store-footer";
 import StoreHeader from "@/components/store/store-header";
 import { useCart } from "@/components/store/cart-provider";
 import { formatRupiah, productImageUrl } from "@/lib/public-store/format";
@@ -152,6 +153,7 @@ export default function CartPage() {
           </div>
         )}
       </div>
-    </main>
+          <StoreFooter />
+</main>
   );
 }

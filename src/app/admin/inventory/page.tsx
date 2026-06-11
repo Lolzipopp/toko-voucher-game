@@ -17,9 +17,16 @@ export default async function InventoryPage({ searchParams }: Props) {
   const { data: admin } = await supabase.from("admin_users").select("full_name, email, role, is_active").eq("id", user.id).single();
   if (!admin?.is_active) redirect("/admin/login");
 
+  await supabase.rpc("repair_expired_stock_reservations");
+
   const [{ data: productsData, error: productsError }, { data: inventoryData, error: inventoryError }] = await Promise.all([
     supabase.from("products").select("id, name, product_code, product_type").neq("status", "archived").is("archived_at", null).order("name", { ascending: true }),
-    supabase.from("inventory_accounts").select(`id, product_id, status, purchase_cost, supplier, notes, created_at, archived_at, products(name, product_code)`).order("created_at", { ascending: false }).limit(500),
+    supabase
+      .from("inventory_accounts")
+      .select(`id, product_id, status, purchase_cost, supplier, notes, created_at, archived_at, products(name, product_code)`)
+      .not("status", "in", '("sold","archived")')
+      .order("created_at", { ascending: false })
+      .limit(500),
   ]);
 
   if (productsError) throw new Error(`Gagal mengambil produk: ${productsError.message}`);
@@ -36,7 +43,7 @@ export default async function InventoryPage({ searchParams }: Props) {
 
   return (
     <AdminShell active="inventory" admin={admin}>
-      <PageTitle eyebrow="Inventory Control" title="Manajemen stok" description="Masukkan stok massal, validasi data akun, pantau status, dan kelola stok tanpa mengekspos kredensial ke browser." />
+      <PageTitle eyebrow="Inventory Control" title="Manajemen stok" description="Masukkan stok massal, pantau akun siap jual, dan perbaiki akun bermasalah. Akun terjual otomatis dipindahkan ke Pesanan." />
       <InventoryClient products={products} inventory={inventory} initialStatus={query.status ?? ""} />
     </AdminShell>
   );

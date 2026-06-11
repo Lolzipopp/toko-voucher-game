@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 
 import {
   bulkAddInventory,
+  deleteInventoryStock,
   updateInventoryStatus,
 } from "./actions";
 
@@ -115,14 +116,10 @@ function getStatusClasses(status: string) {
       return "border-green-200 bg-emerald-50 text-emerald-700";
     case "reserved":
       return "border-amber-200 bg-amber-50 text-amber-700";
-    case "sold":
-      return "border-slate-200 bg-slate-100 text-slate-600";
     case "disabled":
       return "border-blue-200 bg-blue-50 text-blue-700";
     case "problem":
       return "border-red-200 bg-red-50 text-red-700";
-    case "archived":
-      return "border-slate-200 bg-slate-50 text-slate-500";
     default:
       return "border-slate-200 bg-slate-50 text-slate-600";
   }
@@ -155,8 +152,9 @@ export default function InventoryClient({
   } | null>(null);
 
   const [modalStatus, setModalStatus] = useState<
-    "available" | "disabled" | "problem" | "archived" | null
+    "available" | "disabled" | "problem" | null
   >(null);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [reason, setReason] = useState("");
 
   const previewRows = useMemo(
@@ -189,10 +187,8 @@ export default function InventoryClient({
     const result: Record<string, number> = {
       available: 0,
       reserved: 0,
-      sold: 0,
       disabled: 0,
       problem: 0,
-      archived: 0,
     };
 
     inventory.forEach((item) => {
@@ -265,6 +261,28 @@ export default function InventoryClient({
       if (result.ok) {
         setSelectedIds([]);
         setModalStatus(null);
+        setReason("");
+        router.refresh();
+      }
+    });
+  }
+
+
+  function submitDelete() {
+    startTransition(async () => {
+      const result = await deleteInventoryStock({
+        inventoryIds: selectedIds,
+        reason,
+      });
+
+      setMessage({
+        type: result.ok ? "success" : "error",
+        text: result.message,
+      });
+
+      if (result.ok) {
+        setSelectedIds([]);
+        setDeleteModalOpen(false);
         setReason("");
         router.refresh();
       }
@@ -450,10 +468,8 @@ export default function InventoryClient({
             <option value="">Semua status</option>
             <option value="available">Available</option>
             <option value="reserved">Reserved</option>
-            <option value="sold">Sold</option>
             <option value="disabled">Disabled</option>
             <option value="problem">Problem</option>
-            <option value="archived">Archived</option>
           </select>
 
           <input
@@ -477,7 +493,7 @@ export default function InventoryClient({
           </button>
         </div>
 
-        <div className="mt-4 grid grid-cols-2 gap-2 md:grid-cols-6">
+        <div className="mt-4 grid grid-cols-2 gap-2 md:grid-cols-4">
           {Object.entries(counts).map(([status, count]) => (
             <div
               key={status}
@@ -499,7 +515,7 @@ export default function InventoryClient({
               {selectedIds.length} stok dipilih
             </p>
             <div className="flex flex-wrap gap-2">
-              {(["available", "disabled", "problem", "archived"] as const).map(
+              {(["available", "disabled", "problem"] as const).map(
                 (status) => (
                   <button
                     key={status}
@@ -514,6 +530,16 @@ export default function InventoryClient({
                   </button>
                 ),
               )}
+              <button
+                type="button"
+                onClick={() => {
+                  setDeleteModalOpen(true);
+                  setReason("");
+                }}
+                className="rounded-xl border border-red-200 px-3 py-2 text-xs font-semibold text-red-600 hover:bg-red-50"
+              >
+                Hapus
+              </button>
               <button
                 type="button"
                 onClick={() => setSelectedIds([])}
@@ -534,9 +560,7 @@ export default function InventoryClient({
         ) : (
           filteredInventory.map((item) => {
             const product = item.products;
-            const selectable = !["reserved", "sold", "archived"].includes(
-              item.status,
-            );
+            const selectable = item.status !== "reserved";
 
             return (
               <article
@@ -576,6 +600,51 @@ export default function InventoryClient({
           })
         )}
       </section>
+
+
+      {deleteModalOpen ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 px-4 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl">
+            <h3 className="text-lg font-bold text-slate-900">
+              Hapus stok permanen?
+            </h3>
+            <p className="mt-1 text-sm leading-6 text-slate-500">
+              {selectedIds.length} stok akan dihapus. Stok yang sedang ditahan
+              atau sudah terhubung ke pesanan otomatis ditolak.
+            </p>
+
+            <textarea
+              rows={3}
+              value={reason}
+              onChange={(event) => setReason(event.target.value)}
+              placeholder="Alasan penghapusan wajib diisi"
+              className="mt-4 w-full resize-none rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-3 text-sm outline-none focus:border-red-400 focus:bg-white focus:ring-4 focus:ring-red-100"
+            />
+
+            <div className="mt-5 flex justify-end gap-2">
+              <button
+                type="button"
+                disabled={isPending}
+                onClick={() => {
+                  setDeleteModalOpen(false);
+                  setReason("");
+                }}
+                className="rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-600"
+              >
+                Batal
+              </button>
+              <button
+                type="button"
+                disabled={isPending}
+                onClick={submitDelete}
+                className="rounded-xl bg-red-600 px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
+              >
+                {isPending ? "Menghapus..." : "Hapus permanen"}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
 
       {modalStatus ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 px-4 backdrop-blur-sm">

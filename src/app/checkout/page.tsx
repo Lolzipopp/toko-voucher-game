@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
+import StoreFooter from "@/components/store/store-footer";
 import StoreHeader from "@/components/store/store-header";
 import { useCart } from "@/components/store/cart-provider";
 import { formatRupiah } from "@/lib/public-store/format";
@@ -121,7 +122,7 @@ export default function CheckoutPage() {
 
             <label className="mt-5 flex cursor-pointer items-start gap-3 rounded-2xl bg-slate-50 p-4">
               <input type="checkbox" checked={agreed} onChange={(event) => setAgreed(event.target.checked)} className="mt-1 h-4 w-4 accent-emerald-600" />
-              <span className="text-xs leading-5 text-slate-600">Saya sudah membaca spesifikasi produk. Setelah pesanan dibuat, saya harus menyelesaikan pembayaran dalam 20 menit. Jika waktu habis, pesanan otomatis dibatalkan.</span>
+              <span className="text-xs leading-5 text-slate-600">Saya sudah membaca spesifikasi produk. Setelah pesanan dibuat, saya harus menyelesaikan pembayaran sebelum waktu habis. Jika waktu habis, pesanan otomatis dibatalkan.</span>
             </label>
 
             <div className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-xs leading-5 text-amber-800">Payment gateway belum dihubungkan. Harga, promo, dan stok tetap diverifikasi ulang oleh database saat pesanan dibuat.</div>
@@ -157,6 +158,7 @@ export default function CheckoutPage() {
           </aside>
         </div>
       </div>
-    </main>
+          <StoreFooter />
+</main>
   );
 }

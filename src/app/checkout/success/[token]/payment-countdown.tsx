@@ -164,7 +164,7 @@ export default function PaymentCountdown({
         return {
           icon: "⏱",
           eyebrow: "Menunggu pembayaran",
-          title: "Harap selesaikan pembayaran dalam 20 menit",
+          title: "Harap selesaikan pembayaran sebelum waktu habis",
           description:
             "Kalau waktu habis, pesanan otomatis dibatalkan.",
           tone: "amber",

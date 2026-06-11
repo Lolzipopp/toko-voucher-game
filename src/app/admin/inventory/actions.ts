@@ -158,7 +158,7 @@ export async function bulkAddInventory(input: {
 
 export async function updateInventoryStatus(input: {
   inventoryIds: string[];
-  newStatus: "available" | "disabled" | "problem" | "archived";
+  newStatus: "available" | "disabled" | "problem";
   reason: string;
 }): Promise<ActionResult> {
   if (input.inventoryIds.length === 0) {
@@ -166,7 +166,7 @@ export async function updateInventoryStatus(input: {
   }
 
   if (
-    ["disabled", "problem", "archived"].includes(input.newStatus) &&
+    ["disabled", "problem"].includes(input.newStatus) &&
     !input.reason.trim()
   ) {
     return { ok: false, message: "Alasan wajib diisi." };
@@ -207,5 +207,56 @@ export async function updateInventoryStatus(input: {
       rejected > 0
         ? `${updated} stok berhasil diubah, ${rejected} ditolak.`
         : `${updated} stok berhasil diubah.`,
+  };
+}
+
+
+export async function deleteInventoryStock(input: {
+  inventoryIds: string[];
+  reason: string;
+}): Promise<ActionResult> {
+  if (input.inventoryIds.length === 0) {
+    return { ok: false, message: "Belum ada stok yang dipilih." };
+  }
+
+  if (!input.reason.trim()) {
+    return { ok: false, message: "Alasan penghapusan wajib diisi." };
+  }
+
+  const { supabase, error: authError } = await requireActiveAdmin();
+
+  if (!supabase) {
+    return { ok: false, message: authError ?? "Tidak memiliki akses." };
+  }
+
+  const { data, error } = await supabase.rpc(
+    "admin_delete_inventory_stock",
+    {
+      p_inventory_ids: input.inventoryIds,
+      p_reason: input.reason.trim(),
+    },
+  );
+
+  if (error) {
+    return { ok: false, message: error.message };
+  }
+
+  const result = data as {
+    deleted_count?: number;
+    rejected_count?: number;
+  } | null;
+
+  const deleted = result?.deleted_count ?? 0;
+  const rejected = result?.rejected_count ?? 0;
+
+  revalidatePath("/admin");
+  revalidatePath("/admin/inventory");
+
+  return {
+    ok: true,
+    message:
+      rejected > 0
+        ? `${deleted} stok dihapus, ${rejected} ditolak karena masih terhubung ke pesanan atau sedang ditahan.`
+        : `${deleted} stok berhasil dihapus.`,
   };
 }

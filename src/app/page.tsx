@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import ProductCard from "@/components/store/product-card";
+import StoreFooter from "@/components/store/store-footer";
 import StoreHeader from "@/components/store/store-header";
 import { createClient } from "@/lib/supabase/server";
 import type { PublicCatalogProduct } from "@/lib/public-store/types";
@@ -65,6 +66,7 @@ export default async function Home({ searchParams }: HomeProps) {
         {products.length ? <div className="mt-7 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">{products.map((product) => <ProductCard key={product.id} product={product} />)}</div> : <div className="mt-8 rounded-3xl border border-dashed border-slate-300 bg-white p-12 text-center"><p className="text-lg font-black">Produk tidak ditemukan</p><p className="mt-2 text-sm text-slate-500">Coba kata kunci lain atau lihat semua game.</p><Link href="/#produk" className="mt-5 inline-flex rounded-xl bg-[#103d2b] px-4 py-2.5 text-sm font-black text-white">Reset pencarian</Link></div>}
       </section>
       <footer className="border-t border-emerald-950/10 bg-white"><div className="mx-auto flex max-w-7xl flex-col justify-between gap-3 px-4 py-8 text-sm text-slate-500 sm:flex-row sm:px-6"><p className="font-black text-slate-900">RIKU STORE</p><p>© 2026 • Akun Roblox instan dan bergaransi.</p></div></footer>
-    </main>
+          <StoreFooter />
+</main>
   );
 }

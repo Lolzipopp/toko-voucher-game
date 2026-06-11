@@ -140,7 +140,8 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
 
   if (!admin?.is_active) redirect("/admin/login");
 
-  const { data, error } = await supabase
+  const [{ data, error }, { data: publicSettings }] = await Promise.all([
+    supabase
     .from("orders")
     .select(`
       id,
@@ -202,13 +203,20 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
       )
     `)
     .eq("id", id)
-    .single();
+    .single(),
+    supabase.rpc("get_public_store_settings"),
+  ]);
 
   if (error || !data) notFound();
 
   const order = data as OrderDetail;
   const itemCount = (order.order_items ?? []).reduce((sum, item) => sum + item.quantity, 0);
   const activeReservations = (order.stock_reservations ?? []).filter((row) => !row.released_at);
+  const settings = (publicSettings ?? {}) as { whatsapp_number?: string | null; store_name?: string | null };
+  const whatsappMessage = encodeURIComponent(
+    `Halo, kami dari ${settings.store_name || "RIKU STORE"}. Kami ingin menghubungi kamu mengenai pesanan ${order.order_number}. Status pembayaran: ${order.payment_status}. Status pesanan: ${order.status}.`,
+  );
+  const whatsappUrl = `https://wa.me/?text=${whatsappMessage}`;
   const lastSentEmail = (order.order_email_deliveries ?? []).filter((row) => row.status === "sent").sort((a, b) => new Date(b.sent_at ?? b.created_at).getTime() - new Date(a.sent_at ?? a.created_at).getTime())[0] ?? null;
 
   return (
@@ -259,6 +267,17 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
         enabled={order.payment_status === "paid" && order.delivery_status === "delivered"}
         lastSentAt={lastSentEmail?.sent_at ?? null}
       />
+
+      <section className="mt-5 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+        <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+          <div>
+            <p className="text-[10px] font-black uppercase tracking-[0.18em] text-emerald-700">Hubungi Pembeli</p>
+            <h2 className="mt-2 text-lg font-black text-slate-950">Kirim pesan WhatsApp</h2>
+            <p className="mt-1 text-sm text-slate-500">Template otomatis berisi nomor dan status pesanan. Setelah WhatsApp terbuka, pilih kontak pembeli.</p>
+          </div>
+          <a href={whatsappUrl} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center rounded-2xl bg-[#25D366] px-5 py-3 text-sm font-black text-white shadow-lg shadow-green-600/20">Pilih kontak WhatsApp ↗</a>
+        </div>
+      </section>
 
       {order.payment_status === "paid" &&
       order.delivery_status === "delivered" ? (

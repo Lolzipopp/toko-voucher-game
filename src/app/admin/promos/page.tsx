@@ -55,9 +55,91 @@ export default async function PromosPage({ searchParams }: Props) {
 
   const field = "w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-100";
 
+  const now = Date.now();
+  const manageablePromos = ((promos ?? []) as Promo[]).filter(
+    (promo) => !promo.valid_until || new Date(promo.valid_until).getTime() > now,
+  );
+  const expiredPromos = ((promos ?? []) as Promo[]).filter(
+    (promo) => promo.valid_until && new Date(promo.valid_until).getTime() <= now,
+  );
+
+  function PromoCard({
+    promo,
+    expired = false,
+  }: {
+    promo: Promo;
+    expired?: boolean;
+  }) {
+    return (
+      <article className={`rounded-3xl border bg-white p-5 shadow-sm ${
+        expired ? "border-slate-200 opacity-75" : "border-slate-200"
+      }`}>
+        <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
+          <div>
+            <div className="flex flex-wrap items-center gap-2">
+              <h3 className="text-lg font-black">{promo.code}</h3>
+              <span className={`rounded-full px-2.5 py-1 text-[10px] font-black ${
+                expired
+                  ? "bg-slate-200 text-slate-600"
+                  : promo.is_active
+                    ? "bg-emerald-100 text-emerald-700"
+                    : "bg-amber-100 text-amber-700"
+              }`}>
+                {expired ? "Kedaluwarsa" : promo.is_active ? "Aktif" : "Nonaktif"}
+              </span>
+            </div>
+
+            <p className="mt-1 text-sm text-slate-500">
+              {promo.description || "Tanpa deskripsi"}
+            </p>
+
+            <div className="mt-3 flex flex-wrap gap-2 text-[11px] font-semibold text-slate-500">
+              <span className="rounded-xl bg-slate-100 px-3 py-1.5">
+                {promo.discount_type === "percentage"
+                  ? `${promo.discount_value}%`
+                  : rupiah(promo.discount_value)}
+              </span>
+              <span className="rounded-xl bg-slate-100 px-3 py-1.5">
+                Min. {rupiah(promo.min_order_amount)}
+              </span>
+              <span className="rounded-xl bg-slate-100 px-3 py-1.5">
+                Dipakai {promo.usage_count}/{promo.usage_limit ?? "∞"}
+              </span>
+              <span className="rounded-xl bg-slate-100 px-3 py-1.5">
+                Per email {promo.per_customer_limit ?? "∞"}
+              </span>
+              {promo.valid_until ? (
+                <span className="rounded-xl bg-slate-100 px-3 py-1.5">
+                  Berakhir {new Intl.DateTimeFormat("id-ID", {
+                    dateStyle: "medium",
+                    timeStyle: "short",
+                  }).format(new Date(promo.valid_until))}
+                </span>
+              ) : null}
+            </div>
+          </div>
+
+          {!expired ? (
+            <form action={togglePromo}>
+              <input type="hidden" name="promo_id" value={promo.id} />
+              <input type="hidden" name="active" value={String(promo.is_active)} />
+              <button className={`rounded-2xl border px-4 py-2.5 text-sm font-black ${
+                promo.is_active
+                  ? "border-red-200 text-red-600 hover:bg-red-50"
+                  : "border-emerald-200 text-emerald-700 hover:bg-emerald-50"
+              }`}>
+                {promo.is_active ? "Nonaktifkan" : "Aktifkan"}
+              </button>
+            </form>
+          ) : null}
+        </div>
+      </article>
+    );
+  }
+
   return (
     <AdminShell active="promos" admin={admin}>
-      <PageTitle eyebrow="Growth Tools" title="Promo" description="Buat dan kelola kode diskon tanpa membuka SQL Editor." />
+      <PageTitle eyebrow="Promo" title="Promo" description="Kelola promo yang masih berlaku dan lihat riwayat promo yang sudah kedaluwarsa." />
 
       {query.success ? <Notice type="success">{query.success}</Notice> : null}
       {query.error ? <Notice type="error">{query.error}</Notice> : null}
@@ -81,47 +163,56 @@ export default async function PromosPage({ searchParams }: Props) {
         </form>
       </section>
 
-      <section className="mt-5 space-y-3">
-        {(promos as Promo[] ?? []).map((promo) => {
-          const expired = promo.valid_until ? new Date(promo.valid_until) <= new Date() : false;
-          return (
-            <article key={promo.id} className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-              <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
-                <div>
-                  <div className="flex flex-wrap items-center gap-2">
-                    <h3 className="text-lg font-black">{promo.code}</h3>
-                    <span className={`rounded-full px-2.5 py-1 text-[10px] font-black ${promo.is_active && !expired ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-500"}`}>
-                      {expired ? "expired" : promo.is_active ? "active" : "inactive"}
-                    </span>
-                  </div>
-                  <p className="mt-1 text-sm text-slate-500">{promo.description || "Tanpa deskripsi"}</p>
-                  <div className="mt-3 flex flex-wrap gap-2 text-[11px] font-semibold text-slate-500">
-                    <span className="rounded-xl bg-slate-100 px-3 py-1.5">
-                      {promo.discount_type === "percentage" ? `${promo.discount_value}%` : rupiah(promo.discount_value)}
-                    </span>
-                    <span className="rounded-xl bg-slate-100 px-3 py-1.5">Min. {rupiah(promo.min_order_amount)}</span>
-                    <span className="rounded-xl bg-slate-100 px-3 py-1.5">Dipakai {promo.usage_count}/{promo.usage_limit ?? "∞"}</span>
-                    <span className="rounded-xl bg-slate-100 px-3 py-1.5">Per email {promo.per_customer_limit ?? "∞"}</span>
-                  </div>
-                </div>
+      <section className="mt-5">
+        <div className="mb-3">
+          <p className="text-xs font-black uppercase tracking-[0.18em] text-emerald-700">
+            Bisa dikelola
+          </p>
+          <h2 className="mt-1 text-xl font-black text-slate-950">
+            Promo aktif dan nonaktif
+          </h2>
+          <p className="mt-1 text-sm text-slate-500">
+            Promo di bagian ini masih bisa diaktifkan atau dinonaktifkan.
+          </p>
+        </div>
 
-                <form action={togglePromo}>
-                  <input type="hidden" name="promo_id" value={promo.id} />
-                  <input type="hidden" name="active" value={String(promo.is_active)} />
-                  <button className={`rounded-2xl border px-4 py-2.5 text-sm font-black ${promo.is_active ? "border-red-200 text-red-600 hover:bg-red-50" : "border-emerald-200 text-emerald-700 hover:bg-emerald-50"}`}>
-                    {promo.is_active ? "Nonaktifkan" : "Aktifkan"}
-                  </button>
-                </form>
-              </div>
-            </article>
-          );
-        })}
+        <div className="space-y-3">
+          {manageablePromos.map((promo) => (
+            <PromoCard key={promo.id} promo={promo} />
+          ))}
 
-        {(promos ?? []).length === 0 ? (
-          <div className="rounded-3xl border border-dashed border-slate-300 bg-white p-10 text-center text-sm text-slate-400">
-            Belum ada promo.
-          </div>
-        ) : null}
+          {manageablePromos.length === 0 ? (
+            <div className="rounded-3xl border border-dashed border-slate-300 bg-white p-10 text-center text-sm text-slate-400">
+              Belum ada promo yang masih berlaku.
+            </div>
+          ) : null}
+        </div>
+      </section>
+
+      <section className="mt-8">
+        <div className="mb-3">
+          <p className="text-xs font-black uppercase tracking-[0.18em] text-slate-500">
+            Riwayat
+          </p>
+          <h2 className="mt-1 text-xl font-black text-slate-950">
+            Promo kedaluwarsa
+          </h2>
+          <p className="mt-1 text-sm text-slate-500">
+            Promo ini sudah selesai dan tidak bisa diaktifkan kembali.
+          </p>
+        </div>
+
+        <div className="space-y-3">
+          {expiredPromos.map((promo) => (
+            <PromoCard key={promo.id} promo={promo} expired />
+          ))}
+
+          {expiredPromos.length === 0 ? (
+            <div className="rounded-3xl border border-dashed border-slate-300 bg-white p-10 text-center text-sm text-slate-400">
+              Belum ada promo kedaluwarsa.
+            </div>
+          ) : null}
+        </div>
       </section>
     </AdminShell>
   );

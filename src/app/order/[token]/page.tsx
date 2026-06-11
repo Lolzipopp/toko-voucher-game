@@ -1,3 +1,4 @@
+import StoreFooter from "@/components/store/store-footer";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -302,6 +303,7 @@ export default async function CustomerOrderPage({
           </Link>
         </footer>
       </div>
-    </main>
+          <StoreFooter />
+</main>
   );
 }
