@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import HomeBannerCarousel, { type HomeBanner } from "@/components/store/home-banner-carousel";
 import ProductCard from "@/components/store/product-card";
+import ProductSearchForm from "@/components/store/product-search-form";
 import SectionLink from "@/components/store/section-link";
 import StoreFooter from "@/components/store/store-footer";
 import StoreHeader from "@/components/store/store-header";
@@ -26,6 +27,34 @@ type HomeProps = {
   }>;
 };
 
+function normalizeSearchText(value: string) {
+  return value
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+}
+
+function productMatchesSearch(product: PublicCatalogProduct, rawQuery?: string) {
+  const normalizedQuery = normalizeSearchText(rawQuery ?? "");
+  if (!normalizedQuery) return true;
+
+  const searchableText = normalizeSearchText(
+    [
+      product.name,
+      product.description ?? "",
+      product.game.name,
+      product.game.slug,
+      ...product.attributes.flatMap((attribute) => [attribute.key, attribute.value]),
+    ].join(" "),
+  );
+
+  return normalizedQuery
+    .split(/\s+/)
+    .filter(Boolean)
+    .every((term) => searchableText.includes(term));
+}
 
 
 export default async function Home({ searchParams }: HomeProps) {
@@ -75,11 +104,14 @@ export default async function Home({ searchParams }: HomeProps) {
   }
 
   const products = (data ?? []) as PublicCatalogProduct[];
+  const displayedProducts = products.filter((product) =>
+    productMatchesSearch(product, query.q),
+  );
   const promoProducts = products.filter((product) => product.price_promo);
-  const availableProducts = products.filter(
+  const availableProducts = displayedProducts.filter(
     (product) => product.available_stock > 0,
   );
-  const totalAvailableStock = products.reduce(
+  const totalAvailableStock = displayedProducts.reduce(
     (total, product) => total + Number(product.available_stock),
     0,
   );
@@ -114,7 +146,7 @@ export default async function Home({ searchParams }: HomeProps) {
 
       <section
         id="kebutuhan"
-        className="scroll-mt-20 mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:py-16"
+        className="scroll-mt-20 mx-auto max-w-7xl px-3 py-8 sm:px-6 sm:py-12 lg:py-16"
       >
         <div className="text-center">
           <p className="text-xs font-black uppercase tracking-[0.22em] text-emerald-300">
@@ -125,10 +157,10 @@ export default async function Home({ searchParams }: HomeProps) {
           </h2>
         </div>
 
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-6 grid grid-cols-2 gap-3 sm:mt-8 sm:gap-4 lg:grid-cols-4">
           <SectionLink
             href="/#produk"
-            className="group rounded-3xl border border-emerald-400/25 bg-[radial-gradient(circle_at_80%_0%,rgba(52,211,153,.18),transparent_45%),#0a1a2e] p-6 transition hover:-translate-y-1 hover:border-emerald-300/60"
+            className="group rounded-3xl border border-emerald-400/25 bg-[radial-gradient(circle_at_80%_0%,rgba(52,211,153,.18),transparent_45%),#0a1a2e] p-4 transition hover:-translate-y-1 sm:p-6 hover:border-emerald-300/60"
           >
             <span className="text-4xl">🎮</span>
             <h3 className="mt-7 text-xl font-black italic">BELI AKUN</h3>
@@ -142,7 +174,7 @@ export default async function Home({ searchParams }: HomeProps) {
 
           <SectionLink
             href="/#exclusive-offer"
-            className="group rounded-3xl border border-amber-400/20 bg-[radial-gradient(circle_at_80%_0%,rgba(251,191,36,.16),transparent_45%),#0a1a2e] p-6 transition hover:-translate-y-1 hover:border-amber-300/55"
+            className="group rounded-3xl border border-amber-400/20 bg-[radial-gradient(circle_at_80%_0%,rgba(251,191,36,.16),transparent_45%),#0a1a2e] p-4 transition hover:-translate-y-1 sm:p-6 hover:border-amber-300/55"
           >
             <span className="text-4xl">🎁</span>
             <h3 className="mt-7 text-xl font-black italic">EXCLUSIVE OFFER</h3>
@@ -156,7 +188,7 @@ export default async function Home({ searchParams }: HomeProps) {
 
           <Link
             href="/akun"
-            className="group rounded-3xl border border-sky-400/20 bg-[radial-gradient(circle_at_80%_0%,rgba(56,189,248,.16),transparent_45%),#0a1a2e] p-6 transition hover:-translate-y-1 hover:border-sky-300/55"
+            className="group rounded-3xl border border-sky-400/20 bg-[radial-gradient(circle_at_80%_0%,rgba(56,189,248,.16),transparent_45%),#0a1a2e] p-4 transition hover:-translate-y-1 sm:p-6 hover:border-sky-300/55"
           >
             <span className="text-4xl">🔐</span>
             <h3 className="mt-7 text-xl font-black italic">CEK PESANAN</h3>
@@ -173,7 +205,7 @@ export default async function Home({ searchParams }: HomeProps) {
               href={whatsapp}
               target="_blank"
               rel="noreferrer"
-              className="group rounded-3xl border border-violet-400/20 bg-[radial-gradient(circle_at_80%_0%,rgba(167,139,250,.16),transparent_45%),#0a1a2e] p-6 transition hover:-translate-y-1 hover:border-violet-300/55"
+              className="group rounded-3xl border border-violet-400/20 bg-[radial-gradient(circle_at_80%_0%,rgba(167,139,250,.16),transparent_45%),#0a1a2e] p-4 transition hover:-translate-y-1 sm:p-6 hover:border-violet-300/55"
             >
               <span className="text-4xl">💬</span>
               <h3 className="mt-7 text-xl font-black italic">JUAL / CARI AKUN</h3>
@@ -189,7 +221,7 @@ export default async function Home({ searchParams }: HomeProps) {
               <span className="text-4xl">💬</span>
               <h3 className="mt-7 text-xl font-black italic">JUAL / CARI AKUN</h3>
               <p className="mt-2 text-sm leading-6 text-slate-500">
-                Kontak WhatsApp admin belum diatur.
+                Layanan WhatsApp sedang tidak tersedia.
               </p>
             </div>
           )}
@@ -226,9 +258,9 @@ export default async function Home({ searchParams }: HomeProps) {
             </div>
           ) : (
             <div className="mt-7 rounded-3xl border border-dashed border-amber-300/20 bg-amber-300/5 p-8 text-center">
-              <p className="font-black text-amber-100">Belum ada exclusive offer aktif</p>
+              <p className="font-black text-amber-100">Belum ada penawaran khusus</p>
               <p className="mt-2 text-sm text-slate-400">
-                Bagian ini otomatis terisi saat admin mengaktifkan harga promo pada produk.
+                Promo terbaru akan tampil di sini. Cek kembali secara berkala.
               </p>
             </div>
           )}
@@ -237,7 +269,7 @@ export default async function Home({ searchParams }: HomeProps) {
 
       <section
         id="produk"
-        className="scroll-mt-20 mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:py-20"
+        className="scroll-mt-20 mx-auto max-w-7xl px-3 py-10 sm:px-6 sm:py-14 lg:py-20"
       >
         <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
           <div>
@@ -248,29 +280,19 @@ export default async function Home({ searchParams }: HomeProps) {
               AKUN YANG TERSEDIA
             </h2>
             <p className="mt-3 text-sm text-slate-400">
-              {availableProducts.length} produk aktif dengan total {" "}
-              {totalAvailableStock} akun tersedia.
+              {query.q ? (
+                <>
+                  {displayedProducts.length} hasil untuk “{query.q}” · {totalAvailableStock} akun tersedia
+                </>
+              ) : (
+                <>
+                  {availableProducts.length} produk aktif dengan total {totalAvailableStock} akun tersedia.
+                </>
+              )}
             </p>
           </div>
 
-          <form
-            className="flex w-full max-w-xl gap-2 rounded-2xl border border-white/10 bg-white/5 p-2"
-            action="/"
-            method="get"
-          >
-            {query.game ? (
-              <input type="hidden" name="game" value={query.game} />
-            ) : null}
-            <input
-              name="q"
-              defaultValue={query.q ?? ""}
-              placeholder="Cari level, fruit, sword, bonus..."
-              className="min-w-0 flex-1 bg-transparent px-3 py-2 text-sm text-white outline-none placeholder:text-slate-500"
-            />
-            <button className="rounded-xl bg-emerald-400 px-5 py-2.5 text-sm font-black text-emerald-950">
-              Cari
-            </button>
-          </form>
+          <ProductSearchForm initialQuery={query.q} game={query.game} />
         </div>
 
         <div className="mt-7 flex gap-2 overflow-x-auto pb-2">
@@ -301,9 +323,9 @@ export default async function Home({ searchParams }: HomeProps) {
           ))}
         </div>
 
-        {products.length ? (
-          <div className="mt-8 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-            {products.map((product) => (
+        {displayedProducts.length ? (
+          <div className="mt-6 grid gap-4 sm:mt-8 sm:grid-cols-2 sm:gap-5 xl:grid-cols-3">
+            {displayedProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>
@@ -340,7 +362,7 @@ export default async function Home({ searchParams }: HomeProps) {
                 PENGALAMAN PEMBELI ASLI
               </h2>
               <p className="mt-3 text-sm text-slate-400">
-                Hanya testimoni yang telah diperiksa admin yang ditampilkan.
+                Semua testimoni yang tampil telah melalui verifikasi.
               </p>
             </div>
 
@@ -427,7 +449,7 @@ export default async function Home({ searchParams }: HomeProps) {
 
               {(faqItems ?? []).length === 0 ? (
                 <div className="rounded-2xl border border-dashed border-white/15 bg-white/[.03] p-6 text-sm text-slate-400">
-                  FAQ sedang disiapkan.
+                  Belum ada pertanyaan yang ditampilkan saat ini.
                 </div>
               ) : null}
             </div>
@@ -445,8 +467,8 @@ export default async function Home({ searchParams }: HomeProps) {
               HARGA PRODUK, DISKON, DAN BIAYA DITAMPILKAN DI CHECKOUT
             </h2>
             <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-400">
-              Payment gateway sedang dipersiapkan. Metode pembayaran
-              baru akan ditampilkan setelah benar-benar aktif dan telah diuji.
+              Metode pembayaran yang tersedia akan ditampilkan dengan jelas saat checkout.
+              Pembayaran otomatis akan hadir setelah proses pengujian selesai.
             </p>
           </div>
           <span className="rounded-2xl border border-amber-300/25 bg-amber-300/10 px-5 py-3 text-center text-xs font-black uppercase tracking-wider text-amber-200">

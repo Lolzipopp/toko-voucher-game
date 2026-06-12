@@ -8,7 +8,7 @@ import Notice from "@/components/admin/notice";
 import PageTitle from "@/components/admin/page-title";
 import { createClient } from "@/lib/supabase/server";
 
-import { importTelegramBatch } from "./actions";
+import { importTelegramBatch, repairTelegramProductImages } from "./actions";
 
 type PageProps = {
   searchParams: Promise<{ success?: string; error?: string }>;
@@ -75,8 +75,8 @@ export default async function TelegramImportPage({ searchParams }: PageProps) {
     <AdminShell active="products" admin={admin}>
       <PageTitle
         eyebrow="Local Import Tool"
-        title="Import Telegram batch 01"
-        description="Tool lokal satu kali untuk membuat produk unik, stok terenkripsi, dan gambar dari export Telegram. Folder private-import diabaikan Git."
+        title="Sinkronisasi export Telegram lengkap"
+        description="Satu tombol untuk memasang gambar pada produk lama dan membuat produk Telegram yang belum ada. Produk dicocokkan berdasarkan product_code agar tidak duplikat."
       />
 
       {query.success ? <Notice type="success">{query.success}</Notice> : null}
@@ -107,6 +107,13 @@ export default async function TelegramImportPage({ searchParams }: PageProps) {
         </div>
       </section>
 
+      <section className="mt-6 rounded-3xl border border-rose-200 bg-rose-50 p-6 text-sm text-rose-950">
+        <h2 className="font-black">Wajib jalankan migration 32 terlebih dahulu</h2>
+        <p className="mt-2 leading-6">
+          Jalankan <code>20260612000032_telegram_launch_finalize_v1.sql</code> di Supabase SQL Editor. Migration ini memperbaiki jalur penyimpanan username/password terenkripsi.
+        </p>
+      </section>
+
       <section className="mt-6 rounded-3xl border border-amber-200 bg-amber-50 p-6 text-sm text-amber-950">
         <h2 className="font-black">Sebelum klik import</h2>
         <p className="mt-2 leading-6">
@@ -114,15 +121,35 @@ export default async function TelegramImportPage({ searchParams }: PageProps) {
         </p>
       </section>
 
-      <form action={importTelegramBatch} className="mt-6">
-        <button
-          type="submit"
-          disabled={!enabled || !manifest}
-          className="rounded-2xl bg-[#103d2b] px-6 py-3 font-black text-white shadow-lg shadow-emerald-950/15 transition hover:bg-[#0b2f21] disabled:cursor-not-allowed disabled:opacity-40"
-        >
-          Import batch Telegram sekarang
-        </button>
-      </form>
+      <section className="mt-6 grid gap-4 lg:grid-cols-2">
+        <form action={repairTelegramProductImages} className="rounded-3xl border border-emerald-200 bg-emerald-50 p-5">
+          <h2 className="font-black text-emerald-950">Perbaiki gambar produk yang sudah diimpor</h2>
+          <p className="mt-2 text-sm leading-6 text-emerald-900">
+            Gunakan tombol ini jika produk dan stok sudah masuk tetapi gambarnya belum tampil. Tool hanya mencari produk berdasarkan product_code lalu menambahkan gambar yang belum ada. Produk dan stok tidak dibuat ulang.
+          </p>
+          <button
+            type="submit"
+            disabled={!enabled || !manifest}
+            className="mt-4 rounded-2xl bg-emerald-700 px-6 py-3 font-black text-white shadow-lg transition hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            Perbaiki semua gambar sekarang
+          </button>
+        </form>
+
+        <form action={importTelegramBatch} className="rounded-3xl border border-slate-200 bg-white p-5">
+          <h2 className="font-black text-slate-950">Siapkan toko sampai siap jual</h2>
+          <p className="mt-2 text-sm leading-6 text-slate-600">
+            Satu tombol ini membuat/memperbarui produk Telegram, memasang gambar, mengisi username/password terenkripsi, menghapus produk dan stok TEST, lalu hanya mengaktifkan produk yang punya harga, gambar, dan stok.
+          </p>
+          <button
+            type="submit"
+            disabled={!enabled || !manifest}
+            className="mt-4 rounded-2xl bg-[#103d2b] px-6 py-3 font-black text-white shadow-lg shadow-emerald-950/15 transition hover:bg-[#0b2f21] disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            Siapkan toko sekarang
+          </button>
+        </form>
+      </section>
 
       <section className="mt-8 space-y-3">
         {manifest?.entries.map((entry) => (

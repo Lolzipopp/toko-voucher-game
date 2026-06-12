@@ -86,8 +86,7 @@ function validateProductForm(formData: FormData): ProductFormValues {
   const warrantyDays = Number(formData.get("warranty_days") ?? 3);
   const isPopular = formData.get("is_popular") === "on";
   const sortOrder = Number(formData.get("sort_order") ?? 100);
-  const allowNegotiation =
-    formData.get("allow_negotiation") === "on";
+  const allowNegotiation = productType === "unique";
   const negotiationMinPriceRaw = String(
     formData.get("negotiation_min_price") ?? "",
   ).trim();

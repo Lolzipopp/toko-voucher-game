@@ -36,47 +36,24 @@ export default function ProductForm({ games, action, submitLabel, defaults = {} 
 
 
       <div className="rounded-3xl border border-emerald-200 bg-emerald-50 p-5">
-        <label className="flex items-center gap-3 text-sm font-black text-emerald-950">
-          <input
-            name="allow_negotiation"
-            type="checkbox"
-            defaultChecked={defaults.allowNegotiation}
-            className="h-5 w-5 accent-emerald-600"
-          />
-          Izinkan pembeli mengajukan nego
-        </label>
-
-        <p className="mt-2 text-xs leading-5 text-emerald-900/65">
-          Nego dilakukan melalui WhatsApp. Harga produk di
-          checkout tidak berubah otomatis sampai kamu menyetujui
-          kesepakatan dan membuat promo atau mengubah harga.
+        <p className="text-sm font-black text-emerald-950">Aturan nego otomatis</p>
+        <p className="mt-2 text-xs leading-5 text-emerald-900/70">
+          Semua produk unik otomatis bisa dinego melalui WhatsApp. Produk massal otomatis tidak bisa dinego.
         </p>
-
         <div className="mt-4">
-          <label
-            htmlFor="negotiation_min_price"
-            className="mb-2 block text-xs font-bold text-slate-600"
-          >
-            Batas minimum penawaran (opsional)
+          <label htmlFor="negotiation_min_price" className="mb-2 block text-xs font-bold text-slate-600">
+            Batas minimum penawaran untuk produk unik (opsional)
           </label>
-
           <input
             id="negotiation_min_price"
             name="negotiation_min_price"
             type="number"
             min="1"
             step="1"
-            defaultValue={
-              defaults.negotiationMinPrice ?? undefined
-            }
+            defaultValue={defaults.negotiationMinPrice ?? undefined}
             placeholder="Contoh: 12000"
             className={field}
           />
-
-          <p className="mt-2 text-[11px] leading-5 text-slate-500">
-            Nilai ini tidak ditampilkan sebagai harga pasti.
-            Penawaran di bawah batas akan ditolak oleh form.
-          </p>
         </div>
       </div>
 

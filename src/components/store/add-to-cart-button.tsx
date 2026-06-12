@@ -127,12 +127,6 @@ export default function AddToCartButton({ item }: { item: AddCartItem }) {
         </button>
       </div>
 
-      {!soldOut ? (
-        <p className="mt-2 text-center text-[11px] leading-5 text-slate-400">
-          Jumlah produk yang sama di keranjang akan diganti sesuai pilihan ini,
-          bukan ditambahkan diam-diam.
-        </p>
-      ) : null}
     </div>
   );
 }

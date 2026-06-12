@@ -54,7 +54,7 @@ export default function ShareProduct({
       <button
         type="button"
         onClick={copyLink}
-        className="rounded-xl border border-white/15 bg-white/[.04] px-4 py-3 text-sm font-black text-slate-300 hover:border-emerald-400/40 hover:text-emerald-200"
+        className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-black text-slate-700 shadow-sm transition hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-800"
       >
         {copied ? "Link tersalin ✓" : "Salin link"}
       </button>
@@ -62,7 +62,7 @@ export default function ShareProduct({
       <button
         type="button"
         onClick={shareWhatsApp}
-        className="rounded-xl border border-emerald-400/30 bg-emerald-400/10 px-4 py-3 text-sm font-black text-emerald-200 hover:bg-emerald-400/15"
+        className="rounded-xl border border-emerald-300 bg-emerald-50 px-4 py-3 text-sm font-black text-emerald-800 shadow-sm transition hover:bg-emerald-100"
       >
         Bagikan ke WhatsApp
       </button>

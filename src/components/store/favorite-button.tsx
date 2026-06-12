@@ -42,8 +42,8 @@ export default function FavoriteButton({
       onClick={() => toggleFavorite(product)}
       className={`inline-flex items-center justify-center gap-2 rounded-xl border font-black transition ${
         active
-          ? "border-rose-400/40 bg-rose-400/15 text-rose-200"
-          : "border-white/15 bg-white/[.04] text-slate-300 hover:border-emerald-400/40 hover:text-emerald-200"
+          ? "border-rose-300 bg-rose-50 text-rose-700 shadow-sm"
+          : "border-slate-200 bg-white text-slate-700 shadow-sm hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-800"
       } ${compact ? "h-10 w-10 text-lg" : "px-4 py-3 text-sm"}`}
     >
       <span aria-hidden="true">{active ? "♥" : "♡"}</span>

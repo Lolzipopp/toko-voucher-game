@@ -109,7 +109,7 @@ export default async function ProductDetailPage({
 
       <StoreHeader />
 
-      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:py-12">
+      <div className="mx-auto max-w-7xl px-3 py-5 sm:px-6 sm:py-8 lg:py-12">
         <Link
           href="/#produk"
           className="text-sm font-bold text-emerald-700"
@@ -117,7 +117,7 @@ export default async function ProductDetailPage({
           ← Kembali ke katalog
         </Link>
 
-        <div className="mt-5 grid gap-8 lg:grid-cols-[1.05fr_.95fr]">
+        <div className="mt-4 grid gap-5 sm:mt-5 sm:gap-8 lg:grid-cols-[1.05fr_.95fr]">
           <section>
             <ProductImageCarousel
               images={product.images.map((image) => ({
@@ -128,7 +128,7 @@ export default async function ProductDetailPage({
               availableStock={Number(product.available_stock)}
             />
 
-            <div className="mt-5 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="mt-4 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm sm:mt-5 sm:p-6">
               <h2 className="text-lg font-black">
                 Spesifikasi akun
               </h2>
@@ -153,14 +153,8 @@ export default async function ProductDetailPage({
           </section>
 
           <aside className="lg:sticky lg:top-24 lg:self-start">
-            <div className="rounded-[32px] border border-emerald-950/10 bg-white p-6 shadow-xl shadow-emerald-950/8 sm:p-8">
-              <p className="text-xs font-black uppercase tracking-[0.18em] text-emerald-700">
-                {product.product_type === "mass"
-                  ? "Produk massal"
-                  : "Akun unik"}
-              </p>
-
-              <h1 className="mt-3 text-3xl font-black leading-tight tracking-tight">
+            <div className="rounded-[24px] border border-emerald-950/10 bg-white p-4 shadow-xl shadow-emerald-950/8 sm:rounded-[32px] sm:p-8">
+              <h1 className="mt-2 text-2xl font-black leading-tight tracking-tight sm:mt-3 sm:text-3xl">
                 {product.name}
               </h1>
 
@@ -181,17 +175,17 @@ export default async function ProductDetailPage({
                 </p>
               </div>
 
-              <div className="mt-5 grid grid-cols-2 gap-3">
-                <div className="rounded-2xl bg-emerald-50 p-4">
+              <div className="mt-4 grid grid-cols-2 gap-2 sm:mt-5 sm:gap-3">
+                <div className="rounded-2xl bg-emerald-50 p-3 sm:p-4">
                   <p className="text-xs font-black text-emerald-900">
-                    ⚡ Digital
+                    ⚡ Pengiriman instan
                   </p>
                   <p className="mt-1 text-[11px] text-emerald-800">
                     Setelah pembayaran
                   </p>
                 </div>
 
-                <div className="rounded-2xl bg-emerald-50 p-4">
+                <div className="rounded-2xl bg-emerald-50 p-3 sm:p-4">
                   <p className="text-xs font-black text-emerald-900">
                     🛡️ {product.warranty_days} hari
                   </p>
@@ -229,7 +223,7 @@ export default async function ProductDetailPage({
                 )}
               </div>
 
-              {product.allow_negotiation ? (
+              {product.product_type === "unique" ? (
                 <NegotiationBox
                   productName={product.name}
                   productSlug={product.slug}
