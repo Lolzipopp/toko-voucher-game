@@ -21,6 +21,7 @@ type CartContextValue = {
   hydrated: boolean;
   addItem: (item: AddCartItem, quantity?: number) => void;
   setItemQuantity: (item: AddCartItem, quantity: number) => void;
+  replaceCartWithItem: (item: AddCartItem, quantity?: number) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   removeItem: (productId: string) => void;
   clearCart: () => void;
@@ -140,6 +141,20 @@ export function CartProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
+
+  const replaceCartWithItem = useCallback((item: AddCartItem, quantity = 1) => {
+    const max = item.productType === "unique"
+      ? 1
+      : Math.max(1, Math.floor(item.availableStock));
+    const safeQuantity = Math.min(max, Math.max(1, Math.floor(quantity)));
+    const nextItems: CartItem[] = [{ ...item, quantity: safeQuantity }];
+
+    setItems(nextItems);
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(nextItems));
+    }
+  }, []);
+
   const updateQuantity = useCallback((productId: string, quantity: number) => {
     setItems((current) =>
       current.map((item) => {
@@ -164,11 +179,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
       hydrated,
       addItem,
       setItemQuantity,
+      replaceCartWithItem,
       updateQuantity,
       removeItem,
       clearCart,
     }),
-    [items, hydrated, addItem, setItemQuantity, updateQuantity, removeItem, clearCart],
+    [items, hydrated, addItem, setItemQuantity, replaceCartWithItem, updateQuantity, removeItem, clearCart],
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

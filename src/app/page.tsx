@@ -126,6 +126,7 @@ export default async function Home({ searchParams }: HomeProps) {
       <StoreHeader />
 
       <HomeBannerCarousel
+        whatsappUrl={whatsapp}
         banners={(announcements ?? []).map((announcement) => {
           const imagePath = announcement.image_path as string | null;
           const imageUrl = imagePath
@@ -137,7 +138,10 @@ export default async function Home({ searchParams }: HomeProps) {
             title: announcement.title,
             message: announcement.message,
             button_label: announcement.button_label,
-            button_url: announcement.button_url,
+            button_url:
+              announcement.button_label?.toLowerCase().includes("hubungi admin") && whatsapp
+                ? whatsapp
+                : announcement.button_url,
             tone: announcement.tone,
             image_url: imageUrl,
           } satisfies HomeBanner;
@@ -157,46 +161,46 @@ export default async function Home({ searchParams }: HomeProps) {
           </h2>
         </div>
 
-        <div className="mt-6 grid grid-cols-2 gap-3 sm:mt-8 sm:gap-4 lg:grid-cols-4">
+        <div className="mt-6 grid grid-cols-4 gap-2 sm:mt-8 sm:gap-4">
           <SectionLink
             href="/#produk"
-            className="group rounded-3xl border border-emerald-400/25 bg-[radial-gradient(circle_at_80%_0%,rgba(52,211,153,.18),transparent_45%),#0a1a2e] p-4 transition hover:-translate-y-1 sm:p-6 hover:border-emerald-300/60"
+            className="group flex min-h-28 flex-col items-center justify-center rounded-2xl border border-emerald-400/25 bg-[radial-gradient(circle_at_80%_0%,rgba(52,211,153,.18),transparent_45%),#0a1a2e] px-2 py-4 text-center transition hover:-translate-y-1 hover:border-emerald-300/60 sm:min-h-72 sm:items-start sm:justify-start sm:rounded-3xl sm:p-6 sm:text-left"
           >
-            <span className="text-4xl">🎮</span>
-            <h3 className="mt-7 text-xl font-black italic">BELI AKUN</h3>
-            <p className="mt-2 text-sm leading-6 text-slate-400">
+            <span className="text-3xl sm:text-4xl">🎮</span>
+            <h3 className="mt-2 text-[11px] font-black italic leading-tight sm:mt-7 sm:text-xl">BELI AKUN</h3>
+            <p className="mt-2 hidden text-sm leading-6 text-slate-400 sm:block">
               Cari akun berdasarkan game, harga, dan spesifikasi.
             </p>
-            <span className="mt-6 inline-flex text-xs font-black uppercase tracking-wider text-emerald-300">
-              Lihat produk →
+            <span className="mt-2 text-[9px] font-black uppercase tracking-wide text-emerald-300 sm:mt-6 sm:text-xs sm:tracking-wider">
+              Lihat →
             </span>
           </SectionLink>
 
           <SectionLink
             href="/#exclusive-offer"
-            className="group rounded-3xl border border-amber-400/20 bg-[radial-gradient(circle_at_80%_0%,rgba(251,191,36,.16),transparent_45%),#0a1a2e] p-4 transition hover:-translate-y-1 sm:p-6 hover:border-amber-300/55"
+            className="group flex min-h-28 flex-col items-center justify-center rounded-2xl border border-amber-400/20 bg-[radial-gradient(circle_at_80%_0%,rgba(251,191,36,.16),transparent_45%),#0a1a2e] px-2 py-4 text-center transition hover:-translate-y-1 hover:border-amber-300/55 sm:min-h-72 sm:items-start sm:justify-start sm:rounded-3xl sm:p-6 sm:text-left"
           >
-            <span className="text-4xl">🎁</span>
-            <h3 className="mt-7 text-xl font-black italic">EXCLUSIVE OFFER</h3>
-            <p className="mt-2 text-sm leading-6 text-slate-400">
+            <span className="text-3xl sm:text-4xl">🎁</span>
+            <h3 className="mt-2 text-[11px] font-black italic leading-tight sm:mt-7 sm:text-xl">PROMO</h3>
+            <p className="mt-2 hidden text-sm leading-6 text-slate-400 sm:block">
               Cek akun dengan harga khusus yang sedang aktif.
             </p>
-            <span className="mt-6 inline-flex text-xs font-black uppercase tracking-wider text-amber-300">
-              {promoProducts.length ? `${promoProducts.length} penawaran tersedia →` : "Cek penawaran →"}
+            <span className="mt-2 text-[9px] font-black uppercase tracking-wide text-amber-300 sm:mt-6 sm:text-xs sm:tracking-wider">
+              Cek →
             </span>
           </SectionLink>
 
           <Link
             href="/akun"
-            className="group rounded-3xl border border-sky-400/20 bg-[radial-gradient(circle_at_80%_0%,rgba(56,189,248,.16),transparent_45%),#0a1a2e] p-4 transition hover:-translate-y-1 sm:p-6 hover:border-sky-300/55"
+            className="group flex min-h-28 flex-col items-center justify-center rounded-2xl border border-sky-400/20 bg-[radial-gradient(circle_at_80%_0%,rgba(56,189,248,.16),transparent_45%),#0a1a2e] px-2 py-4 text-center transition hover:-translate-y-1 hover:border-sky-300/55 sm:min-h-72 sm:items-start sm:justify-start sm:rounded-3xl sm:p-6 sm:text-left"
           >
-            <span className="text-4xl">🔐</span>
-            <h3 className="mt-7 text-xl font-black italic">CEK PESANAN</h3>
-            <p className="mt-2 text-sm leading-6 text-slate-400">
+            <span className="text-3xl sm:text-4xl">🔐</span>
+            <h3 className="mt-2 text-[11px] font-black italic leading-tight sm:mt-7 sm:text-xl">PESANAN</h3>
+            <p className="mt-2 hidden text-sm leading-6 text-slate-400 sm:block">
               Masuk lewat email untuk melihat order dan data akun.
             </p>
-            <span className="mt-6 inline-flex text-xs font-black uppercase tracking-wider text-sky-300">
-              Buka akun →
+            <span className="mt-2 text-[9px] font-black uppercase tracking-wide text-sky-300 sm:mt-6 sm:text-xs sm:tracking-wider">
+              Buka →
             </span>
           </Link>
 
@@ -205,24 +209,22 @@ export default async function Home({ searchParams }: HomeProps) {
               href={whatsapp}
               target="_blank"
               rel="noreferrer"
-              className="group rounded-3xl border border-violet-400/20 bg-[radial-gradient(circle_at_80%_0%,rgba(167,139,250,.16),transparent_45%),#0a1a2e] p-4 transition hover:-translate-y-1 sm:p-6 hover:border-violet-300/55"
+              className="group flex min-h-28 flex-col items-center justify-center rounded-2xl border border-violet-400/20 bg-[radial-gradient(circle_at_80%_0%,rgba(167,139,250,.16),transparent_45%),#0a1a2e] px-2 py-4 text-center transition hover:-translate-y-1 hover:border-violet-300/55 sm:min-h-72 sm:items-start sm:justify-start sm:rounded-3xl sm:p-6 sm:text-left"
             >
-              <span className="text-4xl">💬</span>
-              <h3 className="mt-7 text-xl font-black italic">JUAL / CARI AKUN</h3>
-              <p className="mt-2 text-sm leading-6 text-slate-400">
-                Hubungi admin jika ingin menjual akun atau mencari spesifikasi khusus.
+              <span className="text-3xl sm:text-4xl">💬</span>
+              <h3 className="mt-2 text-[11px] font-black italic leading-tight sm:mt-7 sm:text-xl">JUAL / CARI</h3>
+              <p className="mt-2 hidden text-sm leading-6 text-slate-400 sm:block">
+                Hubungi admin untuk menjual akun atau mencari spesifikasi khusus.
               </p>
-              <span className="mt-6 inline-flex text-xs font-black uppercase tracking-wider text-violet-300">
-                Chat WhatsApp →
+              <span className="mt-2 text-[9px] font-black uppercase tracking-wide text-violet-300 sm:mt-6 sm:text-xs sm:tracking-wider">
+                Chat →
               </span>
             </a>
           ) : (
-            <div className="rounded-3xl border border-white/10 bg-[#091625] p-6 opacity-70">
-              <span className="text-4xl">💬</span>
-              <h3 className="mt-7 text-xl font-black italic">JUAL / CARI AKUN</h3>
-              <p className="mt-2 text-sm leading-6 text-slate-500">
-                Layanan WhatsApp sedang tidak tersedia.
-              </p>
+            <div className="flex min-h-28 flex-col items-center justify-center rounded-2xl border border-white/10 bg-[#091625] px-2 py-4 text-center opacity-70 sm:min-h-72 sm:items-start sm:justify-start sm:rounded-3xl sm:p-6 sm:text-left">
+              <span className="text-3xl sm:text-4xl">💬</span>
+              <h3 className="mt-2 text-[11px] font-black italic leading-tight sm:mt-7 sm:text-xl">JUAL / CARI</h3>
+              <p className="mt-2 hidden text-sm leading-6 text-slate-400 sm:block">Layanan WhatsApp sedang tidak tersedia.</p>
             </div>
           )}
         </div>

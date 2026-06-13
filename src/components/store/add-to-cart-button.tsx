@@ -9,7 +9,7 @@ import { useCart } from "./cart-provider";
 
 export default function AddToCartButton({ item }: { item: AddCartItem }) {
   const router = useRouter();
-  const { setItemQuantity } = useCart();
+  const { setItemQuantity, replaceCartWithItem } = useCart();
   const soldOut = item.availableStock <= 0;
   const maxQuantity = item.productType === "unique"
     ? 1
@@ -39,7 +39,8 @@ export default function AddToCartButton({ item }: { item: AddCartItem }) {
   }
 
   function handleBuyNow() {
-    saveSelectedQuantity();
+    if (soldOut) return;
+    replaceCartWithItem(item, quantity);
     router.push("/checkout");
   }
 

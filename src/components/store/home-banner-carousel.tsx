@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 
 import SectionLink from "./section-link";
 
@@ -16,30 +17,33 @@ export type HomeBanner = {
 
 type Props = {
   banners: HomeBanner[];
+  whatsappUrl?: string | null;
 };
 
-const fallbackBanners: HomeBanner[] = [
-  {
-    id: "buy-account",
-    title: "Cari akun game yang sesuai kebutuhanmu",
-    message:
-      "Lihat stok nyata, spesifikasi lengkap, dan harga sebelum melakukan checkout.",
-    button_label: "Lihat akun tersedia",
-    button_url: "/#produk",
-    tone: "promo",
-    image_url: null,
-  },
-  {
-    id: "sell-account",
-    title: "Mau jual akun game ke RIKU STORE?",
-    message:
-      "Kirim detail akun melalui WhatsApp agar admin dapat memeriksa spesifikasi dan memberikan penawaran.",
-    button_label: "Hubungi admin",
-    button_url: "/tentang-kontak",
-    tone: "info",
-    image_url: null,
-  },
-];
+function getFallbackBanners(whatsappUrl?: string | null): HomeBanner[] {
+  return [
+    {
+      id: "buy-account",
+      title: "Cari akun game yang sesuai kebutuhanmu",
+      message:
+        "Lihat stok nyata, spesifikasi lengkap, dan harga sebelum melakukan checkout.",
+      button_label: "Lihat akun tersedia",
+      button_url: "/#produk",
+      tone: "promo",
+      image_url: null,
+    },
+    {
+      id: "sell-account",
+      title: "Mau jual akun game ke RIKU STORE?",
+      message:
+        "Kirim detail akun melalui WhatsApp agar admin dapat memeriksa spesifikasi dan memberikan penawaran.",
+      button_label: "Hubungi admin",
+      button_url: whatsappUrl || "/tentang-kontak",
+      tone: "info",
+      image_url: null,
+    },
+  ];
+}
 
 function toneGradient(tone: string) {
   if (tone === "warning") {
@@ -51,16 +55,18 @@ function toneGradient(tone: string) {
   return "from-emerald-500/35 via-lime-500/10 to-[#081625]";
 }
 
-export default function HomeBannerCarousel({ banners }: Props) {
+export default function HomeBannerCarousel({ banners, whatsappUrl }: Props) {
+  const router = useRouter();
   const slides = useMemo(
-    () => (banners.length ? banners : fallbackBanners),
-    [banners],
+    () => (banners.length ? banners : getFallbackBanners(whatsappUrl)),
+    [banners, whatsappUrl],
   );
   const [activeIndex, setActiveIndex] = useState(0);
   const [dragOffset, setDragOffset] = useState(0);
   const [manualPauseUntil, setManualPauseUntil] = useState(0);
   const pointerStartX = useRef<number | null>(null);
   const activePointerId = useRef<number | null>(null);
+  const dragged = useRef(false);
 
   useEffect(() => {
     if (slides.length < 2) return;
@@ -83,6 +89,27 @@ export default function HomeBannerCarousel({ banners }: Props) {
     setDragOffset(0);
   }
 
+  function openTarget(url: string | null) {
+    if (!url || dragged.current) return;
+
+    if (/^https?:\/\//i.test(url)) {
+      window.open(url, "_blank", "noopener,noreferrer");
+      return;
+    }
+
+    if (url.startsWith("/#")) {
+      const targetId = url.slice(2);
+      window.history.replaceState(null, "", url);
+      document.getElementById(targetId)?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+      return;
+    }
+
+    router.push(url);
+  }
+
   function finishDrag(clientX: number) {
     if (pointerStartX.current === null) return;
 
@@ -90,9 +117,15 @@ export default function HomeBannerCarousel({ banners }: Props) {
     pointerStartX.current = null;
     activePointerId.current = null;
     setDragOffset(0);
+    dragged.current = Math.abs(delta) >= 8;
 
-    if (Math.abs(delta) < 40) return;
-    goTo(activeIndex + (delta < 0 ? 1 : -1));
+    if (Math.abs(delta) >= 40) {
+      goTo(activeIndex + (delta < 0 ? 1 : -1));
+    }
+
+    window.setTimeout(() => {
+      dragged.current = false;
+    }, 0);
   }
 
   return (
@@ -106,6 +139,7 @@ export default function HomeBannerCarousel({ banners }: Props) {
           onPointerDown={(event) => {
             if ((event.target as HTMLElement).closest("button, a, input")) return;
             if (event.button !== 0) return;
+            dragged.current = false;
             pointerStartX.current = event.clientX;
             activePointerId.current = event.pointerId;
             event.currentTarget.setPointerCapture(event.pointerId);
@@ -117,7 +151,9 @@ export default function HomeBannerCarousel({ banners }: Props) {
             ) {
               return;
             }
-            setDragOffset(event.clientX - pointerStartX.current);
+            const delta = event.clientX - pointerStartX.current;
+            if (Math.abs(delta) >= 8) dragged.current = true;
+            setDragOffset(delta);
           }}
           onPointerUp={(event) => finishDrag(event.clientX)}
           onPointerCancel={() => {
@@ -141,9 +177,13 @@ export default function HomeBannerCarousel({ banners }: Props) {
             {slides.map((slide, index) => (
               <article
                 key={slide.id}
-                className="relative h-full shrink-0"
+                className={`relative h-full shrink-0 ${slide.button_url ? "cursor-pointer" : ""}`}
                 style={{ width: `${100 / slides.length}%` }}
                 aria-hidden={index !== activeIndex}
+                onClick={(event) => {
+                  if ((event.target as HTMLElement).closest("a, button")) return;
+                  openTarget(slide.button_url);
+                }}
               >
                 {slide.image_url ? (
                   <>
@@ -160,7 +200,7 @@ export default function HomeBannerCarousel({ banners }: Props) {
                     {slide.button_label && slide.button_url ? (
                       <SectionLink
                         href={slide.button_url}
-                        className="absolute bottom-5 right-5 z-[2] rounded-2xl border border-white/20 bg-black/65 px-5 py-3 text-sm font-black text-white shadow-xl backdrop-blur transition hover:bg-black/80 sm:bottom-8 sm:right-8"
+                        className="absolute bottom-4 right-4 z-[2] rounded-xl border border-white/20 bg-black/70 px-4 py-2.5 text-xs font-black text-white shadow-xl backdrop-blur transition hover:bg-black/85 sm:bottom-8 sm:right-8 sm:rounded-2xl sm:px-5 sm:py-3 sm:text-sm"
                       >
                         {slide.button_label} →
                       </SectionLink>
@@ -172,20 +212,20 @@ export default function HomeBannerCarousel({ banners }: Props) {
                       className={`absolute inset-0 bg-gradient-to-r ${toneGradient(slide.tone)}`}
                     />
                     <div className="absolute inset-0 bg-gradient-to-r from-[#06111f]/95 via-[#06111f]/72 to-[#06111f]/10" />
-                    <div className="relative flex h-full max-w-3xl flex-col justify-center px-8 py-10 sm:px-14 lg:px-20">
-                      <p className="text-[10px] font-black uppercase tracking-[0.24em] text-emerald-300 sm:text-xs">
+                    <div className="relative flex h-full max-w-3xl flex-col justify-center px-7 py-8 sm:px-14 lg:px-20">
+                      <p className="text-[9px] font-black uppercase tracking-[0.2em] text-emerald-300 sm:text-xs sm:tracking-[0.24em]">
                         RIKU STORE EVENT
                       </p>
-                      <h2 className="mt-3 max-w-2xl text-2xl font-black italic leading-tight sm:text-5xl">
+                      <h2 className="mt-2 max-w-2xl text-xl font-black italic leading-tight sm:mt-3 sm:text-5xl">
                         {slide.title}
                       </h2>
-                      <p className="mt-4 max-w-xl text-xs leading-5 text-slate-300 sm:text-base sm:leading-7">
+                      <p className="mt-2 max-w-xl text-[11px] leading-5 text-slate-300 sm:mt-4 sm:text-base sm:leading-7">
                         {slide.message}
                       </p>
                       {slide.button_label && slide.button_url ? (
                         <SectionLink
                           href={slide.button_url}
-                          className="mt-5 inline-flex w-fit rounded-2xl bg-emerald-400 px-5 py-3 text-xs font-black text-emerald-950 transition hover:-translate-y-0.5 hover:bg-emerald-300 sm:mt-6 sm:text-sm"
+                          className="mt-3 inline-flex w-fit rounded-xl bg-emerald-400 px-4 py-2.5 text-[11px] font-black text-emerald-950 transition hover:-translate-y-0.5 hover:bg-emerald-300 sm:mt-6 sm:rounded-2xl sm:px-5 sm:py-3 sm:text-sm"
                         >
                           {slide.button_label} →
                         </SectionLink>
@@ -207,7 +247,7 @@ export default function HomeBannerCarousel({ banners }: Props) {
                   event.stopPropagation();
                   goTo(activeIndex - 1);
                 }}
-                className="absolute left-3 top-1/2 z-10 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-black/45 text-xl text-white backdrop-blur hover:bg-black/70 sm:h-11 sm:w-11"
+                className="absolute left-2 top-1/2 z-20 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-black/55 text-xl text-white backdrop-blur hover:bg-black/75 sm:left-3 sm:h-11 sm:w-11"
               >
                 ‹
               </button>
@@ -219,11 +259,11 @@ export default function HomeBannerCarousel({ banners }: Props) {
                   event.stopPropagation();
                   goTo(activeIndex + 1);
                 }}
-                className="absolute right-3 top-1/2 z-10 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-black/45 text-xl text-white backdrop-blur hover:bg-black/70 sm:h-11 sm:w-11"
+                className="absolute right-2 top-1/2 z-20 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-black/55 text-xl text-white backdrop-blur hover:bg-black/75 sm:right-3 sm:h-11 sm:w-11"
               >
                 ›
               </button>
-              <div className="absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 gap-2 sm:bottom-5">
+              <div className="absolute bottom-2 left-1/2 z-20 flex -translate-x-1/2 gap-2 sm:bottom-5">
                 {slides.map((slide, index) => (
                   <button
                     key={slide.id}
@@ -236,7 +276,7 @@ export default function HomeBannerCarousel({ banners }: Props) {
                     }}
                     className={`h-2.5 rounded-full border border-black/20 shadow transition-all ${
                       index === activeIndex
-                        ? "w-8 bg-emerald-300"
+                        ? "w-7 bg-emerald-300 sm:w-8"
                         : "w-2.5 bg-white/70 hover:bg-white"
                     }`}
                   />
@@ -245,11 +285,6 @@ export default function HomeBannerCarousel({ banners }: Props) {
             </>
           ) : null}
         </div>
-        {slides.length > 1 ? (
-          <p className="mt-2 text-center text-[11px] font-semibold text-slate-500">
-            Geser banner, tekan panah, atau pilih titik untuk berpindah.
-          </p>
-        ) : null}
       </div>
     </section>
   );
