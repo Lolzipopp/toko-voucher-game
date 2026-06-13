@@ -3,19 +3,13 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
+import { formatRupiah } from "@/lib/format/display";
 import {
   clearRecentlyViewed,
   getRecentlyViewed,
 } from "@/lib/store-engagement/storage";
 import type { EngagementProduct } from "@/lib/store-engagement/types";
 
-function rupiah(value: number) {
-  return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    maximumFractionDigits: 0,
-  }).format(value);
-}
 
 export default function RecentlyViewedSection() {
   const [products, setProducts] = useState<EngagementProduct[]>([]);
@@ -90,7 +84,7 @@ export default function RecentlyViewedSection() {
                   {product.name}
                 </h3>
                 <p className="mt-3 font-black text-emerald-300">
-                  {rupiah(product.price)}
+                  {formatRupiah(product.price)}
                 </p>
               </div>
             </Link>

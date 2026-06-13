@@ -1,10 +1,4 @@
-export function formatRupiah(value: number) {
-  return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    maximumFractionDigits: 0,
-  }).format(value);
-}
+export { formatRupiah } from "@/lib/format/display";
 
 export function productImageUrl(path: string | null | undefined) {
   if (!path) return null;

@@ -9,6 +9,7 @@ import PaidDeliveryPanel from "./paid-delivery-panel";
 import ManualPaymentPanel from "./manual-payment-panel";
 import { INTERNAL_TEST_TOOLS_ENABLED } from "@/lib/config/store";
 import EmailDeliveryPanel from "./email-delivery-panel";
+import ReleasePendingOrderPanel from "./release-pending-order-panel";
 
 type OrderDetailPageProps = {
   params: Promise<{ id: string }>;
@@ -259,6 +260,13 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
         paymentStatus={order.payment_status}
         deliveryStatus={order.delivery_status}
         isPublicOrder={order.order_source === "public"}
+      />
+
+      <ReleasePendingOrderPanel
+        orderId={order.id}
+        orderStatus={order.status}
+        paymentStatus={order.payment_status}
+        activeReservationCount={activeReservations.length}
       />
 
       <PaidDeliveryPanel

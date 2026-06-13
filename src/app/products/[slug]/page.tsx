@@ -1,4 +1,5 @@
 import NegotiationBox from "@/components/store/negotiation-box";
+import { humanizeProductDescription, humanizeProductSpec } from "@/lib/catalog/display-text";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -137,14 +138,14 @@ export default async function ProductDetailPage({
                 {product.attributes.map((attribute) => (
                   <div
                     key={attribute.key}
-                    className="rounded-2xl bg-slate-50 p-4"
+                    className="min-w-0 rounded-2xl bg-slate-50 p-4"
                   >
                     <p className="text-[10px] font-black uppercase tracking-wider text-slate-400">
                       {attribute.key.replaceAll("_", " ")}
                     </p>
 
-                    <p className="mt-1 text-sm font-black">
-                      {attribute.value}
+                    <p className="mt-1 [overflow-wrap:anywhere] text-sm font-black">
+                      {humanizeProductSpec(attribute.value)}
                     </p>
                   </div>
                 ))}
@@ -159,8 +160,10 @@ export default async function ProductDetailPage({
               </h1>
 
               <p className="mt-4 whitespace-pre-line break-words text-sm leading-7 text-slate-600">
-                {product.description ??
-                  "Akun dengan spesifikasi sesuai informasi produk. Data akun dikirim setelah pembayaran terverifikasi."}
+                {humanizeProductDescription(
+                  product.description ??
+                    "Akun dengan spesifikasi sesuai informasi produk. Data akun dikirim setelah pembayaran terverifikasi.",
+                )}
               </p>
 
               <div className="mt-6 border-y border-slate-100 py-5">

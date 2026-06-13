@@ -42,7 +42,7 @@ export default function StoreHeader() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-emerald-400/15 bg-[#06111f]/94 text-white backdrop-blur-xl">
+    <header className="sticky top-0 z-50 w-full max-w-full overflow-x-clip border-b border-emerald-400/15 bg-[#06111f]/94 text-white backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
         <Link href="/" className="group flex min-w-0 items-center gap-3">
           <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl border border-emerald-400/35 bg-emerald-400/10 text-xl font-black text-emerald-300 shadow-[0_0_28px_rgba(52,211,153,.16)] transition group-hover:border-emerald-300/70">

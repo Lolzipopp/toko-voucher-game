@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/server";
 
 import { logoutCustomer } from "./actions";
 
+import { formatRupiah } from "@/lib/format/display";
 type CustomerOrder = {
   id: string;
   order_number: string;
@@ -27,13 +28,6 @@ type CustomerOrder = {
   item_count: number;
 };
 
-function rupiah(value: number) {
-  return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    maximumFractionDigits: 0,
-  }).format(value);
-}
 
 function date(value: string | null) {
   if (!value) return "-";
@@ -190,14 +184,14 @@ export default async function CustomerAccountPage() {
 
                     {order.discount_amount > 0 ? (
                       <p className="mt-2 text-xs font-semibold text-emerald-700">
-                        Hemat {rupiah(order.discount_amount)}
+                        Hemat {formatRupiah(order.discount_amount)}
                       </p>
                     ) : null}
                   </div>
 
                   <div className="shrink-0 md:text-right">
                     <p className="text-xl font-black text-emerald-700">
-                      {rupiah(order.total_amount)}
+                      {formatRupiah(order.total_amount)}
                     </p>
 
                     <div className="mt-3 flex flex-wrap gap-2 md:justify-end">

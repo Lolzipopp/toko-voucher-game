@@ -5,19 +5,13 @@ import { useEffect, useState } from "react";
 
 import StoreFooter from "@/components/store/store-footer";
 import StoreHeader from "@/components/store/store-header";
+import { formatRupiah } from "@/lib/format/display";
 import {
   getFavorites,
   removeFavorite,
 } from "@/lib/store-engagement/storage";
 import type { EngagementProduct } from "@/lib/store-engagement/types";
 
-function rupiah(value: number) {
-  return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    maximumFractionDigits: 0,
-  }).format(value);
-}
 
 export default function FavoritesPage() {
   const [products, setProducts] = useState<EngagementProduct[]>([]);
@@ -89,7 +83,7 @@ export default function FavoritesPage() {
                     {product.name}
                   </Link>
                   <p className="mt-3 font-black text-emerald-300">
-                    {rupiah(product.price)}
+                    {formatRupiah(product.price)}
                   </p>
                   <p className="mt-1 text-xs text-slate-500">
                     {product.availableStock > 0

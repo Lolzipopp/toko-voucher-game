@@ -2,7 +2,9 @@
 
 import { revalidatePath } from "next/cache";
 
-import { createClient } from "@/lib/supabase/server";
+import { requireAdminAction } from "@/lib/auth/require-admin";
+import { databaseErrorMessage } from "@/lib/errors/database";
+import { logServerError } from "@/lib/observability/server-log";
 
 export type ActionResult = {
   ok: boolean;
@@ -13,30 +15,6 @@ type BulkAccount = {
   username: string;
   password: string;
 };
-
-async function requireActiveAdmin() {
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return { supabase: null, error: "Sesi login tidak ditemukan." };
-  }
-
-  const { data: admin } = await supabase
-    .from("admin_users")
-    .select("is_active")
-    .eq("id", user.id)
-    .single();
-
-  if (!admin?.is_active) {
-    return { supabase: null, error: "Akun bukan admin aktif." };
-  }
-
-  return { supabase, error: null };
-}
 
 function parseBulkAccounts(raw: string): BulkAccount[] {
   const rows = raw
@@ -101,19 +79,14 @@ export async function bulkAddInventory(input: {
       return { ok: false, message: "Produk wajib dipilih." };
     }
 
-    if (
-      !Number.isSafeInteger(input.purchaseCost) ||
-      input.purchaseCost < 0
-    ) {
+    if (!Number.isSafeInteger(input.purchaseCost) || input.purchaseCost < 0) {
       return { ok: false, message: "Modal per akun tidak valid." };
     }
 
     const accounts = parseBulkAccounts(input.rawAccounts);
-    const { supabase, error: authError } = await requireActiveAdmin();
-
-    if (!supabase) {
-      return { ok: false, message: authError ?? "Tidak memiliki akses." };
-    }
+    const auth = await requireAdminAction();
+    if (!auth.ok) return { ok: false, message: auth.message };
+    const { supabase } = auth;
 
     const { data, error } = await supabase.rpc(
       "admin_bulk_add_inventory_stock",
@@ -127,7 +100,17 @@ export async function bulkAddInventory(input: {
     );
 
     if (error) {
-      return { ok: false, message: error.message };
+      logServerError("admin_inventory_bulk_add_failed", error, {
+        productId: input.productId,
+        accountCount: accounts.length,
+      });
+      return {
+        ok: false,
+        message: databaseErrorMessage(
+          error,
+          "Stok belum dapat disimpan. Periksa data lalu coba lagi.",
+        ),
+      };
     }
 
     const result = data as {
@@ -150,8 +133,7 @@ export async function bulkAddInventory(input: {
   } catch (error) {
     return {
       ok: false,
-      message:
-        error instanceof Error ? error.message : "Import stok gagal.",
+      message: error instanceof Error ? error.message : "Import stok gagal.",
     };
   }
 }
@@ -172,23 +154,25 @@ export async function updateInventoryStatus(input: {
     return { ok: false, message: "Alasan wajib diisi." };
   }
 
-  const { supabase, error: authError } = await requireActiveAdmin();
+  const auth = await requireAdminAction();
+  if (!auth.ok) return { ok: false, message: auth.message };
+  const { supabase } = auth;
 
-  if (!supabase) {
-    return { ok: false, message: authError ?? "Tidak memiliki akses." };
-  }
-
-  const { data, error } = await supabase.rpc(
-    "admin_update_inventory_status",
-    {
-      p_inventory_ids: input.inventoryIds,
-      p_new_status: input.newStatus,
-      p_reason: input.reason.trim() || null,
-    },
-  );
+  const { data, error } = await supabase.rpc("admin_update_inventory_status", {
+    p_inventory_ids: input.inventoryIds,
+    p_new_status: input.newStatus,
+    p_reason: input.reason.trim() || null,
+  });
 
   if (error) {
-    return { ok: false, message: error.message };
+    logServerError("admin_inventory_action_failed", error);
+    return {
+      ok: false,
+      message: databaseErrorMessage(
+        error,
+        "Perubahan stok belum dapat disimpan.",
+      ),
+    };
   }
 
   const result = data as {
@@ -210,7 +194,6 @@ export async function updateInventoryStatus(input: {
   };
 }
 
-
 export async function deleteInventoryStock(input: {
   inventoryIds: string[];
   reason: string;
@@ -223,22 +206,24 @@ export async function deleteInventoryStock(input: {
     return { ok: false, message: "Alasan penghapusan wajib diisi." };
   }
 
-  const { supabase, error: authError } = await requireActiveAdmin();
+  const auth = await requireAdminAction();
+  if (!auth.ok) return { ok: false, message: auth.message };
+  const { supabase } = auth;
 
-  if (!supabase) {
-    return { ok: false, message: authError ?? "Tidak memiliki akses." };
-  }
-
-  const { data, error } = await supabase.rpc(
-    "admin_delete_inventory_stock",
-    {
-      p_inventory_ids: input.inventoryIds,
-      p_reason: input.reason.trim(),
-    },
-  );
+  const { data, error } = await supabase.rpc("admin_delete_inventory_stock", {
+    p_inventory_ids: input.inventoryIds,
+    p_reason: input.reason.trim(),
+  });
 
   if (error) {
-    return { ok: false, message: error.message };
+    logServerError("admin_inventory_action_failed", error);
+    return {
+      ok: false,
+      message: databaseErrorMessage(
+        error,
+        "Perubahan stok belum dapat disimpan.",
+      ),
+    };
   }
 
   const result = data as {

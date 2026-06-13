@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
 
+import { formatRupiah } from "@/lib/format/display";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
@@ -52,13 +53,6 @@ function formatDate(value?: string | null) {
   }).format(new Date(value));
 }
 
-function formatRupiah(value = 0) {
-  return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    maximumFractionDigits: 0,
-  }).format(value);
-}
 
 function maskEmail(email?: string) {
   if (!email) return "-";
@@ -205,8 +199,8 @@ export default async function CustomerOrderPage({
                 Simpan data akun sekarang
               </p>
               <p className="mt-1 text-xs leading-5 text-emerald-800">
-                Jangan bagikan halaman atau token ini kepada siapa pun.
-                Kredensial otomatis disembunyikan setelah tujuh hari.
+                Simpan data akun ini di tempat yang aman. Demi keamanan,
+                informasi login hanya tersedia selama 7 hari setelah pengiriman.
               </p>
             </section>
 

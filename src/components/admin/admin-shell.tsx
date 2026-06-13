@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import { logoutAdmin } from "@/app/admin/actions";
 
 type AdminShellProps = {
-  active: "dashboard" | "products" | "inventory" | "orders" | "promos" | "finance" | "settings" | "content";
+  active: "dashboard" | "products" | "inventory" | "orders" | "promos" | "finance" | "settings" | "content" | "health";
   admin: {
     full_name: string | null;
     email: string;
@@ -40,6 +40,9 @@ function SettingsIcon({ className = "" }: IconProps) {
 function SparklesIcon({ className = "" }: IconProps) {
   return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="m12 3 1.4 3.6L17 8l-3.6 1.4L12 13l-1.4-3.6L7 8l3.6-1.4L12 3Z"/><path d="m19 13 .8 2.2L22 16l-2.2.8L19 19l-.8-2.2L16 16l2.2-.8L19 13Z"/><path d="m5 14 1.1 2.9L9 18l-2.9 1.1L5 22l-1.1-2.9L1 18l2.9-1.1L5 14Z"/></svg>;
 }
+function HeartPulseIcon({ className = "" }: IconProps) {
+  return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M3 12h4l2-6 4 12 2-6h6"/><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"/></svg>;
+}
 function LogOutIcon({ className = "" }: IconProps) {
   return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M10 17l5-5-5-5M15 12H3"/><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/></svg>;
 }
@@ -53,6 +56,7 @@ const navItems = [
   { key: "finance" as const, href: "/admin/finance", label: "Keuangan", icon: WalletIcon },
   { key: "content" as const, href: "/admin/content", label: "Konten", icon: SparklesIcon },
   { key: "settings" as const, href: "/admin/settings", label: "Pengaturan", icon: SettingsIcon },
+  { key: "health" as const, href: "/admin/health", label: "Kesehatan", icon: HeartPulseIcon },
 ];
 
 export default function AdminShell({ active, admin, children }: AdminShellProps) {

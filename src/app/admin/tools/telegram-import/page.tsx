@@ -1,15 +1,17 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 import AdminShell from "@/components/admin/admin-shell";
 import Notice from "@/components/admin/notice";
 import PageTitle from "@/components/admin/page-title";
 import { createClient } from "@/lib/supabase/server";
+import { internalToolsEnabled } from "@/lib/security/internal-tools";
 
 import { importTelegramBatch, repairTelegramProductImages } from "./actions";
 
+import { formatRupiah } from "@/lib/format/display";
 type PageProps = {
   searchParams: Promise<{ success?: string; error?: string }>;
 };
@@ -25,15 +27,10 @@ type Manifest = {
   }>;
 };
 
-function formatRupiah(value: number) {
-  return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    maximumFractionDigits: 0,
-  }).format(value);
-}
 
 export default async function TelegramImportPage({ searchParams }: PageProps) {
+  if (!internalToolsEnabled()) notFound();
+
   const query = await searchParams;
   const supabase = await createClient();
   const {
@@ -69,7 +66,7 @@ export default async function TelegramImportPage({ searchParams }: PageProps) {
   const activeCount = manifest?.entries.filter((entry) => entry.status === "active").length ?? 0;
   const draftCount = manifest?.entries.filter((entry) => entry.status === "draft").length ?? 0;
   const imageCount = manifest?.entries.reduce((total, entry) => total + entry.images.length, 0) ?? 0;
-  const enabled = process.env.ENABLE_INTERNAL_TEST_TOOLS === "true";
+  const enabled = internalToolsEnabled();
 
   return (
     <AdminShell active="products" admin={admin}>
@@ -84,7 +81,7 @@ export default async function TelegramImportPage({ searchParams }: PageProps) {
       {readError ? <Notice type="error">Manifest gagal dibaca: {readError}</Notice> : null}
       {!enabled ? (
         <Notice type="error">
-          Set ENABLE_INTERNAL_TEST_TOOLS=true di .env.local lalu restart dev server sebelum menjalankan import.
+          Tool import hanya tersedia di lingkungan lokal. Aktifkan ENABLE_INTERNAL_TEST_TOOLS=true lalu restart server lokal.
         </Notice>
       ) : null}
 

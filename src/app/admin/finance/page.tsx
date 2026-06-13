@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/server";
 
 import FinanceTabs from "./finance-tabs";
 
+import { formatRupiah } from "@/lib/format/display";
 type Props = {
   searchParams: Promise<{
     status?: string;
@@ -52,13 +53,6 @@ type ProviderEvent = {
 
 const STATUSES = ["all", "pending", "processing", "paid", "failed", "expired", "refunded"] as const;
 
-function rupiah(value: number) {
-  return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    maximumFractionDigits: 0,
-  }).format(value);
-}
 
 function date(value: string | null) {
   if (!value) return "-";
@@ -195,8 +189,8 @@ export default async function FinancePage({ searchParams }: Props) {
         {[
           ["Total transaksi", String(payments.length)],
           ["Pembayaran berhasil", String(payments.filter((item) => item.status === "paid").length)],
-          ["Nominal berhasil", rupiah(totalPaid)],
-          ["Total biaya", rupiah(totalFees)],
+          ["Nominal berhasil", formatRupiah(totalPaid)],
+          ["Total biaya", formatRupiah(totalFees)],
         ].map(([label, value]) => (
           <div
             key={label}
@@ -275,10 +269,10 @@ export default async function FinancePage({ searchParams }: Props) {
 
                 <div className="shrink-0 lg:text-right">
                   <p className="text-lg font-black text-emerald-700">
-                    {rupiah(payment.amount)}
+                    {formatRupiah(payment.amount)}
                   </p>
                   <p className="mt-1 text-xs text-slate-400">
-                    Biaya {rupiah(payment.fee)} · {date(payment.paid_at ?? payment.created_at)}
+                    Biaya {formatRupiah(payment.fee)} · {date(payment.paid_at ?? payment.created_at)}
                   </p>
 
                   {order ? (

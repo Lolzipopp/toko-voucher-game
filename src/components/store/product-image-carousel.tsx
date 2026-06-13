@@ -98,7 +98,7 @@ export default function ProductImageCarousel({
                 <div
                   role="img"
                   aria-label={image.alt}
-                  className="absolute inset-0 bg-contain bg-center bg-no-repeat"
+                  className={`absolute inset-0 bg-contain bg-center bg-no-repeat transition ${soldOut ? "grayscale opacity-45" : ""}`}
                   style={{ backgroundImage: `url(${image.url})` }}
                 />
               ) : null}

@@ -8,6 +8,7 @@ import { redirect, unstable_rethrow } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
 import { createServiceRoleClient } from "@/lib/supabase/service-role";
+import { assertInternalToolsEnabled } from "@/lib/security/internal-tools";
 
 type ImportAttribute = {
   attribute_key: string;
@@ -41,11 +42,7 @@ type ImportManifest = {
 const importRoot = path.join(process.cwd(), "private-import", "telegram-batch-01");
 
 async function requireActiveAdmin() {
-  if (process.env.ENABLE_INTERNAL_TEST_TOOLS !== "true") {
-    throw new Error(
-      "Import lokal dinonaktifkan. Set ENABLE_INTERNAL_TEST_TOOLS=true di .env.local lalu restart dev server.",
-    );
-  }
+  assertInternalToolsEnabled();
 
   const supabase = await createClient();
   const {

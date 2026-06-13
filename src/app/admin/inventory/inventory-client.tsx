@@ -3,6 +3,7 @@
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
+import { formatRupiah } from "@/lib/format/display";
 import {
   bulkAddInventory,
   deleteInventoryStock,
@@ -47,13 +48,6 @@ type ParsedRow = {
   reason: string;
 };
 
-function formatRupiah(value: number) {
-  return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    maximumFractionDigits: 0,
-  }).format(value);
-}
 
 function parsePreview(raw: string): ParsedRow[] {
   const seen = new Set<string>();
@@ -462,7 +456,15 @@ export default function InventoryClient({
 
           <select
             value={statusFilter}
-            onChange={(event) => setStatusFilter(event.target.value)}
+            onChange={(event) => {
+              const nextStatus = event.target.value;
+              setStatusFilter(nextStatus);
+              router.push(
+                nextStatus
+                  ? `/admin/inventory?status=${encodeURIComponent(nextStatus)}`
+                  : "/admin/inventory",
+              );
+            }}
             className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm"
           >
             <option value="">Semua status</option>
@@ -486,6 +488,7 @@ export default function InventoryClient({
               setProductFilter("");
               setStatusFilter("");
               setSupplierFilter("");
+              router.push("/admin/inventory");
             }}
             className="rounded-xl border border-slate-200 px-3 py-2.5 text-sm font-semibold text-slate-600"
           >

@@ -8,6 +8,7 @@ import { createClient } from "@/lib/supabase/server";
 
 import { archiveProduct, restoreProduct } from "./actions";
 
+import { formatRupiah } from "@/lib/format/display";
 type ProductsPageProps = { searchParams: Promise<{ success?: string; error?: string; view?: string }> };
 type ProductAttribute = { attribute_key: string; attribute_value: string; display_order: number };
 type Product = {
@@ -15,9 +16,6 @@ type Product = {
   games: { name: string }[] | null; product_attributes: ProductAttribute[];
 };
 
-function formatRupiah(value: number) {
-  return new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(value);
-}
 function badge(status: string) {
   const map: Record<string, string> = {
     active: "bg-emerald-100 text-emerald-800", draft: "bg-amber-100 text-amber-800", preorder: "bg-blue-100 text-blue-800",

@@ -12,7 +12,7 @@ import { createCheckoutOrder, validatePromo, type PromoResult } from "./actions"
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { items, subtotal, hydrated } = useCart();
+  const { items, subtotal, hydrated, clearCart } = useCart();
   const [email, setEmail] = useState("");
   const [promoCode, setPromoCode] = useState("");
   const [appliedPromo, setAppliedPromo] = useState<Extract<PromoResult, { ok: true }> | null>(null);
@@ -64,18 +64,19 @@ export default function CheckoutPage() {
         setError(result.message);
         return;
       }
+      clearCart();
       router.push(`/checkout/success/${result.accessToken}`);
     });
   }
 
   return (
-    <main className="min-h-screen bg-[#f7fbf8] text-slate-950">
+    <main className="min-h-screen w-full max-w-full overflow-x-clip bg-[#f7fbf8] text-slate-950">
       <StoreHeader />
-      <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:py-12">
+      <div className="mx-auto w-full min-w-0 max-w-5xl px-3 py-6 sm:px-6 sm:py-8 lg:py-12">
         <Link href="/cart" className="text-sm font-bold text-emerald-700">← Kembali ke keranjang</Link>
 
-        <div className="mt-5 grid gap-6 lg:grid-cols-[1fr_390px]">
-          <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
+        <div className="mt-5 grid min-w-0 gap-5 lg:grid-cols-[minmax(0,1fr)_390px] lg:gap-6">
+          <section className="min-w-0 overflow-hidden rounded-3xl border border-slate-200 bg-white p-4 shadow-sm sm:p-7">
             <p className="text-xs font-black uppercase tracking-[0.2em] text-emerald-700">Checkout tanpa login</p>
             <h1 className="mt-2 text-3xl font-black tracking-tight">Data pembeli</h1>
             <p className="mt-2 text-sm leading-6 text-slate-500">Email ini dipakai untuk menghubungkan pesanan ke akun pembeli dan mengirim status pesanan.</p>
@@ -95,7 +96,7 @@ export default function CheckoutPage() {
               className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 text-sm outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-100"
             />
 
-            <div className="mt-5 rounded-3xl border border-emerald-100 bg-emerald-50/60 p-4">
+            <div className="mt-5 min-w-0 overflow-hidden rounded-3xl border border-emerald-100 bg-emerald-50/60 p-3.5 sm:p-4">
               <label className="block text-xs font-black uppercase tracking-wider text-emerald-800">Kode promo</label>
               <div className="mt-2 flex flex-col gap-2 sm:flex-row">
                 <input
@@ -132,7 +133,7 @@ export default function CheckoutPage() {
             </div>
           </section>
 
-          <aside className="h-fit rounded-3xl bg-[#103d2b] p-6 text-white shadow-xl shadow-emerald-950/10 lg:sticky lg:top-24">
+          <aside className="h-fit min-w-0 overflow-hidden rounded-3xl bg-[#103d2b] p-6 text-white shadow-xl shadow-emerald-950/10 lg:sticky lg:top-24">
             <p className="text-xs font-black uppercase tracking-[0.18em] text-emerald-200">Ringkasan pembayaran</p>
 
             {!hydrated ? <p className="mt-5 text-sm text-white/60">Memuat keranjang...</p> : items.length === 0 ? (

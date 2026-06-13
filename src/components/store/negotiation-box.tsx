@@ -2,6 +2,8 @@
 
 import { useMemo, useState } from "react";
 
+import { formatRupiah } from "@/lib/format/display";
+import { buildWhatsappUrl } from "@/lib/whatsapp/url";
 type Props = {
   productName: string;
   productSlug: string;
@@ -11,13 +13,6 @@ type Props = {
   storeName: string;
 };
 
-function rupiah(value: number) {
-  return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    maximumFractionDigits: 0,
-  }).format(value);
-}
 
 export default function NegotiationBox({
   productName,
@@ -42,7 +37,7 @@ export default function NegotiationBox({
       minimumOffer !== null &&
       numericOffer < minimumOffer
     ) {
-      return `Penawaran minimum untuk produk ini ${rupiah(
+      return `Penawaran minimum untuk produk ini ${formatRupiah(
         minimumOffer,
       )}.`;
     }
@@ -57,9 +52,6 @@ export default function NegotiationBox({
   function openWhatsApp() {
     if (!offer || error || !whatsappNumber) return;
 
-    const number = whatsappNumber.replace(/\D/g, "");
-    if (!number) return;
-
     const productUrl =
       `${window.location.origin}/products/` +
       encodeURIComponent(productSlug);
@@ -67,8 +59,8 @@ export default function NegotiationBox({
     const message = [
       `Halo ${storeName}, saya ingin mengajukan nego.`,
       `Produk: ${productName}`,
-      `Harga website: ${rupiah(currentPrice)}`,
-      `Penawaran saya: ${rupiah(numericOffer)}`,
+      `Harga website: ${formatRupiah(currentPrice)}`,
+      `Penawaran saya: ${formatRupiah(numericOffer)}`,
       note ? `Catatan: ${note}` : null,
       `Link produk: ${productUrl}`,
       "",
@@ -77,13 +69,10 @@ export default function NegotiationBox({
       .filter(Boolean)
       .join("\n");
 
-    window.open(
-      `https://wa.me/${number}?text=${encodeURIComponent(
-        message,
-      )}`,
-      "_blank",
-      "noopener,noreferrer",
-    );
+    const url = buildWhatsappUrl(whatsappNumber, message);
+    if (!url) return;
+
+    window.open(url, "_blank", "noopener,noreferrer");
   }
 
   return (
@@ -133,7 +122,7 @@ export default function NegotiationBox({
 
       {minimumOffer !== null ? (
         <p className="mt-3 text-xs font-semibold text-amber-700">
-          Penawaran mulai {rupiah(minimumOffer)}
+          Penawaran mulai {formatRupiah(minimumOffer)}
         </p>
       ) : null}
 

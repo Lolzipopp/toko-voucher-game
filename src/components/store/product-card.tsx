@@ -3,6 +3,7 @@ import Link from "next/link";
 import FavoriteButton from "@/components/store/favorite-button";
 import { formatRupiah, productImageUrl } from "@/lib/public-store/format";
 import type { PublicCatalogProduct } from "@/lib/public-store/types";
+import { humanizeProductSpec } from "@/lib/catalog/display-text";
 
 export default function ProductCard({
   product,
@@ -37,7 +38,7 @@ export default function ProductCard({
         <div className="relative aspect-[2/1] overflow-hidden bg-[radial-gradient(circle_at_30%_20%,rgba(16,185,129,.28),transparent_40%),linear-gradient(135deg,#0a2038,#06101d)]">
           {imageUrl ? (
             <div
-              className="absolute inset-0 bg-contain bg-center bg-no-repeat transition duration-500 group-hover:scale-[1.01]"
+              className={`absolute inset-0 bg-contain bg-center bg-no-repeat transition duration-500 group-hover:scale-[1.01] ${soldOut ? "grayscale opacity-45" : ""}`}
               style={{
                 backgroundImage: `url(${imageUrl})`,
               }}
@@ -100,7 +101,7 @@ export default function ProductCard({
                 key={attribute.key}
                 className="rounded-lg border border-white/8 bg-white/5 px-2.5 py-1 text-[10px] font-bold text-slate-300"
               >
-                {attribute.value}
+                {humanizeProductSpec(attribute.value)}
               </span>
             ))}
           </div>

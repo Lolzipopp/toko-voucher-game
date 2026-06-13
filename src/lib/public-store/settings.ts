@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { buildWhatsappUrl } from "@/lib/whatsapp/url";
 
 export type PublicStoreSettings = {
   store_name: string;
@@ -36,11 +37,4 @@ export async function getPublicStoreSettings() {
   };
 }
 
-export function whatsappUrl(
-  number: string | null,
-  message: string,
-) {
-  if (!number) return null;
-
-  return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
-}
+export const whatsappUrl = buildWhatsappUrl;

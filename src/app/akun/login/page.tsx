@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 
 import StoreFooter from "@/components/store/store-footer";
 import StoreHeader from "@/components/store/store-header";
+import OtpSubmitButton from "@/components/store/otp-submit-button";
 import { createClient } from "@/lib/supabase/server";
 
 import {
@@ -123,9 +124,10 @@ export default async function CustomerLoginPage({
                 />
               </div>
 
-              <button className="w-full rounded-2xl bg-[#103d2b] px-5 py-3.5 text-sm font-black text-white transition hover:bg-emerald-800">
-                {mode === "register" ? "Kirim kode pendaftaran" : "Kirim kode masuk"}
-              </button>
+              <OtpSubmitButton
+                idleLabel={mode === "register" ? "Kirim kode pendaftaran" : "Kirim kode masuk"}
+                pendingLabel="Mengirim kode..."
+              />
             </form>
           ) : (
             <div className="mt-6">
@@ -161,9 +163,11 @@ export default async function CustomerLoginPage({
                   <input type="hidden" name="email" value={query.email} />
                   <input type="hidden" name="next" value={next} />
                   <input type="hidden" name="mode" value={mode} />
-                  <button className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-xs font-black text-slate-600 hover:bg-slate-50">
-                    Kirim ulang
-                  </button>
+                  <OtpSubmitButton
+                    idleLabel="Kirim ulang"
+                    pendingLabel="Mengirim ulang..."
+                    cooldownSeconds={query.sent ? 30 : 0}
+                  />
                 </form>
 
                 <Link

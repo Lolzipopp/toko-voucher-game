@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
+import { formatRupiah } from "@/lib/format/display";
 type CheckoutStatus = {
   ok: boolean;
   state:
@@ -37,13 +38,6 @@ type Props = {
   statusUrl: string;
 };
 
-function formatRupiah(value = 0) {
-  return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    maximumFractionDigits: 0,
-  }).format(value);
-}
 
 function secondsRemaining(expiresAt?: string | null) {
   if (!expiresAt) return 0;

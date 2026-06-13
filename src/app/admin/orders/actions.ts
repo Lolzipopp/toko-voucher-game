@@ -2,36 +2,15 @@
 
 import { revalidatePath } from "next/cache";
 
-import { createClient } from "@/lib/supabase/server";
+import { requireAdminAction } from "@/lib/auth/require-admin";
+import { databaseErrorMessage } from "@/lib/errors/database";
+import { logServerError } from "@/lib/observability/server-log";
 
 export type TestOrderActionResult = {
   ok: boolean;
   message: string;
   orderId?: string;
 };
-
-async function getActiveAdminClient() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return { supabase: null, error: "Sesi admin tidak ditemukan." };
-  }
-
-  const { data: admin } = await supabase
-    .from("admin_users")
-    .select("is_active")
-    .eq("id", user.id)
-    .single();
-
-  if (!admin?.is_active) {
-    return { supabase: null, error: "Akun bukan admin aktif." };
-  }
-
-  return { supabase, error: null };
-}
 
 export async function createTestOrder(input: {
   productId: string;
@@ -43,7 +22,11 @@ export async function createTestOrder(input: {
     return { ok: false, message: "Produk wajib dipilih." };
   }
 
-  if (!Number.isSafeInteger(input.quantity) || input.quantity < 1 || input.quantity > 50) {
+  if (
+    !Number.isSafeInteger(input.quantity) ||
+    input.quantity < 1 ||
+    input.quantity > 50
+  ) {
     return { ok: false, message: "Jumlah harus antara 1–50." };
   }
 
@@ -59,11 +42,9 @@ export async function createTestOrder(input: {
     return { ok: false, message: "Email tes tidak valid." };
   }
 
-  const { supabase, error: authError } = await getActiveAdminClient();
-
-  if (!supabase) {
-    return { ok: false, message: authError ?? "Akses ditolak." };
-  }
+  const auth = await requireAdminAction();
+  if (!auth.ok) return { ok: false, message: auth.message };
+  const { supabase } = auth;
 
   const { data, error } = await supabase.rpc("admin_create_test_order", {
     p_product_id: input.productId,
@@ -73,23 +54,24 @@ export async function createTestOrder(input: {
   });
 
   if (error) {
-    const message = error.message.includes("insufficient_stock")
-      ? "Stok tidak cukup. Order dan reservasi parsial otomatis dibatalkan."
-      : error.message;
-
-    return { ok: false, message };
+    logServerError("admin_create_test_order_failed", error);
+    return {
+      ok: false,
+      message: databaseErrorMessage(error, "Order tes belum dapat dibuat."),
+    };
   }
 
-  const result = data as
-    | {
-        order_id?: string;
-        order_number?: string;
-        reserved_count?: number;
-      }
-    | null;
+  const result = data as {
+    order_id?: string;
+    order_number?: string;
+    reserved_count?: number;
+  } | null;
 
   if (!result?.order_id) {
-    return { ok: false, message: "Order tes dibuat tetapi ID order tidak diterima." };
+    return {
+      ok: false,
+      message: "Order tes dibuat tetapi ID order tidak diterima.",
+    };
   }
 
   revalidatePath("/admin");
@@ -104,24 +86,29 @@ export async function createTestOrder(input: {
 }
 
 export async function releaseExpiredTestOrders(): Promise<TestOrderActionResult> {
-  const { supabase, error: authError } = await getActiveAdminClient();
+  const auth = await requireAdminAction();
+  if (!auth.ok) return { ok: false, message: auth.message };
+  const { supabase } = auth;
 
-  if (!supabase) {
-    return { ok: false, message: authError ?? "Akses ditolak." };
-  }
-
-  const { data, error } = await supabase.rpc("admin_release_expired_test_orders");
+  const { data, error } = await supabase.rpc(
+    "admin_release_expired_test_orders",
+  );
 
   if (error) {
-    return { ok: false, message: error.message };
+    logServerError("admin_release_expired_orders_failed", error);
+    return {
+      ok: false,
+      message: databaseErrorMessage(
+        error,
+        "Order kedaluwarsa belum dapat diproses.",
+      ),
+    };
   }
 
-  const result = data as
-    | {
-        expired_order_count?: number;
-        released_stock_count?: number;
-      }
-    | null;
+  const result = data as {
+    expired_order_count?: number;
+    released_stock_count?: number;
+  } | null;
 
   const expiredOrders = result?.expired_order_count ?? 0;
   const releasedStock = result?.released_stock_count ?? 0;
@@ -139,7 +126,6 @@ export async function releaseExpiredTestOrders(): Promise<TestOrderActionResult>
   };
 }
 
-
 export async function simulateTestPaidDelivery(
   orderId: string,
 ): Promise<TestOrderActionResult> {
@@ -147,11 +133,9 @@ export async function simulateTestPaidDelivery(
     return { ok: false, message: "ID order tidak valid." };
   }
 
-  const { supabase, error: authError } = await getActiveAdminClient();
-
-  if (!supabase) {
-    return { ok: false, message: authError ?? "Akses ditolak." };
-  }
+  const auth = await requireAdminAction();
+  if (!auth.ok) return { ok: false, message: auth.message };
+  const { supabase } = auth;
 
   const { data, error } = await supabase.rpc(
     "admin_simulate_test_paid_delivery",
@@ -161,21 +145,22 @@ export async function simulateTestPaidDelivery(
   );
 
   if (error) {
-    const message = error.message.includes("reservation_expired")
-      ? "Reservasi sudah kedaluwarsa. Lepaskan reservasi lalu buat order tes baru."
-      : error.message;
-
-    return { ok: false, message };
+    logServerError("admin_simulate_delivery_failed", error, { orderId });
+    return {
+      ok: false,
+      message: databaseErrorMessage(
+        error,
+        "Simulasi pengiriman belum dapat diproses.",
+      ),
+    };
   }
 
-  const result = data as
-    | {
-        ok?: boolean;
-        already_processed?: boolean;
-        delivered_count?: number;
-        message?: string;
-      }
-    | null;
+  const result = data as {
+    ok?: boolean;
+    already_processed?: boolean;
+    delivered_count?: number;
+    message?: string;
+  } | null;
 
   revalidatePath("/admin");
   revalidatePath("/admin/orders");
@@ -197,9 +182,11 @@ export async function simulateTestPaidDelivery(
   );
 
   if (promoError) {
+    logServerError("admin_finalize_test_promo_failed", promoError, { orderId });
     return {
       ok: false,
-      message: "Order terkirim, tetapi pencatatan promo gagal. Periksa audit log.",
+      message:
+        "Order terkirim, tetapi pencatatan promo gagal. Periksa audit log.",
     };
   }
 
@@ -212,7 +199,6 @@ export async function simulateTestPaidDelivery(
   };
 }
 
-
 export async function confirmManualPaymentAndDeliver(input: {
   orderId: string;
   paymentReference: string;
@@ -222,34 +208,30 @@ export async function confirmManualPaymentAndDeliver(input: {
     return { ok: false, message: "ID order tidak valid." };
   }
 
-  const { supabase, error: authError } =
-    await getActiveAdminClient();
-
-  if (!supabase) {
-    return {
-      ok: false,
-      message: authError ?? "Akses ditolak.",
-    };
-  }
+  const auth = await requireAdminAction();
+  if (!auth.ok) return { ok: false, message: auth.message };
+  const { supabase } = auth;
 
   const { data, error } = await supabase.rpc(
     "admin_confirm_manual_payment_and_deliver",
     {
       p_order_id: input.orderId,
-      p_payment_reference:
-        input.paymentReference.trim() || null,
+      p_payment_reference: input.paymentReference.trim() || null,
       p_admin_notes: input.adminNotes.trim() || null,
     },
   );
 
   if (error) {
-    const message = error.message.includes("reservation_expired")
-      ? "Waktu pesanan sudah habis. Minta pembeli membuat order baru."
-      : error.message.includes("order_not_payable")
-        ? "Order ini sudah expired, gagal, atau refunded."
-        : error.message;
-
-    return { ok: false, message };
+    logServerError("admin_manual_payment_delivery_failed", error, {
+      orderId: input.orderId,
+    });
+    return {
+      ok: false,
+      message: databaseErrorMessage(
+        error,
+        "Pembayaran belum dapat dikonfirmasi. Silakan periksa status order.",
+      ),
+    };
   }
 
   const result = data as {
@@ -268,8 +250,7 @@ export async function confirmManualPaymentAndDeliver(input: {
     return {
       ok: false,
       message:
-        result?.message ??
-        "Pembayaran tercatat, tetapi pengiriman akun gagal.",
+        result?.message ?? "Pembayaran tercatat, tetapi pengiriman akun gagal.",
     };
   }
 
@@ -281,5 +262,52 @@ export async function confirmManualPaymentAndDeliver(input: {
       : `Pembayaran dikonfirmasi dan ${
           result.delivered_count ?? 0
         } akun berhasil dikirim.`,
+  };
+}
+
+export async function releasePendingOrder(
+  orderId: string,
+): Promise<TestOrderActionResult> {
+  if (!orderId) {
+    return { ok: false, message: "ID order tidak valid." };
+  }
+
+  const auth = await requireAdminAction();
+  if (!auth.ok) return { ok: false, message: auth.message };
+  const { supabase } = auth;
+
+  const { data, error } = await supabase.rpc("admin_release_pending_order", {
+    p_order_id: orderId,
+    p_reason: "admin_released_pending_order",
+  });
+
+  if (error) {
+    logServerError("admin_release_pending_order_failed", error, { orderId });
+    return {
+      ok: false,
+      message: databaseErrorMessage(
+        error,
+        "Order belum dapat dibatalkan dan stok belum dikembalikan.",
+      ),
+    };
+  }
+
+  const result = data as {
+    ok?: boolean;
+    already_processed?: boolean;
+    released_count?: number;
+  } | null;
+
+  revalidatePath("/admin");
+  revalidatePath("/admin/orders");
+  revalidatePath(`/admin/orders/${orderId}`);
+  revalidatePath("/admin/inventory");
+
+  return {
+    ok: Boolean(result?.ok),
+    orderId,
+    message: result?.already_processed
+      ? "Order ini sudah kedaluwarsa dan stoknya sudah dilepas."
+      : `${result?.released_count ?? 0} stok dikembalikan menjadi tersedia.`,
   };
 }

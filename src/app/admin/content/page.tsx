@@ -145,7 +145,7 @@ export default async function ContentPage({ searchParams }: Props) {
         <h2 className="mt-2 text-xl font-black">Tambah banner event atau promosi</h2>
         <p className="mt-1 text-sm text-slate-500">Banner berpindah otomatis setiap 5 detik dan dapat digeser pembeli.</p>
 
-        <form action={createAnnouncement} encType="multipart/form-data" className="mt-5 grid gap-4 md:grid-cols-2">
+        <form action={createAnnouncement} className="mt-5 grid gap-4 md:grid-cols-2">
           <input name="title" required placeholder="Judul banner" className={field} />
           <select name="tone" defaultValue="promo" className={field}>
             <option value="promo">Promo hijau</option>

@@ -11,6 +11,7 @@ import RecentlyViewedSection from "@/components/store/recently-viewed-section";
 import { getPublicStoreSettings, whatsappUrl } from "@/lib/public-store/settings";
 import { createClient } from "@/lib/supabase/server";
 import type { PublicCatalogProduct } from "@/lib/public-store/types";
+import { productMatchesSearch } from "@/lib/catalog/search";
 
 export const metadata: Metadata = {
   title: "RIKU STORE — Akun Game Digital",
@@ -27,36 +28,6 @@ type HomeProps = {
   }>;
 };
 
-function normalizeSearchText(value: string) {
-  return value
-    .normalize("NFKD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, " ")
-    .trim();
-}
-
-function productMatchesSearch(product: PublicCatalogProduct, rawQuery?: string) {
-  const normalizedQuery = normalizeSearchText(rawQuery ?? "");
-  if (!normalizedQuery) return true;
-
-  const searchableText = normalizeSearchText(
-    [
-      product.name,
-      product.description ?? "",
-      product.game.name,
-      product.game.slug,
-      ...product.attributes.flatMap((attribute) => [attribute.key, attribute.value]),
-    ].join(" "),
-  );
-
-  return normalizedQuery
-    .split(/\s+/)
-    .filter(Boolean)
-    .every((term) => searchableText.includes(term));
-}
-
-
 export default async function Home({ searchParams }: HomeProps) {
   const query = await searchParams;
   const supabase = await createClient();
@@ -71,7 +42,9 @@ export default async function Home({ searchParams }: HomeProps) {
   ] = await Promise.all([
     supabase.rpc("get_public_catalog", {
       p_game_slug: query.game ?? null,
-      p_search: query.q ?? null,
+      // Search is filtered in the application so fruit searches can distinguish
+      // permanent/equipped fruit from awakening-only mentions.
+      p_search: null,
     }),
     supabase
       .from("games")
@@ -350,8 +323,7 @@ export default async function Home({ searchParams }: HomeProps) {
 
       <RecentlyViewedSection />
 
-      {(testimonials ?? []).length ? (
-        <section
+      <section
           id="testimoni"
           className="border-y border-white/8 bg-[#071320]"
         >
@@ -368,6 +340,7 @@ export default async function Home({ searchParams }: HomeProps) {
               </p>
             </div>
 
+            {(testimonials ?? []).length ? (
             <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
               {(testimonials ?? []).map((testimonial) => (
                 <article
@@ -406,9 +379,13 @@ export default async function Home({ searchParams }: HomeProps) {
                 </article>
               ))}
             </div>
+            ) : (
+              <div className="mx-auto mt-8 max-w-xl rounded-3xl border border-dashed border-white/15 bg-white/[.035] p-7 text-center text-sm leading-6 text-slate-400">
+                Belum ada testimoni pembeli yang ditampilkan. Testimoni asli akan muncul setelah diverifikasi.
+              </div>
+            )}
           </div>
         </section>
-      ) : null}
 
       <section
         id="faq"

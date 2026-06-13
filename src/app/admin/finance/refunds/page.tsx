@@ -9,6 +9,7 @@ import { createClient } from "@/lib/supabase/server";
 import FinanceTabs from "../finance-tabs";
 import { createRefundRequest, reviewRefundRequest } from "./actions";
 
+import { formatRupiah } from "@/lib/format/display";
 type Props = {
   searchParams: Promise<{
     success?: string;
@@ -61,13 +62,6 @@ const FILTERS = [
   "cancelled",
 ] as const;
 
-function rupiah(value: number) {
-  return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    maximumFractionDigits: 0,
-  }).format(value);
-}
 
 function date(value: string | null) {
   if (!value) return "-";
@@ -189,7 +183,7 @@ export default async function RefundPage({ searchParams }: Props) {
             {paidOrders.map((order) => (
               <option key={order.id} value={order.id}>
                 {order.order_number} · {order.customer_email} ·{" "}
-                {rupiah(order.total_amount)}
+                {formatRupiah(order.total_amount)}
               </option>
             ))}
           </select>
@@ -287,10 +281,10 @@ export default async function RefundPage({ searchParams }: Props) {
 
                 <div className="shrink-0 xl:text-right">
                   <p className="text-xl font-black text-emerald-700">
-                    {rupiah(refund.requested_amount)}
+                    {formatRupiah(refund.requested_amount)}
                   </p>
                   <p className="mt-1 text-xs text-slate-400">
-                    Total order {rupiah(order?.total_amount ?? 0)}
+                    Total order {formatRupiah(order?.total_amount ?? 0)}
                   </p>
 
                   {refund.status === "requested" ? (

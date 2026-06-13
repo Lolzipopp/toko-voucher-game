@@ -29,7 +29,7 @@ type Promo = {
   is_active: boolean;
 };
 
-function rupiah(value: number | null) {
+function formatRupiah(value: number | null) {
   if (value == null) return "-";
   return new Intl.NumberFormat("id-ID", {
     style: "currency",
@@ -56,6 +56,7 @@ export default async function PromosPage({ searchParams }: Props) {
   const field = "w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-100";
 
   // Waktu evaluasi promo diambil sekali untuk satu request halaman admin.
+   
   // eslint-disable-next-line react-hooks/purity
   const now = Date.now();
   const manageablePromos = ((promos ?? []) as Promo[]).filter(
@@ -99,10 +100,10 @@ export default async function PromosPage({ searchParams }: Props) {
               <span className="rounded-xl bg-slate-100 px-3 py-1.5">
                 {promo.discount_type === "percentage"
                   ? `${promo.discount_value}%`
-                  : rupiah(promo.discount_value)}
+                  : formatRupiah(promo.discount_value)}
               </span>
               <span className="rounded-xl bg-slate-100 px-3 py-1.5">
-                Min. {rupiah(promo.min_order_amount)}
+                Min. {formatRupiah(promo.min_order_amount)}
               </span>
               <span className="rounded-xl bg-slate-100 px-3 py-1.5">
                 Dipakai {promo.usage_count}/{promo.usage_limit ?? "∞"}

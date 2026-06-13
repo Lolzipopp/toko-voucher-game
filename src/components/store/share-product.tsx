@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { formatRupiah } from "@/lib/format/display";
+import { buildWhatsappShareUrl } from "@/lib/whatsapp/url";
 
 type ShareProductProps = {
   name: string;
@@ -29,11 +31,7 @@ export default function ShareProduct({
   }
 
   function shareWhatsApp() {
-    const priceText = new Intl.NumberFormat("id-ID", {
-      style: "currency",
-      currency: "IDR",
-      maximumFractionDigits: 0,
-    }).format(price);
+    const priceText = formatRupiah(price);
 
     const message = [
       `Lihat produk ini di RIKU STORE:`,
@@ -43,7 +41,7 @@ export default function ShareProduct({
     ].join("\n");
 
     window.open(
-      `https://wa.me/?text=${encodeURIComponent(message)}`,
+      buildWhatsappShareUrl(message),
       "_blank",
       "noopener,noreferrer",
     );
