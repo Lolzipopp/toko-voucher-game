@@ -1,6 +1,5 @@
 import Link from "next/link";
 
-import FavoriteButton from "@/components/store/favorite-button";
 import { formatRupiah, productImageUrl } from "@/lib/public-store/format";
 import type { PublicCatalogProduct } from "@/lib/public-store/types";
 import { humanizeProductSpec } from "@/lib/catalog/display-text";
@@ -14,23 +13,9 @@ export default function ProductCard({
   const price = product.price_promo ?? product.price_normal;
   const soldOut = product.available_stock <= 0;
 
-  const engagementProduct = {
-    id: product.id,
-    slug: product.slug,
-    name: product.name,
-    gameName: product.game.name,
-    price: Number(price),
-    imageUrl,
-    availableStock: Number(product.available_stock),
-  };
-
 
   return (
     <article className="group relative overflow-hidden rounded-3xl border border-white/10 bg-[#0a1727] transition duration-200 hover:border-emerald-300/45 hover:bg-[#0d1d31]">
-      <div className="absolute right-3 top-3 z-20">
-        <FavoriteButton product={engagementProduct} compact />
-      </div>
-
       <Link href={`/products/${product.slug}`} className="block">
         <div className="relative aspect-[16/9] overflow-hidden bg-[#081322]">
           {imageUrl ? (
@@ -75,11 +60,6 @@ export default function ProductCard({
             <h2 className="line-clamp-2 text-base font-black leading-snug text-white sm:text-lg">
               {product.name}
             </h2>
-            {product.product_type === "unique" ? (
-              <span className="shrink-0 rounded-full border border-amber-300/25 bg-amber-300/10 px-2 py-1 text-[9px] font-black uppercase tracking-wide text-amber-200">
-                Nego
-              </span>
-            ) : null}
           </div>
 
           <div className="mt-3 flex flex-wrap gap-1.5">
@@ -105,7 +85,7 @@ export default function ProductCard({
                 {formatRupiah(price)}
               </p>
               <span className="rounded-xl bg-emerald-400 px-3 py-2.5 text-[11px] font-black text-emerald-950 transition group-hover:bg-emerald-300 sm:px-4 sm:text-xs">
-                {soldOut ? "Detail" : "Beli"}
+                {soldOut ? "Habis" : "Beli"}
               </span>
             </div>
           </div>

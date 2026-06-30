@@ -83,7 +83,7 @@ export default function StoreHeader() {
                     Akun Pembeli
                   </p>
                   <p className="mt-1 text-sm text-slate-300">
-                    Masuk untuk melihat pesanan, atau daftar gratis dengan email.
+                    Cek pesanan kamu di sini.
                   </p>
                   <div className="mt-3 grid grid-cols-2 gap-2">
                     <Link
@@ -106,7 +106,7 @@ export default function StoreHeader() {
                     onClick={() => setMenuOpen(false)}
                     className="mt-2 block rounded-xl px-3 py-2 text-center text-xs font-bold text-slate-300 hover:bg-white/5"
                   >
-                    Buka akun & pesanan saya
+                    Cek pesanan
                   </Link>
                 </div>
 
@@ -116,42 +116,35 @@ export default function StoreHeader() {
                     onNavigate={() => setMenuOpen(false)}
                     className="rounded-xl px-4 py-3 text-slate-200 hover:bg-white/5"
                   >
-                    Pilih kebutuhanmu
+                    Menu
                   </SectionLink>
                   <SectionLink
                     href="/#exclusive-offer"
                     onNavigate={() => setMenuOpen(false)}
                     className="rounded-xl px-4 py-3 text-slate-200 hover:bg-white/5"
                   >
-                    Exclusive Offer
+                    Promo
                   </SectionLink>
                   <SectionLink
                     href="/#produk"
                     onNavigate={() => setMenuOpen(false)}
                     className="rounded-xl px-4 py-3 text-slate-200 hover:bg-white/5"
                   >
-                    Semua akun
+                    Akun ready
                   </SectionLink>
                   <SectionLink
                     href="/#faq"
                     onNavigate={() => setMenuOpen(false)}
                     className="rounded-xl px-4 py-3 text-slate-200 hover:bg-white/5"
                   >
-                    FAQ
+                    Bantuan
                   </SectionLink>
-                  <Link
-                    href="/favorit"
-                    onClick={() => setMenuOpen(false)}
-                    className="rounded-xl px-4 py-3 text-slate-200 hover:bg-white/5"
-                  >
-                    Favorit
-                  </Link>
                   <Link
                     href="/tentang-kontak"
                     onClick={() => setMenuOpen(false)}
                     className="rounded-xl px-4 py-3 text-slate-200 hover:bg-white/5"
                   >
-                    Kontak & bantuan
+                    Chat admin
                   </Link>
                 </nav>
               </div>

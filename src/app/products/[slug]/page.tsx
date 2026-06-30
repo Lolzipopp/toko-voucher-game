@@ -1,15 +1,12 @@
-import NegotiationBox from "@/components/store/negotiation-box";
 import { humanizeProductDescription, humanizeProductSpec } from "@/lib/catalog/display-text";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import AddToCartButton from "@/components/store/add-to-cart-button";
-import FavoriteButton from "@/components/store/favorite-button";
 import ProductImageCarousel from "@/components/store/product-image-carousel";
 import RecentlyViewedRecorder from "@/components/store/recently-viewed-recorder";
 import RestockRequestButton from "@/components/store/restock-request-button";
-import ShareProduct from "@/components/store/share-product";
 import StoreFooter from "@/components/store/store-footer";
 import StoreHeader from "@/components/store/store-header";
 import { formatRupiah, productImageUrl } from "@/lib/public-store/format";
@@ -79,7 +76,7 @@ export default async function ProductDetailPage({
   const price = product.price_promo ?? product.price_normal;
   const soldOut = product.available_stock <= 0;
 
-  const engagementProduct = {
+  const viewedProduct = {
     id: product.id,
     slug: product.slug,
     name: product.name,
@@ -106,7 +103,7 @@ export default async function ProductDetailPage({
 
   return (
     <main className="min-h-screen overflow-x-hidden bg-[#f6f7f9] text-slate-950">
-      <RecentlyViewedRecorder product={engagementProduct} />
+      <RecentlyViewedRecorder product={viewedProduct} />
 
       <StoreHeader />
 
@@ -210,18 +207,20 @@ export default async function ProductDetailPage({
                 </div>
               </div>
 
-              <div className="mt-5 flex min-w-0 flex-wrap gap-2">
-                <FavoriteButton product={engagementProduct} />
-                <ShareProduct
-                  name={product.name}
-                  slug={product.slug}
-                  price={engagementProduct.price}
-                />
-              </div>
-
               <div className="mt-5">
                 {soldOut ? (
-                  <RestockRequestButton productName={product.name} />
+                  whatsappUrl ? (
+                    <a
+                      href={whatsappUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex w-full items-center justify-center rounded-2xl bg-amber-400 px-5 py-4 text-base font-black text-amber-950"
+                    >
+                      Chat admin
+                    </a>
+                  ) : (
+                    <RestockRequestButton productName={product.name} />
+                  )
                 ) : (
                   <AddToCartButton
                     item={{
@@ -238,21 +237,6 @@ export default async function ProductDetailPage({
                 )}
               </div>
 
-              {product.product_type === "unique" ? (
-                <NegotiationBox
-                  productName={product.name}
-                  productSlug={product.slug}
-                  currentPrice={Number(price)}
-                  minimumOffer={
-                    product.negotiation_min_price === null
-                      ? null
-                      : Number(product.negotiation_min_price)
-                  }
-                  whatsappNumber={whatsappNumber || null}
-                  storeName={publicSettings.store_name}
-                />
-              ) : null}
-
               {whatsappUrl ? (
                 <a
                   href={whatsappUrl}
@@ -260,7 +244,7 @@ export default async function ProductDetailPage({
                   rel="noreferrer"
                   className="mt-3 flex w-full items-center justify-center rounded-2xl border border-slate-200 px-5 py-3 text-xs font-black text-slate-700 hover:bg-slate-50"
                 >
-                  Tanya admin WA
+                  Chat admin
                 </a>
               ) : null}
 
