@@ -29,7 +29,7 @@ type HomeProps = {
   }>;
 };
 
-function MenuArrow({ tone }: { tone: "emerald" | "amber" | "sky" | "violet" }) {
+function MenuIcon({ type, tone }: { type: "buy" | "promo" | "orders" | "admin"; tone: "emerald" | "amber" | "sky" | "violet" }) {
   const toneClass = {
     emerald: "bg-emerald-400 text-emerald-950",
     amber: "bg-amber-300 text-amber-950",
@@ -37,12 +37,40 @@ function MenuArrow({ tone }: { tone: "emerald" | "amber" | "sky" | "violet" }) {
     violet: "bg-violet-300 text-violet-950",
   }[tone];
 
+  const iconClass = "h-5 w-5";
+
   return (
     <span
       aria-hidden="true"
-      className={`grid h-9 w-9 place-items-center rounded-full text-lg font-black transition group-hover:translate-x-0.5 ${toneClass}`}
+      className={`grid h-10 w-10 place-items-center rounded-2xl transition group-hover:scale-105 group-active:scale-95 ${toneClass}`}
     >
-      →
+      {type === "buy" ? (
+        <svg viewBox="0 0 24 24" fill="none" className={iconClass}>
+          <path d="M6 7h12l-1 13H7L6 7Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+          <path d="M9 7a3 3 0 0 1 6 0" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        </svg>
+      ) : null}
+      {type === "promo" ? (
+        <svg viewBox="0 0 24 24" fill="none" className={iconClass}>
+          <path d="M20 12v8H4v-8" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+          <path d="M3 7h18v5H3V7Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+          <path d="M12 7v13" stroke="currentColor" strokeWidth="2" />
+          <path d="M12 7H8.5A2.5 2.5 0 1 1 12 3.6V7Zm0 0h3.5A2.5 2.5 0 1 0 12 3.6V7Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+        </svg>
+      ) : null}
+      {type === "orders" ? (
+        <svg viewBox="0 0 24 24" fill="none" className={iconClass}>
+          <path d="M7 3h10v18H7V3Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+          <path d="M9.5 8h5M9.5 12h5M9.5 16h3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        </svg>
+      ) : null}
+      {type === "admin" ? (
+        <svg viewBox="0 0 24 24" fill="none" className={iconClass}>
+          <path d="M5 19v-4a7 7 0 0 1 14 0v4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+          <path d="M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" stroke="currentColor" strokeWidth="2" />
+          <path d="M8 19h8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        </svg>
+      ) : null}
     </span>
   );
 }
@@ -156,7 +184,7 @@ export default async function Home({ searchParams }: HomeProps) {
           >
             <div className="flex items-start justify-between gap-3">
               <h3 className="text-base font-black leading-tight text-white sm:text-lg">Beli akun</h3>
-              <MenuArrow tone="emerald" />
+              <MenuIcon type="buy" tone="emerald" />
             </div>
             <p className="mt-4 text-sm leading-6 text-slate-400">
               Lihat akun yang tersedia.
@@ -169,7 +197,7 @@ export default async function Home({ searchParams }: HomeProps) {
           >
             <div className="flex items-start justify-between gap-3">
               <h3 className="text-base font-black leading-tight text-white sm:text-lg">Promo</h3>
-              <MenuArrow tone="amber" />
+              <MenuIcon type="promo" tone="amber" />
             </div>
             <p className="mt-4 text-sm leading-6 text-slate-400">
               Lihat promo aktif.
@@ -182,7 +210,7 @@ export default async function Home({ searchParams }: HomeProps) {
           >
             <div className="flex items-start justify-between gap-3">
               <h3 className="text-base font-black leading-tight text-white sm:text-lg">Pesanan</h3>
-              <MenuArrow tone="sky" />
+              <MenuIcon type="orders" tone="sky" />
             </div>
             <p className="mt-4 text-sm leading-6 text-slate-400">
               Cek status pesanan.
@@ -198,7 +226,7 @@ export default async function Home({ searchParams }: HomeProps) {
             >
               <div className="flex items-start justify-between gap-3">
                 <h3 className="text-base font-black leading-tight text-white sm:text-lg">Hubungi admin</h3>
-                <MenuArrow tone="violet" />
+                <MenuIcon type="admin" tone="violet" />
               </div>
               <p className="mt-4 text-sm leading-6 text-slate-400">
                 Cari akun khusus lewat admin.
@@ -208,7 +236,7 @@ export default async function Home({ searchParams }: HomeProps) {
             <div className="flex min-h-28 flex-col justify-between rounded-2xl border border-white/10 bg-[#091625] p-4 opacity-70">
               <div className="flex items-start justify-between gap-3">
                 <h3 className="text-base font-black leading-tight text-white sm:text-lg">Hubungi admin</h3>
-                <MenuArrow tone="violet" />
+                <MenuIcon type="admin" tone="violet" />
               </div>
               <p className="mt-4 text-sm leading-6 text-slate-400">WhatsApp belum tersedia.</p>
             </div>
