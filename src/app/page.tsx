@@ -28,6 +28,24 @@ type HomeProps = {
   }>;
 };
 
+function NeedIcon({ label, tone }: { label: string; tone: "emerald" | "amber" | "sky" | "violet" }) {
+  const toneClass = {
+    emerald: "border-emerald-300/35 bg-emerald-300/10 text-emerald-200",
+    amber: "border-amber-300/35 bg-amber-300/10 text-amber-200",
+    sky: "border-sky-300/35 bg-sky-300/10 text-sky-200",
+    violet: "border-violet-300/35 bg-violet-300/10 text-violet-200",
+  }[tone];
+
+  return (
+    <span
+      aria-hidden="true"
+      className={`grid h-11 w-11 place-items-center rounded-2xl border text-sm font-black tracking-tight shadow-[0_0_24px_rgba(255,255,255,.05)] sm:h-14 sm:w-14 sm:rounded-3xl sm:text-base ${toneClass}`}
+    >
+      {label}
+    </span>
+  );
+}
+
 export default async function Home({ searchParams }: HomeProps) {
   const query = await searchParams;
   const supabase = await createClient();
@@ -139,7 +157,7 @@ export default async function Home({ searchParams }: HomeProps) {
             href="/#produk"
             className="group flex min-h-28 flex-col items-center justify-center rounded-2xl border border-emerald-400/25 bg-[radial-gradient(circle_at_80%_0%,rgba(52,211,153,.18),transparent_45%),#0a1a2e] px-2 py-4 text-center transition hover:-translate-y-1 hover:border-emerald-300/60 sm:min-h-72 sm:items-start sm:justify-start sm:rounded-3xl sm:p-6 sm:text-left"
           >
-            <span className="text-3xl sm:text-4xl">🎮</span>
+            <NeedIcon label="BA" tone="emerald" />
             <h3 className="mt-2 text-[11px] font-black italic leading-tight sm:mt-7 sm:text-xl">BELI AKUN</h3>
             <p className="mt-2 hidden text-sm leading-6 text-slate-400 sm:block">
               Cari akun berdasarkan game, harga, dan spesifikasi.
@@ -153,7 +171,7 @@ export default async function Home({ searchParams }: HomeProps) {
             href="/#exclusive-offer"
             className="group flex min-h-28 flex-col items-center justify-center rounded-2xl border border-amber-400/20 bg-[radial-gradient(circle_at_80%_0%,rgba(251,191,36,.16),transparent_45%),#0a1a2e] px-2 py-4 text-center transition hover:-translate-y-1 hover:border-amber-300/55 sm:min-h-72 sm:items-start sm:justify-start sm:rounded-3xl sm:p-6 sm:text-left"
           >
-            <span className="text-3xl sm:text-4xl">🎁</span>
+            <NeedIcon label="PR" tone="amber" />
             <h3 className="mt-2 text-[11px] font-black italic leading-tight sm:mt-7 sm:text-xl">PROMO</h3>
             <p className="mt-2 hidden text-sm leading-6 text-slate-400 sm:block">
               Cek akun dengan harga khusus yang sedang aktif.
@@ -167,7 +185,7 @@ export default async function Home({ searchParams }: HomeProps) {
             href="/akun"
             className="group flex min-h-28 flex-col items-center justify-center rounded-2xl border border-sky-400/20 bg-[radial-gradient(circle_at_80%_0%,rgba(56,189,248,.16),transparent_45%),#0a1a2e] px-2 py-4 text-center transition hover:-translate-y-1 hover:border-sky-300/55 sm:min-h-72 sm:items-start sm:justify-start sm:rounded-3xl sm:p-6 sm:text-left"
           >
-            <span className="text-3xl sm:text-4xl">🔐</span>
+            <NeedIcon label="PS" tone="sky" />
             <h3 className="mt-2 text-[11px] font-black italic leading-tight sm:mt-7 sm:text-xl">PESANAN</h3>
             <p className="mt-2 hidden text-sm leading-6 text-slate-400 sm:block">
               Masuk lewat email untuk melihat order dan data akun.
@@ -184,7 +202,7 @@ export default async function Home({ searchParams }: HomeProps) {
               rel="noreferrer"
               className="group flex min-h-28 flex-col items-center justify-center rounded-2xl border border-violet-400/20 bg-[radial-gradient(circle_at_80%_0%,rgba(167,139,250,.16),transparent_45%),#0a1a2e] px-2 py-4 text-center transition hover:-translate-y-1 hover:border-violet-300/55 sm:min-h-72 sm:items-start sm:justify-start sm:rounded-3xl sm:p-6 sm:text-left"
             >
-              <span className="text-3xl sm:text-4xl">💬</span>
+              <NeedIcon label="WA" tone="violet" />
               <h3 className="mt-2 text-[11px] font-black italic leading-tight sm:mt-7 sm:text-xl">JUAL / CARI</h3>
               <p className="mt-2 hidden text-sm leading-6 text-slate-400 sm:block">
                 Hubungi admin untuk menjual akun atau mencari spesifikasi khusus.
@@ -195,7 +213,7 @@ export default async function Home({ searchParams }: HomeProps) {
             </a>
           ) : (
             <div className="flex min-h-28 flex-col items-center justify-center rounded-2xl border border-white/10 bg-[#091625] px-2 py-4 text-center opacity-70 sm:min-h-72 sm:items-start sm:justify-start sm:rounded-3xl sm:p-6 sm:text-left">
-              <span className="text-3xl sm:text-4xl">💬</span>
+              <NeedIcon label="WA" tone="violet" />
               <h3 className="mt-2 text-[11px] font-black italic leading-tight sm:mt-7 sm:text-xl">JUAL / CARI</h3>
               <p className="mt-2 hidden text-sm leading-6 text-slate-400 sm:block">Layanan WhatsApp sedang tidak tersedia.</p>
             </div>
