@@ -1,4 +1,3 @@
-import { humanizeProductSpec } from "@/lib/catalog/display-text";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -127,31 +126,7 @@ export default async function ProductDetailPage({
               availableStock={Number(product.available_stock)}
             />
 
-            <div className="mt-4 rounded-3xl border border-slate-200 bg-white p-4 sm:mt-5 sm:p-6">
-              <h2 className="text-lg font-black text-slate-950">
-                Detail akun
-              </h2>
-              <p className="mt-1 text-sm text-slate-500">
-                Periksa detail akun sebelum membeli.
-              </p>
 
-              <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                {product.attributes.map((attribute) => (
-                  <div
-                    key={attribute.key}
-                    className="min-w-0 rounded-2xl border border-slate-200 bg-slate-50 p-4"
-                  >
-                    <p className="text-[10px] font-black uppercase tracking-wider text-slate-400">
-                      {attribute.key.replaceAll("_", " ")}
-                    </p>
-
-                    <p className="mt-1 [overflow-wrap:anywhere] text-sm font-black text-slate-900">
-                      {humanizeProductSpec(attribute.value)}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
           </section>
 
           <aside className="min-w-0 lg:sticky lg:top-24 lg:self-start">
