@@ -105,7 +105,7 @@ export default async function ProductDetailPage({
     : null;
 
   return (
-    <main className="min-h-screen bg-[#f7fbf8] text-slate-950">
+    <main className="min-h-screen bg-[#06111f] text-white">
       <RecentlyViewedRecorder product={engagementProduct} />
 
       <StoreHeader />
@@ -113,7 +113,7 @@ export default async function ProductDetailPage({
       <div className="mx-auto max-w-7xl px-3 py-5 sm:px-6 sm:py-8 lg:py-12">
         <Link
           href="/#produk"
-          className="text-sm font-bold text-emerald-700"
+          className="text-sm font-bold text-emerald-300 hover:text-emerald-200"
         >
           ← Kembali ke katalog
         </Link>
@@ -129,22 +129,25 @@ export default async function ProductDetailPage({
               availableStock={Number(product.available_stock)}
             />
 
-            <div className="mt-4 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm sm:mt-5 sm:p-6">
-              <h2 className="text-lg font-black">
-                Spesifikasi akun
+            <div className="mt-4 rounded-3xl border border-white/10 bg-[#0a1727] p-4 sm:mt-5 sm:p-6">
+              <h2 className="text-lg font-black text-white">
+                Spek akun
               </h2>
+              <p className="mt-1 text-sm text-slate-400">
+                Cek bagian ini dulu sebelum checkout. Spek utama berarti pasti didapat.
+              </p>
 
               <div className="mt-4 grid gap-3 sm:grid-cols-2">
                 {product.attributes.map((attribute) => (
                   <div
                     key={attribute.key}
-                    className="min-w-0 rounded-2xl bg-slate-50 p-4"
+                    className="min-w-0 rounded-2xl border border-white/8 bg-white/[0.04] p-4"
                   >
-                    <p className="text-[10px] font-black uppercase tracking-wider text-slate-400">
+                    <p className="text-[10px] font-black uppercase tracking-wider text-slate-500">
                       {attribute.key.replaceAll("_", " ")}
                     </p>
 
-                    <p className="mt-1 [overflow-wrap:anywhere] text-sm font-black">
+                    <p className="mt-1 [overflow-wrap:anywhere] text-sm font-black text-slate-100">
                       {humanizeProductSpec(attribute.value)}
                     </p>
                   </div>
@@ -154,46 +157,55 @@ export default async function ProductDetailPage({
           </section>
 
           <aside className="lg:sticky lg:top-24 lg:self-start">
-            <div className="rounded-[24px] border border-emerald-950/10 bg-white p-4 shadow-xl shadow-emerald-950/8 sm:rounded-[32px] sm:p-8">
-              <h1 className="mt-2 text-2xl font-black leading-tight tracking-tight sm:mt-3 sm:text-3xl">
+            <div className="rounded-[24px] border border-white/10 bg-[#0a1727] p-4 sm:rounded-[32px] sm:p-8">
+              <div className="flex flex-wrap gap-2">
+                <span className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1 text-[10px] font-black uppercase tracking-wider text-emerald-200">
+                  {product.game.name}
+                </span>
+                <span className={`rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-wider ${soldOut ? "bg-red-500 text-white" : "bg-emerald-400 text-emerald-950"}`}>
+                  {soldOut ? "Stok habis" : `${product.available_stock} stok ready`}
+                </span>
+              </div>
+
+              <h1 className="mt-4 text-2xl font-black leading-tight tracking-tight text-white sm:text-3xl">
                 {product.name}
               </h1>
 
-              <p className="mt-4 whitespace-pre-line break-words text-sm leading-7 text-slate-600">
+              <p className="mt-4 whitespace-pre-line break-words text-sm leading-7 text-slate-300">
                 {humanizeProductDescription(
                   product.description ??
                     "Akun dengan spesifikasi sesuai informasi produk. Data akun dikirim setelah pembayaran terverifikasi.",
                 )}
               </p>
 
-              <div className="mt-6 border-y border-slate-100 py-5">
+              <div className="mt-6 border-y border-white/10 py-5">
                 {product.price_promo ? (
-                  <p className="text-sm font-bold text-slate-400 line-through">
+                  <p className="text-sm font-bold text-slate-500 line-through">
                     {formatRupiah(product.price_normal)}
                   </p>
                 ) : null}
 
-                <p className="text-3xl font-black text-emerald-700">
+                <p className="text-3xl font-black text-emerald-300">
                   {formatRupiah(price)}
                 </p>
               </div>
 
               <div className="mt-4 grid grid-cols-2 gap-2 sm:mt-5 sm:gap-3">
-                <div className="rounded-2xl bg-emerald-50 p-3 sm:p-4">
-                  <p className="text-xs font-black text-emerald-900">
-                    ⚡ Pengiriman instan
+                <div className="rounded-2xl border border-white/8 bg-white/[0.04] p-3 sm:p-4">
+                  <p className="text-xs font-black text-white">
+                    Kirim setelah bayar
                   </p>
-                  <p className="mt-1 text-[11px] text-emerald-800">
-                    Setelah pembayaran
+                  <p className="mt-1 text-[11px] text-slate-400">
+                    Setelah admin verifikasi
                   </p>
                 </div>
 
-                <div className="rounded-2xl bg-emerald-50 p-3 sm:p-4">
-                  <p className="text-xs font-black text-emerald-900">
-                    🛡️ {product.warranty_days} hari
+                <div className="rounded-2xl border border-white/8 bg-white/[0.04] p-3 sm:p-4">
+                  <p className="text-xs font-black text-white">
+                    Garansi {product.warranty_days} hari
                   </p>
-                  <p className="mt-1 text-[11px] text-emerald-800">
-                    Sesuai ketentuan
+                  <p className="mt-1 text-[11px] text-slate-400">
+                    Sesuai ketentuan toko
                   </p>
                 </div>
               </div>
@@ -246,15 +258,15 @@ export default async function ProductDetailPage({
                   href={whatsappUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="mt-3 flex w-full items-center justify-center rounded-2xl px-5 py-3 text-xs font-black text-emerald-700 hover:bg-emerald-50"
+                  className="mt-3 flex w-full items-center justify-center rounded-2xl border border-white/10 px-5 py-3 text-xs font-black text-emerald-200 hover:bg-white/[0.04]"
                 >
                   Tanya via WhatsApp
                 </a>
               ) : null}
 
-              <p className="mt-3 text-center text-[11px] leading-5 text-slate-400">
-                Jangan transfer di luar instruksi resmi RIKU STORE.
-              </p>
+              <div className="mt-4 rounded-2xl border border-amber-300/20 bg-amber-300/8 p-3 text-center text-[11px] font-bold leading-5 text-amber-100/85">
+                Jangan transfer sebelum ada instruksi resmi dari admin RIKU STORE.
+              </div>
             </div>
           </aside>
         </div>
