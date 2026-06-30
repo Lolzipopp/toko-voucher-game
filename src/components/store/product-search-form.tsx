@@ -38,7 +38,7 @@ export default function ProductSearchForm({ initialQuery = "", game }: ProductSe
       onSubmit={handleSubmit}
     >
       <label className="sr-only" htmlFor="product-search">
-        Cari akun
+        Cari
       </label>
       <input
         id="product-search"
@@ -49,14 +49,14 @@ export default function ProductSearchForm({ initialQuery = "", game }: ProductSe
         autoComplete="off"
         value={query}
         onChange={(event) => setQuery(event.target.value)}
-        placeholder="Cari: Buddha, V4, Sanguine, level max..."
+        placeholder="Cari..."
         className="min-w-0 flex-1 rounded-2xl bg-white/[0.04] px-4 py-3 text-sm text-white outline-none placeholder:text-slate-500 focus:bg-white/[0.07] focus:ring-2 focus:ring-emerald-300/35"
       />
       <button
         type="submit"
         className="touch-manipulation rounded-2xl bg-emerald-400 px-5 py-3 text-sm font-black text-emerald-950 transition hover:bg-emerald-300"
       >
-        Cari akun
+        Cari
       </button>
     </form>
   );

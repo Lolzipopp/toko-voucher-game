@@ -51,7 +51,7 @@ export default function CheckoutPage() {
   function submitCheckout() {
     setError(null);
     if (!agreed) {
-      setError("Centang persetujuan ketentuan pembelian terlebih dahulu.");
+      setError("Centang dulu ya.");
       return;
     }
     startTransition(async () => {
@@ -123,21 +123,19 @@ export default function CheckoutPage() {
 
             <label className="mt-5 flex cursor-pointer items-start gap-3 rounded-2xl bg-slate-50 p-4">
               <input type="checkbox" checked={agreed} onChange={(event) => setAgreed(event.target.checked)} className="mt-1 h-4 w-4 accent-emerald-600" />
-              <span className="text-xs leading-5 text-slate-600">Saya sudah membaca spesifikasi produk dan memahami bahwa pembayaran otomatis belum tersedia. Setelah pesanan dibuat, saya akan menghubungi admin melalui WhatsApp sebelum waktu pesanan habis.</span>
+              <span className="text-xs leading-5 text-slate-600">Saya sudah cek akunnya. Setelah pesan, saya chat admin WA.</span>
             </label>
 
             <div className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-xs leading-5 text-amber-800">
-              Pembayaran otomatis belum tersedia. Setelah order dibuat,
-              kamu akan diarahkan untuk menghubungi admin melalui WhatsApp.
-              Harga, promo, total, dan stok tetap diverifikasi oleh sistem.
+              Setelah klik pesan, lanjut chat admin WA. Jangan bayar dulu sebelum admin balas.
             </div>
           </section>
 
           <aside className="h-fit min-w-0 overflow-hidden rounded-3xl bg-[#103d2b] p-6 text-white shadow-xl shadow-emerald-950/10 lg:sticky lg:top-24">
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-emerald-200">Ringkasan pembayaran</p>
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-emerald-200">Total bayar</p>
 
-            {!hydrated ? <p className="mt-5 text-sm text-white/60">Memuat keranjang...</p> : items.length === 0 ? (
-              <div className="mt-5"><p className="text-sm font-bold">Keranjang kosong.</p><Link href="/#produk" className="mt-4 inline-flex text-sm font-black text-emerald-300">Pilih produk</Link></div>
+            {!hydrated ? <p className="mt-5 text-sm text-white/60">Loading...</p> : items.length === 0 ? (
+              <div className="mt-5"><p className="text-sm font-bold">Belum ada akun.</p><Link href="/#produk" className="mt-4 inline-flex text-sm font-black text-emerald-300">Pilih akun</Link></div>
             ) : (
               <>
                 <div className="mt-5 max-h-72 space-y-3 overflow-auto pr-1">
@@ -152,11 +150,11 @@ export default function CheckoutPage() {
                 <dl className="mt-5 space-y-3 border-t border-white/10 pt-5 text-sm">
                   <div className="flex justify-between text-white/65"><dt>Subtotal</dt><dd>{formatRupiah(appliedPromo?.subtotal ?? subtotal)}</dd></div>
                   <div className="flex justify-between text-emerald-300"><dt>Diskon{appliedPromo ? ` (${appliedPromo.code})` : ""}</dt><dd>-{formatRupiah(finalDiscount)}</dd></div>
-                  <div className="flex items-center justify-between border-t border-white/10 pt-4"><dt className="font-bold">Total pembayaran</dt><dd className="text-xl font-black text-emerald-300">{formatRupiah(finalTotal)}</dd></div>
+                  <div className="flex items-center justify-between border-t border-white/10 pt-4"><dt className="font-bold">Total bayar</dt><dd className="text-xl font-black text-emerald-300">{formatRupiah(finalTotal)}</dd></div>
                 </dl>
 
                 <button type="button" disabled={isPending || items.length === 0 || !email.trim()} onClick={submitCheckout} className="mt-5 w-full rounded-2xl bg-emerald-400 px-5 py-4 text-sm font-black text-emerald-950 transition hover:bg-emerald-300 disabled:cursor-not-allowed disabled:bg-white/10 disabled:text-white/35">
-                  {isPending ? "Membuat pesanan..." : `Buat pesanan & lanjut WhatsApp · ${formatRupiah(finalTotal)}`}
+                  {isPending ? "Membuat pesanan..." : `Pesan & chat WA · ${formatRupiah(finalTotal)}`}
                 </button>
               </>
             )}

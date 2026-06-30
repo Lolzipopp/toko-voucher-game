@@ -119,7 +119,7 @@ export default function ProductImageCarousel({
                 : "bg-white text-slate-800"
             }`}
           >
-            {soldOut ? "Stok habis" : `${availableStock} stok tersedia`}
+            {soldOut ? "Stok habis" : `${availableStock} stok`}
           </span>
         </div>
 
@@ -174,7 +174,7 @@ export default function ProductImageCarousel({
 
       {slides.length > 1 ? (
         <p className="mt-2 text-center text-xs font-semibold text-slate-500">
-          Geser foto, tekan panah, atau pilih titik untuk melihat foto lainnya.
+          Geser untuk lihat foto lain.
         </p>
       ) : null}
     </div>

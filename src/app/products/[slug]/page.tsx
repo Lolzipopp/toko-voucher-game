@@ -50,7 +50,7 @@ export async function generateMetadata({
 
   if (!product) {
     return {
-      title: "Produk tidak ditemukan — RIKU STORE",
+      title: "Akun tidak ketemu — RIKU STORE",
     };
   }
 
@@ -97,7 +97,7 @@ export default async function ProductDetailPage({
   ).replace(/\D/g, "");
 
   const whatsappMessage = encodeURIComponent(
-    `Halo RIKU STORE, saya tertarik dengan ${product.name}. Apakah masih tersedia?`,
+    `Halo RIKU STORE, saya tertarik dengan ${product.name}. Masih ready?`,
   );
 
   const whatsappUrl = whatsappNumber
@@ -115,7 +115,7 @@ export default async function ProductDetailPage({
           href="/#produk"
           className="text-sm font-bold text-slate-600 hover:text-emerald-700"
         >
-          ← Kembali ke katalog
+          ← Kembali
         </Link>
 
         <div className="mt-4 grid min-w-0 gap-5 sm:mt-5 sm:gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,.95fr)]">
@@ -131,10 +131,10 @@ export default async function ProductDetailPage({
 
             <div className="mt-4 rounded-3xl border border-slate-200 bg-white p-4 sm:mt-5 sm:p-6">
               <h2 className="text-lg font-black text-slate-950">
-                Spek akun
+                Isi akun
               </h2>
               <p className="mt-1 text-sm text-slate-500">
-                Cek bagian ini dulu sebelum checkout. Spek utama berarti pasti didapat.
+                Cek dulu sebelum beli.
               </p>
 
               <div className="mt-4 grid gap-3 sm:grid-cols-2">
@@ -174,7 +174,7 @@ export default async function ProductDetailPage({
               <p className="mt-4 whitespace-pre-line break-words text-sm leading-7 text-slate-600">
                 {humanizeProductDescription(
                   product.description ??
-                    "Akun dengan spesifikasi sesuai informasi produk. Data akun dikirim setelah pembayaran terverifikasi.",
+                    "Akun dikirim setelah bayar dicek admin.",
                 )}
               </p>
 
@@ -193,10 +193,10 @@ export default async function ProductDetailPage({
               <div className="mt-4 grid grid-cols-2 gap-2 sm:mt-5 sm:gap-3">
                 <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3 sm:p-4">
                   <p className="text-xs font-black text-slate-900">
-                    Kirim setelah bayar
+                    Dikirim setelah bayar
                   </p>
                   <p className="mt-1 text-[11px] text-slate-500">
-                    Setelah admin verifikasi
+                    Setelah admin cek
                   </p>
                 </div>
 
@@ -205,7 +205,7 @@ export default async function ProductDetailPage({
                     Garansi {product.warranty_days} hari
                   </p>
                   <p className="mt-1 text-[11px] text-slate-500">
-                    Sesuai ketentuan toko
+                    Ikuti aturan toko
                   </p>
                 </div>
               </div>
@@ -260,12 +260,12 @@ export default async function ProductDetailPage({
                   rel="noreferrer"
                   className="mt-3 flex w-full items-center justify-center rounded-2xl border border-slate-200 px-5 py-3 text-xs font-black text-slate-700 hover:bg-slate-50"
                 >
-                  Tanya via WhatsApp
+                  Tanya admin WA
                 </a>
               ) : null}
 
               <div className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 p-3 text-center text-[11px] font-bold leading-5 text-amber-800">
-                Jangan transfer sebelum ada instruksi resmi dari admin RIKU STORE.
+                Jangan bayar sebelum admin kasih arahan.
               </div>
             </div>
           </aside>

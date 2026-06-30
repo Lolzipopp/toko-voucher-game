@@ -51,10 +51,10 @@ export default function AddToCartButton({ item }: { item: AddCartItem }) {
           <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
             <div>
               <p className="text-xs font-black uppercase tracking-[0.16em] text-emerald-700">
-                Pilih jumlah
+                Jumlah
               </p>
               <p className="mt-1 text-xs text-slate-500">
-                Maksimal {maxQuantity} akun sesuai stok saat ini.
+                Maks {maxQuantity} akun.
               </p>
             </div>
 
@@ -116,7 +116,7 @@ export default function AddToCartButton({ item }: { item: AddCartItem }) {
           disabled={soldOut}
           className="touch-manipulation rounded-2xl border border-slate-300 bg-white px-5 py-4 text-sm font-black text-slate-900 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-slate-100 disabled:text-slate-400"
         >
-          {soldOut ? "Stok sedang habis" : `+ Keranjang (${quantity})`}
+          {soldOut ? "Stok habis" : `+ Keranjang (${quantity})`}
         </button>
 
         <button
@@ -125,7 +125,7 @@ export default function AddToCartButton({ item }: { item: AddCartItem }) {
           onClick={handleBuyNow}
           className="touch-manipulation rounded-2xl bg-emerald-700 px-5 py-4 text-sm font-black text-white transition hover:bg-emerald-800 disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-500"
         >
-          {soldOut ? "Tidak tersedia" : `Beli ${quantity} sekarang`}
+          {soldOut ? "Habis" : `Beli ${quantity} sekarang`}
         </button>
       </div>
 

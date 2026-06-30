@@ -124,52 +124,52 @@ export default function PaymentCountdown({
           eyebrow: "Pesanan siap",
           title: "Akunmu sudah siap dilihat",
           description:
-            "Pembayaran berhasil dan akun sudah dikirim dengan aman.",
+            "Pembayaran masuk dan akun sudah dikirim dengan aman.",
           tone: "emerald",
         };
       case "paid":
         return {
           icon: "✓",
-          eyebrow: "Pembayaran berhasil",
-          title: "Pesanan sedang diproses",
+          eyebrow: "Pembayaran masuk",
+          title: "Pesanan diproses",
           description:
-            "Tunggu sebentar. Sistem sedang menyiapkan akunmu.",
+            "Tunggu sebentar. Akunmu sedang disiapkan.",
           tone: "emerald",
         };
       case "expired":
         return {
           icon: "⌛",
-          eyebrow: "Waktu pembayaran habis",
-          title: "Pesanan otomatis dibatalkan",
+          eyebrow: "Waktu habis",
+          title: "Pesanan batal",
           description:
-            "Silakan kembali ke katalog dan buat pesanan baru.",
+            "Silakan pilih akun lagi.",
           tone: "red",
         };
       case "failed":
         return {
           icon: "!",
-          eyebrow: "Pembayaran gagal",
-          title: "Pesanan belum berhasil",
+          eyebrow: "Bayar gagal",
+          title: "Pesanan gagal",
           description:
-            "Silakan buat pesanan baru atau hubungi admin bila uang sudah terpotong.",
+            "Buat pesanan baru. Kalau uang kepotong, chat admin.",
           tone: "red",
         };
       case "error":
         return {
           icon: "?",
-          eyebrow: "Gagal memperbarui status",
-          title: "Coba periksa lagi",
+          eyebrow: "Status belum update",
+          title: "Cek lagi nanti",
           description:
-            status.message ?? "Status pesanan belum dapat diperbarui.",
+            status.message ?? "Status belum bisa dicek.",
           tone: "amber",
         };
       default:
         return {
           icon: "⏱",
-          eyebrow: "Menunggu pembayaran",
-          title: "Harap selesaikan pembayaran sebelum waktu habis",
+          eyebrow: "Belum bayar",
+          title: "Chat admin sebelum waktu habis",
           description:
-            "Kalau waktu habis, pesanan otomatis dibatalkan.",
+            "Kalau waktu habis, pesanan batal.",
           tone: "amber",
         };
     }
@@ -190,15 +190,15 @@ export default function PaymentCountdown({
 
     const message = [
       `Halo ${manualSales.storeName} 👋`,
-      "Saya ingin melanjutkan pembayaran untuk pesanan berikut:",
+      "Saya mau bayar pesanan ini:",
       "",
-      `🧾 Nomor order: ${status.order_number ?? "-"}`,
-      `💰 Total pembayaran: ${formatRupiah(status.total_amount)}`,
+      `🧾 No. order: ${status.order_number ?? "-"}`,
+      `💰 Total bayar: ${formatRupiah(status.total_amount)}`,
       "",
-      "Email pembeli sudah saya isi saat checkout.",
+      "Email sudah saya isi.",
       `🔗 Link status pesanan: ${statusUrl}`,
       "",
-      "Mohon kirimkan instruksi pembayarannya. Terima kasih.",
+      "Tolong arahkan cara bayarnya.",
     ].join("\n");
 
     return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
@@ -242,7 +242,7 @@ export default function PaymentCountdown({
       {status.state === "awaiting_payment" ? (
         <div className="mx-auto mt-7 max-w-sm rounded-3xl bg-[#103d2b] px-5 py-6 text-white shadow-xl shadow-emerald-950/15">
           <p className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-200">
-            Sisa waktu pembayaran
+            Sisa waktu
           </p>
           <p className="mt-2 font-mono text-5xl font-black tracking-tight">
             {formatTimer(remaining)}
@@ -259,7 +259,7 @@ export default function PaymentCountdown({
       <dl className="mt-7 grid gap-3 rounded-3xl bg-slate-50 p-5 text-left sm:grid-cols-3">
         <div>
           <dt className="text-[10px] font-black uppercase tracking-wider text-slate-400">
-            Nomor order
+            No. order
           </dt>
           <dd className="mt-1 break-all text-sm font-black">
             {status.order_number ?? "-"}
@@ -281,14 +281,14 @@ export default function PaymentCountdown({
           </dt>
           <dd className="mt-1 text-sm font-black">
             {status.state === "awaiting_payment"
-              ? "Menunggu pembayaran"
+              ? "Belum bayar"
               : status.state === "delivered"
-                ? "Akun siap dilihat"
+                ? "Akun siap"
                 : status.state === "paid"
-                  ? "Sedang diproses"
+                  ? "Diproses"
                   : status.state === "expired"
-                    ? "Kedaluwarsa"
-                    : "Perlu diperiksa"}
+                    ? "Batal"
+                    : "Cek admin"}
           </dd>
         </div>
       </dl>
@@ -296,7 +296,7 @@ export default function PaymentCountdown({
       {status.state === "awaiting_payment" ? (
         <div className="mt-5 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-4 text-left text-sm text-amber-900">
           <p className="font-black">
-            Pembayaran otomatis belum tersedia
+            Bayar lewat admin
           </p>
           <p className="mt-1 leading-6">
             {manualSales.instructions}
@@ -352,7 +352,7 @@ export default function PaymentCountdown({
           href="/#produk"
           className="rounded-2xl border border-slate-200 px-5 py-3.5 text-sm font-black text-slate-600 transition hover:bg-slate-50"
         >
-          Kembali ke katalog
+          Pilih akun lagi
         </Link>
       </div>
     </section>

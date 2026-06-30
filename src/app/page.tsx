@@ -16,7 +16,7 @@ import { productMatchesSearch } from "@/lib/catalog/search";
 export const metadata: Metadata = {
   title: "RIKU STORE — Akun Game Digital",
   description:
-    "Akun game digital dengan spesifikasi jelas, stok nyata, checkout aman, dan garansi.",
+    "Akun Roblox ready. Pilih akun, pesan, lalu chat admin.",
 };
 
 export const dynamic = "force-dynamic";
@@ -123,14 +123,14 @@ export default async function Home({ searchParams }: HomeProps) {
         <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
           <div>
             <p className="text-xs font-black uppercase tracking-[0.22em] text-emerald-300">
-              Mulai dari sini
+              Menu
             </p>
             <h2 className="mt-2 text-2xl font-black tracking-tight sm:text-3xl">
-              Mau ngapain hari ini?
+              Mau apa?
             </h2>
           </div>
           <p className="max-w-md text-sm leading-6 text-slate-400">
-            Pilih jalur yang paling cepat. Kalau cuma mau beli akun, langsung cek stok.
+            Kalau mau beli, langsung lihat akun ready.
           </p>
         </div>
 
@@ -142,7 +142,7 @@ export default async function Home({ searchParams }: HomeProps) {
             <NeedIcon label="BA" tone="emerald" />
             <h3 className="mt-4 text-sm font-black leading-tight text-white sm:text-base">BELI AKUN</h3>
             <p className="mt-2 hidden text-sm leading-6 text-slate-400 sm:block">
-              Cari akun berdasarkan game, harga, dan spesifikasi.
+              Cari yang kamu mau.
             </p>
             <span className="mt-3 text-[10px] font-black uppercase tracking-wide text-emerald-300">
               Lihat →
@@ -156,7 +156,7 @@ export default async function Home({ searchParams }: HomeProps) {
             <NeedIcon label="PR" tone="amber" />
             <h3 className="mt-4 text-sm font-black leading-tight text-white sm:text-base">PROMO</h3>
             <p className="mt-2 hidden text-sm leading-6 text-slate-400 sm:block">
-              Cek akun dengan harga khusus yang sedang aktif.
+              Lihat akun yang lagi promo.
             </p>
             <span className="mt-3 text-[10px] font-black uppercase tracking-wide text-amber-300">
               Cek →
@@ -170,7 +170,7 @@ export default async function Home({ searchParams }: HomeProps) {
             <NeedIcon label="PS" tone="sky" />
             <h3 className="mt-4 text-sm font-black leading-tight text-white sm:text-base">PESANAN</h3>
             <p className="mt-2 hidden text-sm leading-6 text-slate-400 sm:block">
-              Masuk lewat email untuk melihat order dan data akun.
+              Lihat pesanan kamu.
             </p>
             <span className="mt-3 text-[10px] font-black uppercase tracking-wide text-sky-300">
               Buka →
@@ -187,7 +187,7 @@ export default async function Home({ searchParams }: HomeProps) {
               <NeedIcon label="WA" tone="violet" />
               <h3 className="mt-4 text-sm font-black leading-tight text-white sm:text-base">JUAL / CARI</h3>
               <p className="mt-2 hidden text-sm leading-6 text-slate-400 sm:block">
-                Hubungi admin untuk menjual akun atau mencari spesifikasi khusus.
+                Chat admin kalau mau cari akun lain.
               </p>
               <span className="mt-3 text-[10px] font-black uppercase tracking-wide text-violet-300">
                 Chat →
@@ -197,7 +197,7 @@ export default async function Home({ searchParams }: HomeProps) {
             <div className="flex min-h-28 flex-col justify-between rounded-2xl border border-white/10 bg-[#091625] p-4 opacity-70">
               <NeedIcon label="WA" tone="violet" />
               <h3 className="mt-4 text-sm font-black leading-tight text-white sm:text-base">JUAL / CARI</h3>
-              <p className="mt-2 hidden text-sm leading-6 text-slate-400 sm:block">Layanan WhatsApp sedang tidak tersedia.</p>
+              <p className="mt-2 hidden text-sm leading-6 text-slate-400 sm:block">WA belum aktif.</p>
             </div>
           )}
         </div>
@@ -211,17 +211,17 @@ export default async function Home({ searchParams }: HomeProps) {
           <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
             <div>
               <p className="text-xs font-black uppercase tracking-[0.22em] text-amber-300">
-                Penawaran terbatas
+                Promo
               </p>
               <h2 className="mt-2 text-3xl font-black italic">
-                EXCLUSIVE OFFER
+                Akun promo
               </h2>
               <p className="mt-3 text-sm text-slate-400">
-                Harga khusus hanya tampil ketika promo produk benar-benar aktif.
+                Kalau ada promo, muncul di sini.
               </p>
             </div>
             <SectionLink href="/#produk" className="text-sm font-black text-amber-300">
-              Lihat semua produk →
+              Lihat semua →
             </SectionLink>
           </div>
 
@@ -233,9 +233,9 @@ export default async function Home({ searchParams }: HomeProps) {
             </div>
           ) : (
             <div className="mt-7 rounded-3xl border border-dashed border-amber-300/20 bg-amber-300/5 p-8 text-center">
-              <p className="font-black text-amber-100">Belum ada penawaran khusus</p>
+              <p className="font-black text-amber-100">Belum ada promo</p>
               <p className="mt-2 text-sm text-slate-400">
-                Promo terbaru akan tampil di sini. Cek kembali secara berkala.
+                Nanti kalau ada promo, muncul di sini.
               </p>
             </div>
           )}
@@ -250,19 +250,19 @@ export default async function Home({ searchParams }: HomeProps) {
           <div className="flex flex-col justify-between gap-5 lg:flex-row lg:items-end">
             <div>
               <p className="text-xs font-black uppercase tracking-[0.22em] text-emerald-300">
-                Katalog akun
+                Daftar akun
               </p>
               <h2 className="mt-2 text-3xl font-black tracking-tight sm:text-4xl">
-                Akun yang ready
+                Akun ready
               </h2>
               <p className="mt-3 text-sm leading-6 text-slate-400">
                 {query.q ? (
                   <>
-                    {displayedProducts.length} hasil untuk “{query.q}” · {totalAvailableStock} stok tersedia.
+                    {displayedProducts.length} hasil “{query.q}” · {totalAvailableStock} stok.
                   </>
                 ) : (
                   <>
-                    {availableProducts.length} produk ready · total {totalAvailableStock} stok tersedia.
+                    {availableProducts.length} akun ready · {totalAvailableStock} stok.
                   </>
                 )}
               </p>
@@ -308,15 +308,15 @@ export default async function Home({ searchParams }: HomeProps) {
           </div>
         ) : (
           <div className="mt-8 rounded-3xl border border-dashed border-white/15 bg-white/5 p-12 text-center">
-            <p className="text-lg font-black">Produk tidak ditemukan</p>
+            <p className="text-lg font-black">Akun tidak ketemu</p>
             <p className="mt-2 text-sm text-slate-400">
-              Coba kata kunci lain atau lihat semua game.
+              Coba cari nama lain.
             </p>
             <Link
               href="/#produk"
               className="mt-5 inline-flex rounded-xl bg-emerald-400 px-4 py-2.5 text-sm font-black text-emerald-950"
             >
-              Reset pencarian
+              Reset cari
             </Link>
           </div>
         )}
@@ -332,13 +332,13 @@ export default async function Home({ searchParams }: HomeProps) {
           <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6">
             <div className="text-center">
               <p className="text-xs font-black uppercase tracking-[0.22em] text-emerald-300">
-                Testimoni pembeli
+                Kata pembeli
               </p>
               <h2 className="mt-2 text-3xl font-black italic sm:text-4xl">
-                PENGALAMAN PEMBELI ASLI
+                Pembeli bilang
               </h2>
               <p className="mt-3 text-sm text-slate-400">
-                Semua testimoni yang tampil telah melalui verifikasi.
+                Komentar dari pembeli.
               </p>
             </div>
 
@@ -383,7 +383,7 @@ export default async function Home({ searchParams }: HomeProps) {
             </div>
             ) : (
               <div className="mx-auto mt-8 max-w-xl rounded-3xl border border-dashed border-white/15 bg-white/[.035] p-7 text-center text-sm leading-6 text-slate-400">
-                Belum ada testimoni pembeli yang ditampilkan. Testimoni asli akan muncul setelah diverifikasi.
+                Belum ada komentar pembeli.
               </div>
             )}
           </div>
@@ -407,7 +407,7 @@ export default async function Home({ searchParams }: HomeProps) {
               Bantuan
             </p>
             <h2 className="mt-2 text-3xl font-black italic sm:text-4xl">
-              PERTANYAAN YANG SERING DITANYAKAN
+              Pertanyaan umum
             </h2>
 
             <div className="mt-7 space-y-3">
@@ -430,7 +430,7 @@ export default async function Home({ searchParams }: HomeProps) {
 
               {(faqItems ?? []).length === 0 ? (
                 <div className="rounded-2xl border border-dashed border-white/15 bg-white/[.03] p-6 text-sm text-slate-400">
-                  Belum ada pertanyaan yang ditampilkan saat ini.
+                  Belum ada pertanyaan.
                 </div>
               ) : null}
             </div>
@@ -442,18 +442,17 @@ export default async function Home({ searchParams }: HomeProps) {
         <div className="grid gap-5 rounded-[2rem] border border-emerald-400/20 bg-[linear-gradient(120deg,rgba(16,185,129,.12),rgba(56,189,248,.05))] p-6 sm:p-8 lg:grid-cols-[1fr_auto] lg:items-center">
           <div>
             <p className="text-xs font-black uppercase tracking-[0.2em] text-emerald-300">
-              Transparan sebelum bayar
+              Sebelum bayar
             </p>
             <h2 className="mt-2 text-2xl font-black italic">
-              HARGA PRODUK, DISKON, DAN BIAYA DITAMPILKAN DI CHECKOUT
+              Total bayar muncul sebelum bayar
             </h2>
             <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-400">
-              Metode pembayaran yang tersedia akan ditampilkan dengan jelas saat checkout.
-              Pembayaran otomatis akan hadir setelah proses pengujian selesai.
+              Totalnya dicek dulu sebelum bayar. Kalau bingung, chat admin.
             </p>
           </div>
           <span className="rounded-2xl border border-amber-300/25 bg-amber-300/10 px-5 py-3 text-center text-xs font-black uppercase tracking-wider text-amber-200">
-            Midtrans segera hadir
+            Bayar manual dulu
           </span>
         </div>
       </section>

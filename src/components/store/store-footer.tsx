@@ -37,7 +37,7 @@ export default function StoreFooter() {
               <p className="text-xs font-semibold uppercase tracking-[0.15em] text-emerald-200">{settings.store_tagline}</p>
             </div>
           </div>
-          <p className="mt-3 max-w-sm text-xs leading-5 text-white/55 sm:text-sm sm:leading-6">Toko produk digital akun game dengan spesifikasi, harga, ketersediaan, dan ketentuan garansi yang ditampilkan sebelum pembelian.</p>
+          <p className="mt-3 max-w-sm text-xs leading-5 text-white/55 sm:text-sm sm:leading-6">Toko akun Roblox ready. Pilih akun, pesan, lalu chat admin.</p>
         </div>
         <div>
           <p className="text-xs font-black uppercase tracking-[0.18em] text-emerald-300">Belanja</p>
@@ -52,7 +52,7 @@ export default function StoreFooter() {
           <p className="text-xs font-black uppercase tracking-[0.18em] text-emerald-300">Informasi</p>
           <nav className="mt-3 grid gap-2 text-xs font-semibold text-white/70 sm:text-sm">
             <Link href="/tentang-kontak" className="hover:text-white">Tentang & kontak</Link>
-            <Link href="/syarat-ketentuan" className="hover:text-white">Syarat & Ketentuan</Link>
+            <Link href="/syarat-ketentuan" className="hover:text-white">Aturan toko</Link>
             <Link href="/kebijakan-privasi" className="hover:text-white">Kebijakan Privasi</Link>
             <Link href="/refund-garansi" className="hover:text-white">Refund & Garansi</Link>
           </nav>
