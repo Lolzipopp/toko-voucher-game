@@ -9,6 +9,7 @@ import RecentlyViewedRecorder from "@/components/store/recently-viewed-recorder"
 import RestockRequestButton from "@/components/store/restock-request-button";
 import StoreFooter from "@/components/store/store-footer";
 import StoreHeader from "@/components/store/store-header";
+import { humanizeProductDescription } from "@/lib/catalog/display-text";
 import { formatRupiah, productImageUrl } from "@/lib/public-store/format";
 import { getPublicStoreSettings } from "@/lib/public-store/settings";
 import type { PublicProductDetail } from "@/lib/public-store/types";
@@ -143,6 +144,12 @@ export default async function ProductDetailPage({
               <h1 className="mt-4 break-words text-2xl font-black leading-tight tracking-tight text-slate-950 sm:text-3xl">
                 {product.name}
               </h1>
+
+              {product.description ? (
+                <p className="mt-3 whitespace-pre-line break-words text-sm leading-7 text-slate-600">
+                  {humanizeProductDescription(product.description)}
+                </p>
+              ) : null}
 
               <div className="mt-5">
                 <FavoriteButton product={viewedProduct} />
