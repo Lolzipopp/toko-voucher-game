@@ -3,6 +3,7 @@ import Link from "next/link";
 import { formatRupiah, productImageUrl } from "@/lib/public-store/format";
 import type { PublicCatalogProduct } from "@/lib/public-store/types";
 import { humanizeProductSpec } from "@/lib/catalog/display-text";
+import FavoriteButton from "@/components/store/favorite-button";
 
 export default function ProductCard({
   product,
@@ -12,7 +13,15 @@ export default function ProductCard({
   const imageUrl = productImageUrl(product.primary_image_path);
   const price = product.price_promo ?? product.price_normal;
   const soldOut = product.available_stock <= 0;
-
+  const engagementProduct = {
+    id: product.id,
+    slug: product.slug,
+    name: product.name,
+    gameName: product.game.name,
+    price: Number(price),
+    imageUrl,
+    availableStock: Number(product.available_stock),
+  };
 
   return (
     <article className="group relative overflow-hidden rounded-3xl border border-white/10 bg-[#0a1727] transition duration-200 hover:border-emerald-300/45 hover:bg-[#0d1d31]">
@@ -31,7 +40,11 @@ export default function ProductCard({
 
           <div className="absolute inset-0 bg-gradient-to-t from-[#07111f] via-[#07111f]/15 to-transparent" />
 
-          <div className="absolute left-3 top-3 flex max-w-[72%] flex-wrap gap-1.5">
+          <div className="absolute right-3 top-3 z-20">
+            <FavoriteButton product={engagementProduct} compact />
+          </div>
+
+          <div className="absolute left-3 top-3 flex max-w-[62%] flex-wrap gap-1.5">
             <span className="rounded-full border border-white/12 bg-[#06111f]/80 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-slate-100 backdrop-blur">
               {product.game.name}
             </span>

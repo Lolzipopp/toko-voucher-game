@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import AddToCartButton from "@/components/store/add-to-cart-button";
+import FavoriteButton from "@/components/store/favorite-button";
 import ProductImageCarousel from "@/components/store/product-image-carousel";
 import RecentlyViewedRecorder from "@/components/store/recently-viewed-recorder";
 import RestockRequestButton from "@/components/store/restock-request-button";
@@ -174,6 +175,10 @@ export default async function ProductDetailPage({
                     "Akun dikirim setelah bayar dicek admin.",
                 )}
               </p>
+
+              <div className="mt-5">
+                <FavoriteButton product={viewedProduct} />
+              </div>
 
               <div className="mt-6 border-y border-slate-100 py-5">
                 {product.price_promo ? (
