@@ -42,20 +42,6 @@ export default function HomeHero({ whatsappUrl, availableProducts, totalStock }:
             ) : null}
           </div>
 
-          <div className="mt-6 grid gap-2 text-sm text-slate-300 sm:grid-cols-3">
-            <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-              <p className="font-black text-white">Stok real</p>
-              <p className="mt-1 text-xs leading-5 text-slate-400">Data stok tampil dari katalog.</p>
-            </div>
-            <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-              <p className="font-black text-white">Reservasi 20 menit</p>
-              <p className="mt-1 text-xs leading-5 text-slate-400">Akun dikunci setelah checkout.</p>
-            </div>
-            <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-              <p className="font-black text-white">Bayar setelah instruksi</p>
-              <p className="mt-1 text-xs leading-5 text-slate-400">Admin bantu konfirmasi via WA.</p>
-            </div>
-          </div>
         </div>
 
         <div className="rounded-[2rem] border border-white/10 bg-[#0b1726] p-5 shadow-[0_24px_80px_rgba(0,0,0,.28)]">

@@ -105,12 +105,12 @@ export default async function ProductDetailPage({
     : null;
 
   return (
-    <main className="min-h-screen bg-[#06111f] text-white">
+    <main className="min-h-screen overflow-x-hidden bg-[#06111f] text-white">
       <RecentlyViewedRecorder product={engagementProduct} />
 
       <StoreHeader />
 
-      <div className="mx-auto max-w-7xl px-3 py-5 sm:px-6 sm:py-8 lg:py-12">
+      <div className="mx-auto max-w-7xl px-4 py-5 sm:px-6 sm:py-8 lg:py-12">
         <Link
           href="/#produk"
           className="text-sm font-bold text-emerald-300 hover:text-emerald-200"
@@ -118,8 +118,8 @@ export default async function ProductDetailPage({
           ← Kembali ke katalog
         </Link>
 
-        <div className="mt-4 grid gap-5 sm:mt-5 sm:gap-8 lg:grid-cols-[1.05fr_.95fr]">
-          <section>
+        <div className="mt-4 grid min-w-0 gap-5 sm:mt-5 sm:gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,.95fr)]">
+          <section className="min-w-0">
             <ProductImageCarousel
               images={product.images.map((image) => ({
                 url: productImageUrl(image.path) ?? "",
@@ -156,8 +156,8 @@ export default async function ProductDetailPage({
             </div>
           </section>
 
-          <aside className="lg:sticky lg:top-24 lg:self-start">
-            <div className="rounded-[24px] border border-white/10 bg-[#0a1727] p-4 sm:rounded-[32px] sm:p-8">
+          <aside className="min-w-0 lg:sticky lg:top-24 lg:self-start">
+            <div className="min-w-0 rounded-[24px] border border-white/10 bg-[#0a1727] p-4 sm:rounded-[32px] sm:p-8">
               <div className="flex flex-wrap gap-2">
                 <span className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1 text-[10px] font-black uppercase tracking-wider text-emerald-200">
                   {product.game.name}
@@ -167,7 +167,7 @@ export default async function ProductDetailPage({
                 </span>
               </div>
 
-              <h1 className="mt-4 text-2xl font-black leading-tight tracking-tight text-white sm:text-3xl">
+              <h1 className="mt-4 break-words text-2xl font-black leading-tight tracking-tight text-white sm:text-3xl">
                 {product.name}
               </h1>
 
@@ -210,9 +210,9 @@ export default async function ProductDetailPage({
                 </div>
               </div>
 
-              <div className="mt-5 flex flex-wrap gap-2">
+              <div className="mt-5 flex min-w-0 flex-wrap gap-2">
                 <FavoriteButton product={engagementProduct} />
-<ShareProduct
+                <ShareProduct
                   name={product.name}
                   slug={product.slug}
                   price={engagementProduct.price}
@@ -223,8 +223,8 @@ export default async function ProductDetailPage({
                 {soldOut ? (
                   <RestockRequestButton productName={product.name} />
                 ) : (
-                <AddToCartButton
-                  item={{
+                  <AddToCartButton
+                    item={{
                     productId: product.id,
                     slug: product.slug,
                     name: product.name,
@@ -233,8 +233,8 @@ export default async function ProductDetailPage({
                     unitPrice: price,
                     availableStock: product.available_stock,
                     imagePath: product.images[0]?.path ?? null,
-                  }}
-                />
+                    }}
+                  />
                 )}
               </div>
 
