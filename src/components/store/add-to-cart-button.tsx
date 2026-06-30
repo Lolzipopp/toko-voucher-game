@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
 import type { AddCartItem } from "@/lib/cart/types";
@@ -15,20 +15,35 @@ export default function AddToCartButton({ item }: { item: AddCartItem }) {
     ? 1
     : Math.max(1, Math.floor(item.availableStock));
   const [quantity, setQuantity] = useState(1);
+  const [cartAdded, setCartAdded] = useState(false);
+  const [isBuying, startBuying] = useTransition();
+
+  function feedback() {
+    if (typeof window !== "undefined" && "vibrate" in navigator) {
+      navigator.vibrate?.(12);
+    }
+  }
 
   function changeQuantity(next: number) {
+    setCartAdded(false);
     setQuantity(Math.min(maxQuantity, Math.max(1, Math.floor(next))));
   }
 
   function handleAddToCart() {
     if (soldOut) return;
     addItem(item, quantity);
+    setCartAdded(true);
+    feedback();
+    window.setTimeout(() => setCartAdded(false), 2200);
   }
 
   function handleBuyNow() {
     if (soldOut) return;
-    replaceCartWithItem(item, quantity);
-    router.push("/checkout");
+    feedback();
+    startBuying(() => {
+      replaceCartWithItem(item, quantity);
+      router.push("/checkout");
+    });
   }
 
   return (
@@ -42,7 +57,7 @@ export default function AddToCartButton({ item }: { item: AddCartItem }) {
               onClick={() => changeQuantity(quantity - 1)}
               disabled={quantity <= 1}
               aria-label="Kurangi jumlah"
-              className="h-11 w-11 touch-manipulation text-xl font-black text-slate-800 disabled:text-slate-300"
+              className="h-11 w-11 touch-manipulation text-xl font-black text-slate-800 transition active:scale-95 disabled:text-slate-300"
             >
               −
             </button>
@@ -61,7 +76,7 @@ export default function AddToCartButton({ item }: { item: AddCartItem }) {
               onClick={() => changeQuantity(quantity + 1)}
               disabled={quantity >= maxQuantity}
               aria-label="Tambah jumlah"
-              className="h-11 w-11 touch-manipulation text-xl font-black text-slate-800 disabled:text-slate-300"
+              className="h-11 w-11 touch-manipulation text-xl font-black text-slate-800 transition active:scale-95 disabled:text-slate-300"
             >
               +
             </button>
@@ -74,20 +89,34 @@ export default function AddToCartButton({ item }: { item: AddCartItem }) {
           type="button"
           disabled={soldOut}
           onClick={handleAddToCart}
-          className="w-full touch-manipulation rounded-2xl border border-slate-300 bg-white px-5 py-4 text-sm font-black text-slate-800 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400"
+          className={`w-full touch-manipulation rounded-2xl border px-5 py-4 text-sm font-black transition active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400 ${
+            cartAdded
+              ? "border-emerald-200 bg-emerald-50 text-emerald-800"
+              : "border-slate-300 bg-white text-slate-800 hover:bg-slate-50"
+          }`}
         >
-          {soldOut ? "Habis" : "Tambah keranjang"}
+          {soldOut ? "Habis" : cartAdded ? "Masuk keranjang ✓" : "Tambah keranjang"}
         </button>
 
         <button
           type="button"
-          disabled={soldOut}
+          disabled={soldOut || isBuying}
           onClick={handleBuyNow}
-          className="w-full touch-manipulation rounded-2xl bg-emerald-700 px-5 py-4 text-base font-black text-white transition hover:bg-emerald-800 disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-500"
+          className="w-full touch-manipulation rounded-2xl bg-emerald-700 px-5 py-4 text-base font-black text-white transition hover:bg-emerald-800 active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-500"
         >
-          {soldOut ? "Habis" : `Beli sekarang · ${formatRupiah(item.unitPrice * quantity)}`}
+          {soldOut
+            ? "Habis"
+            : isBuying
+              ? "Membuka checkout..."
+              : `Beli sekarang · ${formatRupiah(item.unitPrice * quantity)}`}
         </button>
       </div>
+
+      {cartAdded ? (
+        <p className="mt-2 rounded-xl bg-emerald-50 px-3 py-2 text-center text-xs font-bold text-emerald-800">
+          Produk sudah masuk keranjang.
+        </p>
+      ) : null}
     </div>
   );
 }

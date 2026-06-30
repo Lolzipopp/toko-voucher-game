@@ -7,7 +7,6 @@ import FavoriteButton from "@/components/store/favorite-button";
 import ProductImageCarousel from "@/components/store/product-image-carousel";
 import RecentlyViewedRecorder from "@/components/store/recently-viewed-recorder";
 import RestockRequestButton from "@/components/store/restock-request-button";
-import StoreFooter from "@/components/store/store-footer";
 import StoreHeader from "@/components/store/store-header";
 import { humanizeProductDescription } from "@/lib/catalog/display-text";
 import { formatRupiah, productImageUrl } from "@/lib/public-store/format";
@@ -227,9 +226,9 @@ export default async function ProductDetailPage({
                   href={whatsappUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="mt-3 flex w-full items-center justify-center rounded-2xl border border-slate-200 px-5 py-3 text-xs font-black text-slate-700 hover:bg-slate-50"
+                  className="mt-3 flex w-full touch-manipulation items-center justify-center rounded-2xl border border-slate-200 px-5 py-3 text-xs font-black text-slate-700 transition hover:bg-slate-50 active:scale-[0.98]"
                 >
-                  Hubungi admin
+                  Hubungi admin WA
                 </a>
               ) : null}
 
@@ -241,7 +240,6 @@ export default async function ProductDetailPage({
         </div>
       </div>
 
-      <StoreFooter />
     </main>
   );
 }
