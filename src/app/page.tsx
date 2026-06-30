@@ -28,20 +28,20 @@ type HomeProps = {
   }>;
 };
 
-function NeedIcon({ label, tone }: { label: string; tone: "emerald" | "amber" | "sky" | "violet" }) {
+function MenuArrow({ tone }: { tone: "emerald" | "amber" | "sky" | "violet" }) {
   const toneClass = {
-    emerald: "border-emerald-300/35 bg-emerald-300/10 text-emerald-200",
-    amber: "border-amber-300/35 bg-amber-300/10 text-amber-200",
-    sky: "border-sky-300/35 bg-sky-300/10 text-sky-200",
-    violet: "border-violet-300/35 bg-violet-300/10 text-violet-200",
+    emerald: "bg-emerald-400 text-emerald-950",
+    amber: "bg-amber-300 text-amber-950",
+    sky: "bg-sky-300 text-sky-950",
+    violet: "bg-violet-300 text-violet-950",
   }[tone];
 
   return (
     <span
       aria-hidden="true"
-      className={`grid h-11 w-11 place-items-center rounded-2xl border text-sm font-black tracking-tight shadow-[0_0_24px_rgba(255,255,255,.05)] sm:h-14 sm:w-14 sm:rounded-3xl sm:text-base ${toneClass}`}
+      className={`grid h-9 w-9 place-items-center rounded-full text-lg font-black transition group-hover:translate-x-0.5 ${toneClass}`}
     >
-      {label}
+      →
     </span>
   );
 }
@@ -153,42 +153,39 @@ export default async function Home({ searchParams }: HomeProps) {
             href="/#produk"
             className="group flex min-h-28 flex-col justify-between rounded-2xl border border-white/10 bg-[#0a1727] p-4 transition hover:border-emerald-300/45 hover:bg-[#0d1d31]"
           >
-            <NeedIcon label="BA" tone="emerald" />
-            <h3 className="mt-4 text-sm font-black leading-tight text-white sm:text-base">BELI AKUN</h3>
-            <p className="mt-2 hidden text-sm leading-6 text-slate-400 sm:block">
-              Cari yang kamu mau.
+            <div className="flex items-start justify-between gap-3">
+              <h3 className="text-base font-black leading-tight text-white sm:text-lg">Beli akun</h3>
+              <MenuArrow tone="emerald" />
+            </div>
+            <p className="mt-4 text-sm leading-6 text-slate-400">
+              Lihat akun ready.
             </p>
-            <span className="mt-3 text-[10px] font-black uppercase tracking-wide text-emerald-300">
-              Lihat →
-            </span>
           </SectionLink>
 
           <SectionLink
             href="/#exclusive-offer"
             className="group flex min-h-28 flex-col justify-between rounded-2xl border border-white/10 bg-[#0a1727] p-4 transition hover:border-amber-300/45 hover:bg-[#0d1d31]"
           >
-            <NeedIcon label="PR" tone="amber" />
-            <h3 className="mt-4 text-sm font-black leading-tight text-white sm:text-base">PROMO</h3>
-            <p className="mt-2 hidden text-sm leading-6 text-slate-400 sm:block">
-              Lihat akun yang lagi promo.
+            <div className="flex items-start justify-between gap-3">
+              <h3 className="text-base font-black leading-tight text-white sm:text-lg">Promo</h3>
+              <MenuArrow tone="amber" />
+            </div>
+            <p className="mt-4 text-sm leading-6 text-slate-400">
+              Cek harga promo.
             </p>
-            <span className="mt-3 text-[10px] font-black uppercase tracking-wide text-amber-300">
-              Cek →
-            </span>
           </SectionLink>
 
           <Link
             href="/akun"
             className="group flex min-h-28 flex-col justify-between rounded-2xl border border-white/10 bg-[#0a1727] p-4 transition hover:border-sky-300/45 hover:bg-[#0d1d31]"
           >
-            <NeedIcon label="PS" tone="sky" />
-            <h3 className="mt-4 text-sm font-black leading-tight text-white sm:text-base">PESANAN</h3>
-            <p className="mt-2 hidden text-sm leading-6 text-slate-400 sm:block">
-              Lihat pesanan kamu.
+            <div className="flex items-start justify-between gap-3">
+              <h3 className="text-base font-black leading-tight text-white sm:text-lg">Pesanan</h3>
+              <MenuArrow tone="sky" />
+            </div>
+            <p className="mt-4 text-sm leading-6 text-slate-400">
+              Cek pesananmu.
             </p>
-            <span className="mt-3 text-[10px] font-black uppercase tracking-wide text-sky-300">
-              Buka →
-            </span>
           </Link>
 
           {whatsapp ? (
@@ -198,20 +195,21 @@ export default async function Home({ searchParams }: HomeProps) {
               rel="noreferrer"
               className="group flex min-h-28 flex-col justify-between rounded-2xl border border-white/10 bg-[#0a1727] p-4 transition hover:border-violet-300/45 hover:bg-[#0d1d31]"
             >
-              <NeedIcon label="WA" tone="violet" />
-              <h3 className="mt-4 text-sm font-black leading-tight text-white sm:text-base">JUAL / CARI</h3>
-              <p className="mt-2 hidden text-sm leading-6 text-slate-400 sm:block">
-                Chat admin kalau mau cari akun lain.
+              <div className="flex items-start justify-between gap-3">
+                <h3 className="text-base font-black leading-tight text-white sm:text-lg">Chat admin</h3>
+                <MenuArrow tone="violet" />
+              </div>
+              <p className="mt-4 text-sm leading-6 text-slate-400">
+                Cari akun lain.
               </p>
-              <span className="mt-3 text-[10px] font-black uppercase tracking-wide text-violet-300">
-                Chat →
-              </span>
             </a>
           ) : (
             <div className="flex min-h-28 flex-col justify-between rounded-2xl border border-white/10 bg-[#091625] p-4 opacity-70">
-              <NeedIcon label="WA" tone="violet" />
-              <h3 className="mt-4 text-sm font-black leading-tight text-white sm:text-base">JUAL / CARI</h3>
-              <p className="mt-2 hidden text-sm leading-6 text-slate-400 sm:block">WA belum aktif.</p>
+              <div className="flex items-start justify-between gap-3">
+                <h3 className="text-base font-black leading-tight text-white sm:text-lg">Chat admin</h3>
+                <MenuArrow tone="violet" />
+              </div>
+              <p className="mt-4 text-sm leading-6 text-slate-400">WA belum aktif.</p>
             </div>
           )}
         </div>
