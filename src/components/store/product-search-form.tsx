@@ -34,7 +34,7 @@ export default function ProductSearchForm({ initialQuery = "", game }: ProductSe
 
   return (
     <form
-      className="flex w-full max-w-2xl flex-col gap-2 rounded-3xl border border-slate-200 bg-slate-50 p-2 sm:flex-row"
+      className="flex w-full max-w-2xl flex-col gap-2 rounded-3xl border border-white/10 bg-[#0a1727] p-2 sm:flex-row"
       onSubmit={handleSubmit}
     >
       <label className="sr-only" htmlFor="product-search">
@@ -49,12 +49,12 @@ export default function ProductSearchForm({ initialQuery = "", game }: ProductSe
         autoComplete="off"
         value={query}
         onChange={(event) => setQuery(event.target.value)}
-        placeholder="Cari akun..."
-        className="min-w-0 flex-1 rounded-2xl bg-white px-4 py-3 text-sm text-slate-950 outline-none placeholder:text-slate-400 focus:ring-2 focus:ring-emerald-200"
+        placeholder="Cari..."
+        className="min-w-0 flex-1 rounded-2xl bg-white/[0.04] px-4 py-3 text-sm text-white outline-none placeholder:text-slate-500 focus:bg-white/[0.07] focus:ring-2 focus:ring-emerald-300/35"
       />
       <button
         type="submit"
-        className="touch-manipulation rounded-2xl bg-emerald-700 px-5 py-3 text-sm font-black text-white transition hover:bg-emerald-800 focus:outline-none focus:ring-4 focus:ring-emerald-200 active:scale-[0.96]"
+        className="touch-manipulation rounded-2xl bg-emerald-400 px-5 py-3 text-sm font-black text-emerald-950 transition hover:bg-emerald-300 focus:outline-none focus:ring-4 focus:ring-emerald-300/25 active:scale-[0.96]"
       >
         Cari
       </button>

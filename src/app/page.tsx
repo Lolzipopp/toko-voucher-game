@@ -150,7 +150,7 @@ export default async function Home({ searchParams }: HomeProps) {
   );
 
   return (
-    <main className="min-h-screen overflow-hidden bg-slate-50 text-slate-950">
+    <main className="min-h-screen overflow-hidden bg-[#06111f] text-white">
       <StoreHeader />
 
       <HomeHero
@@ -165,14 +165,14 @@ export default async function Home({ searchParams }: HomeProps) {
       >
         <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.22em] text-emerald-700">
+            <p className="text-xs font-black uppercase tracking-[0.22em] text-emerald-300">
               Menu utama
             </p>
             <h2 className="mt-2 text-2xl font-black tracking-tight sm:text-3xl">
               Pilih kebutuhanmu
             </h2>
           </div>
-          <p className="max-w-md text-sm leading-6 text-slate-600">
+          <p className="max-w-md text-sm leading-6 text-slate-400">
             Pilih menu yang dibutuhkan. Untuk membeli, langsung lihat daftar akun.
           </p>
         </div>
@@ -180,39 +180,39 @@ export default async function Home({ searchParams }: HomeProps) {
         <div className="mt-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
           <SectionLink
             href="/#produk"
-            className="group flex min-h-28 flex-col justify-between rounded-2xl border border-slate-200 bg-white p-4 transition hover:border-emerald-300 hover:bg-emerald-50/40"
+            className="group flex min-h-28 flex-col justify-between rounded-2xl border border-white/10 bg-[#0a1727] p-4 transition hover:border-emerald-300/45 hover:bg-[#0d1d31]"
           >
             <div className="flex items-start justify-between gap-3">
-              <h3 className="text-base font-black leading-tight text-slate-950 sm:text-lg">Beli akun</h3>
+              <h3 className="text-base font-black leading-tight text-white sm:text-lg">Beli akun</h3>
               <MenuIcon type="buy" tone="emerald" />
             </div>
-            <p className="mt-4 text-sm leading-6 text-slate-600">
+            <p className="mt-4 text-sm leading-6 text-slate-400">
               Lihat akun yang tersedia.
             </p>
           </SectionLink>
 
           <SectionLink
             href="/#exclusive-offer"
-            className="group flex min-h-28 flex-col justify-between rounded-2xl border border-slate-200 bg-white p-4 transition hover:border-amber-300 hover:bg-amber-50/50"
+            className="group flex min-h-28 flex-col justify-between rounded-2xl border border-white/10 bg-[#0a1727] p-4 transition hover:border-amber-300/45 hover:bg-[#0d1d31]"
           >
             <div className="flex items-start justify-between gap-3">
-              <h3 className="text-base font-black leading-tight text-slate-950 sm:text-lg">Promo</h3>
+              <h3 className="text-base font-black leading-tight text-white sm:text-lg">Promo</h3>
               <MenuIcon type="promo" tone="amber" />
             </div>
-            <p className="mt-4 text-sm leading-6 text-slate-600">
+            <p className="mt-4 text-sm leading-6 text-slate-400">
               Lihat promo aktif.
             </p>
           </SectionLink>
 
           <Link
             href="/akun"
-            className="group flex min-h-28 flex-col justify-between rounded-2xl border border-slate-200 bg-white p-4 transition hover:border-sky-300 hover:bg-sky-50/50"
+            className="group flex min-h-28 flex-col justify-between rounded-2xl border border-white/10 bg-[#0a1727] p-4 transition hover:border-sky-300/45 hover:bg-[#0d1d31]"
           >
             <div className="flex items-start justify-between gap-3">
-              <h3 className="text-base font-black leading-tight text-slate-950 sm:text-lg">Pesanan</h3>
+              <h3 className="text-base font-black leading-tight text-white sm:text-lg">Pesanan</h3>
               <MenuIcon type="orders" tone="sky" />
             </div>
-            <p className="mt-4 text-sm leading-6 text-slate-600">
+            <p className="mt-4 text-sm leading-6 text-slate-400">
               Cek status pesanan.
             </p>
           </Link>
@@ -222,23 +222,23 @@ export default async function Home({ searchParams }: HomeProps) {
               href={whatsapp}
               target="_blank"
               rel="noreferrer"
-              className="group flex min-h-28 flex-col justify-between rounded-2xl border border-slate-200 bg-white p-4 transition hover:border-violet-300 hover:bg-violet-50/50"
+              className="group flex min-h-28 flex-col justify-between rounded-2xl border border-white/10 bg-[#0a1727] p-4 transition hover:border-violet-300/45 hover:bg-[#0d1d31]"
             >
               <div className="flex items-start justify-between gap-3">
-                <h3 className="text-base font-black leading-tight text-slate-950 sm:text-lg">Hubungi admin</h3>
+                <h3 className="text-base font-black leading-tight text-white sm:text-lg">Hubungi admin</h3>
                 <MenuIcon type="admin" tone="violet" />
               </div>
-              <p className="mt-4 text-sm leading-6 text-slate-600">
+              <p className="mt-4 text-sm leading-6 text-slate-400">
                 Cari akun khusus lewat admin.
               </p>
             </a>
           ) : (
-            <div className="flex min-h-28 flex-col justify-between rounded-2xl border border-slate-200 bg-white p-4 opacity-70">
+            <div className="flex min-h-28 flex-col justify-between rounded-2xl border border-white/10 bg-[#091625] p-4 opacity-70">
               <div className="flex items-start justify-between gap-3">
-                <h3 className="text-base font-black leading-tight text-slate-950 sm:text-lg">Hubungi admin</h3>
+                <h3 className="text-base font-black leading-tight text-white sm:text-lg">Hubungi admin</h3>
                 <MenuIcon type="admin" tone="violet" />
               </div>
-              <p className="mt-4 text-sm leading-6 text-slate-600">WhatsApp belum tersedia.</p>
+              <p className="mt-4 text-sm leading-6 text-slate-400">WhatsApp belum tersedia.</p>
             </div>
           )}
         </div>
@@ -246,22 +246,22 @@ export default async function Home({ searchParams }: HomeProps) {
 
       <section
         id="exclusive-offer"
-        className="scroll-mt-20 border-y border-slate-200 bg-white"
+        className="scroll-mt-20 border-y border-amber-300/15 bg-[linear-gradient(90deg,rgba(251,191,36,.06),transparent,rgba(251,191,36,.06))]"
       >
         <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6">
           <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
             <div>
-              <p className="text-xs font-black uppercase tracking-[0.22em] text-amber-700">
+              <p className="text-xs font-black uppercase tracking-[0.22em] text-amber-300">
                 Promo
               </p>
               <h2 className="mt-2 text-3xl font-black italic">
                 Akun promo
               </h2>
-              <p className="mt-3 text-sm text-slate-600">
+              <p className="mt-3 text-sm text-slate-400">
                 Kalau ada promo, muncul di sini.
               </p>
             </div>
-            <SectionLink href="/#produk" className="text-sm font-black text-amber-700">
+            <SectionLink href="/#produk" className="text-sm font-black text-amber-300">
               Lihat semua →
             </SectionLink>
           </div>
@@ -273,9 +273,9 @@ export default async function Home({ searchParams }: HomeProps) {
               ))}
             </div>
           ) : (
-            <div className="mt-7 rounded-3xl border border-dashed border-amber-200 bg-amber-50 p-8 text-center">
-              <p className="font-black text-amber-800">Belum ada promo</p>
-              <p className="mt-2 text-sm text-slate-600">
+            <div className="mt-7 rounded-3xl border border-dashed border-amber-300/20 bg-amber-300/5 p-8 text-center">
+              <p className="font-black text-amber-100">Belum ada promo</p>
+              <p className="mt-2 text-sm text-slate-400">
                 Nanti kalau ada promo, muncul di sini.
               </p>
             </div>
@@ -287,16 +287,16 @@ export default async function Home({ searchParams }: HomeProps) {
         id="produk"
         className="scroll-mt-20 mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:py-18"
       >
-        <div className="rounded-[2rem] border border-slate-200 bg-white p-4 sm:p-6">
+        <div className="rounded-[2rem] border border-white/10 bg-[#081322] p-4 sm:p-6">
           <div className="flex flex-col justify-between gap-5 lg:flex-row lg:items-end">
             <div>
-              <p className="text-xs font-black uppercase tracking-[0.22em] text-emerald-700">
+              <p className="text-xs font-black uppercase tracking-[0.22em] text-emerald-300">
                 Daftar akun
               </p>
               <h2 className="mt-2 text-3xl font-black tracking-tight sm:text-4xl">
                 Akun ready
               </h2>
-              <p className="mt-3 text-sm leading-6 text-slate-600">
+              <p className="mt-3 text-sm leading-6 text-slate-400">
                 {query.q ? (
                   <>
                     {displayedProducts.length} hasil “{query.q}” · {totalAvailableStock} stok.
@@ -318,8 +318,8 @@ export default async function Home({ searchParams }: HomeProps) {
             href={query.q ? `/?q=${encodeURIComponent(query.q)}` : "/"}
             className={`whitespace-nowrap rounded-2xl border px-4 py-2.5 text-xs font-black ${
               !query.game
-                ? "border-emerald-700 bg-emerald-700 text-white"
-                : "border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50"
+                ? "border-emerald-400 bg-emerald-400 text-emerald-950"
+                : "border-white/10 bg-[#0a1727] text-slate-300 hover:border-white/20"
             }`}
           >
             Semua game
@@ -332,8 +332,8 @@ export default async function Home({ searchParams }: HomeProps) {
               }#produk`}
               className={`whitespace-nowrap rounded-2xl border px-4 py-2.5 text-xs font-black ${
                 query.game === game.slug
-                  ? "border-emerald-700 bg-emerald-700 text-white"
-                  : "border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50"
+                  ? "border-emerald-400 bg-emerald-400 text-emerald-950"
+                  : "border-white/10 bg-[#0a1727] text-slate-300 hover:border-white/20"
               }`}
             >
               {game.name}
@@ -344,14 +344,14 @@ export default async function Home({ searchParams }: HomeProps) {
         {displayedProducts.length ? (
           <ProductSlider products={displayedProducts} pageSize={10} />
         ) : (
-          <div className="mt-8 rounded-3xl border border-dashed border-slate-300 bg-white p-12 text-center">
+          <div className="mt-8 rounded-3xl border border-dashed border-white/15 bg-white/5 p-12 text-center">
             <p className="text-lg font-black">Akun tidak ketemu</p>
-            <p className="mt-2 text-sm text-slate-600">
+            <p className="mt-2 text-sm text-slate-400">
               Coba cari nama lain.
             </p>
             <Link
               href="/#produk"
-              className="mt-5 inline-flex rounded-xl bg-emerald-700 px-4 py-2.5 text-sm font-black text-white"
+              className="mt-5 inline-flex rounded-xl bg-emerald-400 px-4 py-2.5 text-sm font-black text-emerald-950"
             >
               Reset cari
             </Link>
@@ -364,17 +364,17 @@ export default async function Home({ searchParams }: HomeProps) {
 
       <section
           id="testimoni"
-          className="border-y border-slate-200 bg-white"
+          className="border-y border-white/8 bg-[#071320]"
         >
           <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6">
             <div className="text-center">
-              <p className="text-xs font-black uppercase tracking-[0.22em] text-emerald-700">
+              <p className="text-xs font-black uppercase tracking-[0.22em] text-emerald-300">
                 Kata pembeli
               </p>
               <h2 className="mt-2 text-3xl font-black italic sm:text-4xl">
                 Pembeli bilang
               </h2>
-              <p className="mt-3 text-sm text-slate-600">
+              <p className="mt-3 text-sm text-slate-400">
                 Komentar dari pembeli.
               </p>
             </div>
@@ -386,13 +386,13 @@ export default async function Home({ searchParams }: HomeProps) {
                   key={testimonial.id}
                   className={`rounded-3xl border p-6 ${
                     testimonial.is_featured
-                      ? "border-emerald-200 bg-emerald-50"
-                      : "border-slate-200 bg-white"
+                      ? "border-emerald-400/35 bg-emerald-400/[.07]"
+                      : "border-white/10 bg-white/[.035]"
                   }`}
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <p className="font-black text-slate-950">
+                      <p className="font-black text-white">
                         {testimonial.customer_name}
                       </p>
                       <p className="mt-1 text-xs text-slate-500">
@@ -401,17 +401,17 @@ export default async function Home({ searchParams }: HomeProps) {
                           "Pembeli RIKU STORE"}
                       </p>
                     </div>
-                    <span className="text-sm tracking-wider text-amber-700">
+                    <span className="text-sm tracking-wider text-amber-300">
                       {"★".repeat(testimonial.rating)}
                     </span>
                   </div>
 
-                  <p className="mt-5 text-sm leading-7 text-slate-600">
+                  <p className="mt-5 text-sm leading-7 text-slate-300">
                     “{testimonial.content}”
                   </p>
 
                   {testimonial.product_label ? (
-                    <span className="mt-5 inline-flex rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-[10px] font-black text-emerald-700">
+                    <span className="mt-5 inline-flex rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-[10px] font-black text-emerald-200">
                       {testimonial.product_label}
                     </span>
                   ) : null}
@@ -419,7 +419,7 @@ export default async function Home({ searchParams }: HomeProps) {
               ))}
             </div>
             ) : (
-              <div className="mx-auto mt-8 max-w-xl rounded-3xl border border-dashed border-slate-300 bg-white p-7 text-center text-sm leading-6 text-slate-600">
+              <div className="mx-auto mt-8 max-w-xl rounded-3xl border border-dashed border-white/15 bg-white/[.035] p-7 text-center text-sm leading-6 text-slate-400">
                 Belum ada komentar pembeli.
               </div>
             )}
@@ -428,22 +428,19 @@ export default async function Home({ searchParams }: HomeProps) {
 
       <section
         id="faq"
-        className="border-y border-slate-200 bg-slate-50"
+        className="border-y border-white/8 bg-[#081625]"
       >
         <div className="mx-auto grid max-w-7xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[.72fr_1.28fr] lg:items-center">
           <div>
-            <div className="relative mx-auto grid h-64 w-64 place-items-center rounded-full border border-slate-200 bg-white">
-              <div className="grid h-40 w-40 place-items-center rounded-[3rem] border border-emerald-200 bg-emerald-50 text-emerald-700">
-                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className="h-16 w-16">
-                  <path d="M12 3 19 6v5c0 4.6-2.8 8.2-7 10-4.2-1.8-7-5.4-7-10V6l7-3Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
-                  <path d="m8.8 12 2.1 2.1 4.4-4.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
+            <div className="relative mx-auto grid h-64 w-64 place-items-center rounded-full border border-emerald-400/20 bg-emerald-400/5 shadow-[0_0_80px_rgba(16,185,129,.15)]">
+              <div className="grid h-40 w-40 place-items-center rounded-[3rem] border border-emerald-400/30 bg-emerald-400/10 text-7xl">
+                🛡
               </div>
             </div>
           </div>
 
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.22em] text-emerald-700">
+            <p className="text-xs font-black uppercase tracking-[0.22em] text-emerald-300">
               Bantuan
             </p>
             <h2 className="mt-2 text-3xl font-black italic sm:text-4xl">
@@ -454,22 +451,22 @@ export default async function Home({ searchParams }: HomeProps) {
               {(faqItems ?? []).map((item) => (
                 <details
                   key={item.id}
-                  className="group rounded-2xl border border-slate-200 bg-white p-4 open:border-emerald-300 open:bg-emerald-50"
+                  className="group rounded-2xl border border-white/10 bg-white/[.035] p-4 open:border-emerald-400/30 open:bg-emerald-400/5"
                 >
-                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-black text-slate-900">
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-black text-slate-200">
                     {item.question}
-                    <span className="text-xl text-emerald-700 transition group-open:rotate-45">
+                    <span className="text-xl text-emerald-300 transition group-open:rotate-45">
                       +
                     </span>
                   </summary>
-                  <p className="mt-3 pr-8 text-sm leading-7 text-slate-600">
+                  <p className="mt-3 pr-8 text-sm leading-7 text-slate-400">
                     {item.answer}
                   </p>
                 </details>
               ))}
 
               {(faqItems ?? []).length === 0 ? (
-                <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-6 text-sm text-slate-600">
+                <div className="rounded-2xl border border-dashed border-white/15 bg-white/[.03] p-6 text-sm text-slate-400">
                   Belum ada pertanyaan.
                 </div>
               ) : null}
@@ -479,19 +476,19 @@ export default async function Home({ searchParams }: HomeProps) {
       </section>
 
       <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
-        <div className="grid gap-5 rounded-[2rem] border border-emerald-200 bg-white p-6 sm:p-8 lg:grid-cols-[1fr_auto] lg:items-center">
+        <div className="grid gap-5 rounded-[2rem] border border-emerald-400/20 bg-[linear-gradient(120deg,rgba(16,185,129,.12),rgba(56,189,248,.05))] p-6 sm:p-8 lg:grid-cols-[1fr_auto] lg:items-center">
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.2em] text-emerald-700">
+            <p className="text-xs font-black uppercase tracking-[0.2em] text-emerald-300">
               Sebelum bayar
             </p>
             <h2 className="mt-2 text-2xl font-black italic">
               Total bayar muncul sebelum bayar
             </h2>
-            <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600">
+            <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-400">
               Total pesanan dapat dicek sebelum pembayaran. Jika perlu bantuan, hubungi admin.
             </p>
           </div>
-          <span className="rounded-2xl border border-amber-200 bg-amber-50 px-5 py-3 text-center text-xs font-black uppercase tracking-wider text-amber-800">
+          <span className="rounded-2xl border border-amber-300/25 bg-amber-300/10 px-5 py-3 text-center text-xs font-black uppercase tracking-wider text-amber-200">
             Bayar manual dulu
           </span>
         </div>

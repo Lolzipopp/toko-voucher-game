@@ -42,17 +42,17 @@ export default function StoreHeader() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-50 w-full max-w-full overflow-x-clip border-b border-slate-200 bg-white/95 text-slate-950 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 w-full max-w-full overflow-x-clip border-b border-emerald-400/15 bg-[#06111f]/94 text-white backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
         <Link href="/" className="group flex min-w-0 touch-manipulation items-center gap-3 rounded-2xl transition active:scale-[0.98]">
-          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl border border-emerald-200 bg-emerald-50 text-xl font-black text-emerald-700 transition group-hover:border-emerald-300">
+          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl border border-emerald-400/35 bg-emerald-400/10 text-xl font-black text-emerald-300 shadow-[0_0_28px_rgba(52,211,153,.16)] transition group-hover:border-emerald-300/70">
             R
           </span>
           <span className="min-w-0">
             <span className="block truncate text-base font-black italic tracking-tight">
               {settings.store_name}
             </span>
-            <span className="hidden truncate text-[9px] font-black uppercase tracking-[0.2em] text-emerald-700 sm:block">
+            <span className="hidden truncate text-[9px] font-black uppercase tracking-[0.2em] text-emerald-300/80 sm:block">
               {settings.store_tagline}
             </span>
           </span>
@@ -67,36 +67,36 @@ export default function StoreHeader() {
               aria-label="Buka menu"
               aria-expanded={menuOpen}
               onClick={() => setMenuOpen((open) => !open)}
-              className="grid h-11 w-11 touch-manipulation place-items-center rounded-xl border border-slate-200 bg-slate-50 transition hover:border-emerald-300 hover:bg-emerald-50 focus:outline-none focus:ring-4 focus:ring-emerald-300/20 active:scale-95"
+              className="grid h-11 w-11 touch-manipulation place-items-center rounded-xl border border-white/10 bg-white/5 transition hover:border-emerald-300/40 hover:bg-emerald-400/10 focus:outline-none focus:ring-4 focus:ring-emerald-300/20 active:scale-95"
             >
               <span className="space-y-1.5">
-                <span className="block h-0.5 w-5 rounded-full bg-slate-900" />
-                <span className="block h-0.5 w-5 rounded-full bg-slate-900" />
-                <span className="block h-0.5 w-5 rounded-full bg-slate-900" />
+                <span className="block h-0.5 w-5 rounded-full bg-white" />
+                <span className="block h-0.5 w-5 rounded-full bg-white" />
+                <span className="block h-0.5 w-5 rounded-full bg-white" />
               </span>
             </button>
 
             {menuOpen ? (
-              <div className="absolute right-0 mt-3 w-[min(21rem,calc(100vw-2rem))] overflow-hidden rounded-3xl border border-slate-200 bg-white p-3 shadow-[0_25px_80px_rgba(0,0,0,.55)]">
-                <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
-                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-700">
+              <div className="absolute right-0 mt-3 w-[min(21rem,calc(100vw-2rem))] overflow-hidden rounded-3xl border border-white/10 bg-[#0a1828] p-3 shadow-[0_25px_80px_rgba(0,0,0,.55)]">
+                <div className="rounded-2xl border border-emerald-400/15 bg-emerald-400/8 p-4">
+                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-300">
                     Akun Pembeli
                   </p>
-                  <p className="mt-1 text-sm text-slate-600">
+                  <p className="mt-1 text-sm text-slate-300">
                     Cek pesanan kamu di sini.
                   </p>
                   <div className="mt-3 grid grid-cols-2 gap-2">
                     <Link
                       href="/akun/login?mode=login"
                       onClick={() => setMenuOpen(false)}
-                      className="rounded-xl bg-emerald-700 px-3 py-2.5 text-center text-xs font-black text-white transition active:scale-[0.97]"
+                      className="rounded-xl bg-emerald-400 px-3 py-2.5 text-center text-xs font-black text-emerald-950 transition active:scale-[0.97]"
                     >
                       Masuk
                     </Link>
                     <Link
                       href="/akun/login?mode=register"
                       onClick={() => setMenuOpen(false)}
-                      className="rounded-xl border border-emerald-200 bg-white px-3 py-2.5 text-center text-xs font-black text-emerald-700 transition active:scale-[0.97]"
+                      className="rounded-xl border border-emerald-400/25 bg-emerald-400/10 px-3 py-2.5 text-center text-xs font-black text-emerald-200 transition active:scale-[0.97]"
                     >
                       Daftar
                     </Link>
@@ -104,7 +104,7 @@ export default function StoreHeader() {
                   <Link
                     href="/akun"
                     onClick={() => setMenuOpen(false)}
-                    className="mt-2 block rounded-xl px-3 py-2 text-center text-xs font-bold text-slate-600 hover:bg-slate-900/5"
+                    className="mt-2 block rounded-xl px-3 py-2 text-center text-xs font-bold text-slate-300 hover:bg-white/5"
                   >
                     Cek pesanan
                   </Link>
@@ -114,35 +114,35 @@ export default function StoreHeader() {
                   <SectionLink
                     href="/#kebutuhan"
                     onNavigate={() => setMenuOpen(false)}
-                    className="rounded-xl px-4 py-3 text-slate-700 hover:bg-slate-900/5"
+                    className="rounded-xl px-4 py-3 text-slate-200 hover:bg-white/5"
                   >
                     Menu utama
                   </SectionLink>
                   <SectionLink
                     href="/#exclusive-offer"
                     onNavigate={() => setMenuOpen(false)}
-                    className="rounded-xl px-4 py-3 text-slate-700 hover:bg-slate-900/5"
+                    className="rounded-xl px-4 py-3 text-slate-200 hover:bg-white/5"
                   >
                     Promo
                   </SectionLink>
                   <SectionLink
                     href="/#produk"
                     onNavigate={() => setMenuOpen(false)}
-                    className="rounded-xl px-4 py-3 text-slate-700 hover:bg-slate-900/5"
+                    className="rounded-xl px-4 py-3 text-slate-200 hover:bg-white/5"
                   >
                     Akun ready
                   </SectionLink>
                   <SectionLink
                     href="/#faq"
                     onNavigate={() => setMenuOpen(false)}
-                    className="rounded-xl px-4 py-3 text-slate-700 hover:bg-slate-900/5"
+                    className="rounded-xl px-4 py-3 text-slate-200 hover:bg-white/5"
                   >
                     Bantuan
                   </SectionLink>
                   <Link
                     href="/tentang-kontak"
                     onClick={() => setMenuOpen(false)}
-                    className="rounded-xl px-4 py-3 text-slate-700 hover:bg-slate-900/5"
+                    className="rounded-xl px-4 py-3 text-slate-200 hover:bg-white/5"
                   >
                     Hubungi admin
                   </Link>

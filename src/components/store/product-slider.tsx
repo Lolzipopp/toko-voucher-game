@@ -40,8 +40,8 @@ export default function ProductSlider({ products, pageSize = 10 }: ProductSlider
       </div>
 
       {totalPages > 1 ? (
-        <div className="mt-7 flex flex-col items-center justify-between gap-3 rounded-3xl border border-slate-200 bg-white p-3 sm:flex-row sm:p-4">
-          <p className="text-sm font-bold text-slate-600">
+        <div className="mt-7 flex flex-col items-center justify-between gap-3 rounded-3xl border border-white/10 bg-[#081322] p-3 sm:flex-row sm:p-4">
+          <p className="text-sm font-bold text-slate-300">
             Slide {page + 1} dari {totalPages} · {products.length} akun
           </p>
 
@@ -50,7 +50,7 @@ export default function ProductSlider({ products, pageSize = 10 }: ProductSlider
               type="button"
               onClick={() => goToPage(page - 1)}
               disabled={page === 0}
-              className="flex-1 touch-manipulation rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-black text-slate-800 transition hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-emerald-300/20 active:scale-[0.96] disabled:cursor-not-allowed disabled:opacity-35 sm:flex-none"
+              className="flex-1 touch-manipulation rounded-2xl border border-white/10 px-4 py-3 text-sm font-black text-white transition hover:bg-white/5 focus:outline-none focus:ring-4 focus:ring-emerald-300/20 active:scale-[0.96] disabled:cursor-not-allowed disabled:opacity-35 sm:flex-none"
             >
               ← Sebelumnya
             </button>
@@ -58,7 +58,7 @@ export default function ProductSlider({ products, pageSize = 10 }: ProductSlider
               type="button"
               onClick={() => goToPage(page + 1)}
               disabled={page >= totalPages - 1}
-              className="flex-1 touch-manipulation rounded-2xl bg-emerald-700 px-4 py-3 text-sm font-black text-white transition hover:bg-emerald-800 focus:outline-none focus:ring-4 focus:ring-emerald-300/25 active:scale-[0.96] disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400 sm:flex-none"
+              className="flex-1 touch-manipulation rounded-2xl bg-emerald-400 px-4 py-3 text-sm font-black text-emerald-950 transition hover:bg-emerald-300 focus:outline-none focus:ring-4 focus:ring-emerald-300/25 active:scale-[0.96] disabled:cursor-not-allowed disabled:bg-slate-700 disabled:text-slate-400 sm:flex-none"
             >
               Berikutnya →
             </button>
