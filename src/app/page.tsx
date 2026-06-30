@@ -159,6 +159,23 @@ export default async function Home({ searchParams }: HomeProps) {
         totalStock={totalAvailableStock}
       />
 
+
+      <section className="mx-auto max-w-7xl px-4 pb-4 sm:px-6">
+        <div className="overflow-hidden rounded-[1.75rem] border border-white/10 bg-[#0a1727]">
+          <div className="flex gap-2 overflow-x-auto p-3">
+            {["ROBLOX", "BLOX FRUITS", "AKUN READY", "PROMO", "CEK PESANAN", "CUSTOM ORDER"].map((item) => (
+              <SectionLink
+                key={item}
+                href={item === "PROMO" ? "/#exclusive-offer" : item === "CEK PESANAN" ? "/akun" : "/#produk"}
+                className="whitespace-nowrap rounded-2xl border border-white/10 bg-white/[.04] px-4 py-3 text-xs font-black tracking-wide text-slate-100 transition hover:border-emerald-300/45 hover:bg-emerald-400/10 active:scale-[0.98]"
+              >
+                {item}
+              </SectionLink>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section
         id="kebutuhan"
         className="scroll-mt-20 mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10"
@@ -433,8 +450,11 @@ export default async function Home({ searchParams }: HomeProps) {
         <div className="mx-auto grid max-w-7xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[.72fr_1.28fr] lg:items-center">
           <div>
             <div className="relative mx-auto grid h-64 w-64 place-items-center rounded-full border border-emerald-400/20 bg-emerald-400/5 shadow-[0_0_80px_rgba(16,185,129,.15)]">
-              <div className="grid h-40 w-40 place-items-center rounded-[3rem] border border-emerald-400/30 bg-emerald-400/10 text-7xl">
-                🛡
+              <div className="grid h-40 w-40 place-items-center rounded-[3rem] border border-emerald-400/30 bg-emerald-400/10 text-emerald-200">
+                <svg viewBox="0 0 24 24" fill="none" className="h-20 w-20">
+                  <path d="M12 3 5 6v5c0 4.4 2.8 8.4 7 10 4.2-1.6 7-5.6 7-10V6l-7-3Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+                  <path d="m9 12 2 2 4-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
               </div>
             </div>
           </div>
@@ -471,6 +491,24 @@ export default async function Home({ searchParams }: HomeProps) {
                 </div>
               ) : null}
             </div>
+          </div>
+        </div>
+      </section>
+
+
+      <section className="border-y border-white/8 bg-[#071320]">
+        <div className="mx-auto max-w-7xl px-4 py-10 text-center sm:px-6">
+          <p className="text-xs font-black uppercase tracking-[0.22em] text-emerald-300">Pembayaran</p>
+          <h2 className="mt-2 text-2xl font-black sm:text-3xl">Didukung metode pembayaran umum Indonesia</h2>
+          <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-slate-400">
+            Order dibuat di website, lalu admin arahkan pembayaran dan proses akun lewat WhatsApp.
+          </p>
+          <div className="mt-6 flex flex-wrap justify-center gap-2">
+            {["QRIS", "DANA", "OVO", "GoPay", "Bank Transfer", "E-Wallet"].map((method) => (
+              <span key={method} className="rounded-2xl border border-white/10 bg-white/[.04] px-4 py-2 text-xs font-black text-slate-200">
+                {method}
+              </span>
+            ))}
           </div>
         </div>
       </section>
