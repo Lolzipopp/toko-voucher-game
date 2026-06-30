@@ -44,14 +44,14 @@ export default function HomeHero({ whatsappUrl, availableProducts, totalStock }:
 
         </div>
 
-        <div className="rounded-[2rem] border border-white/10 bg-[#0b1726] p-5 shadow-[0_24px_80px_rgba(0,0,0,.28)]">
-          <div className="rounded-[1.5rem] border border-emerald-300/15 bg-[#081322] p-5">
+        <div className="rounded-[2rem] border border-white/10 bg-[#0b1726] p-5">
+          <div className="rounded-[1.5rem] border border-white/10 bg-[#081322] p-5">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-xs font-black uppercase tracking-[0.18em] text-emerald-300">Toko</p>
                 <h2 className="mt-2 text-2xl font-black text-white">Ready hari ini</h2>
               </div>
-              <span className="rounded-full bg-emerald-400/12 px-3 py-1 text-xs font-black text-emerald-200">ONLINE</span>
+              <span className="rounded-full bg-emerald-400 px-3 py-1 text-xs font-black text-emerald-950">ONLINE</span>
             </div>
 
             <div className="mt-6 grid grid-cols-2 gap-3">
@@ -63,13 +63,6 @@ export default function HomeHero({ whatsappUrl, availableProducts, totalStock }:
                 <p className="text-3xl font-black text-white">{totalStock}</p>
                 <p className="mt-1 text-xs font-bold text-slate-400">stok</p>
               </div>
-            </div>
-
-            <div className="mt-5 rounded-2xl border border-amber-300/20 bg-amber-300/8 p-4">
-              <p className="text-sm font-black text-amber-100">Jangan transfer dulu.</p>
-              <p className="mt-1 text-xs leading-5 text-amber-100/75">
-                Pesan dulu, bayar kalau admin sudah kasih arahan.
-              </p>
             </div>
 
             <Link

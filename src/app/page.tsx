@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import HomeHero from "@/components/store/home-hero";
 import ProductCard from "@/components/store/product-card";
+import ProductSlider from "@/components/store/product-slider";
 import ProductSearchForm from "@/components/store/product-search-form";
 import SectionLink from "@/components/store/section-link";
 import StoreFooter from "@/components/store/store-footer";
@@ -313,11 +314,7 @@ export default async function Home({ searchParams }: HomeProps) {
         </div>
 
         {displayedProducts.length ? (
-          <div className="mt-6 grid gap-4 sm:mt-8 sm:grid-cols-2 sm:gap-5 xl:grid-cols-3">
-            {displayedProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
+          <ProductSlider products={displayedProducts} pageSize={10} />
         ) : (
           <div className="mt-8 rounded-3xl border border-dashed border-white/15 bg-white/5 p-12 text-center">
             <p className="text-lg font-black">Akun tidak ketemu</p>
