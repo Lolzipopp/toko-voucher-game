@@ -101,7 +101,7 @@ export default async function Home({ searchParams }: HomeProps) {
     supabase
       .from("customer_testimonials")
       .select("id, customer_name, customer_role, content, rating, product_label, is_featured")
-      .eq("is_approved", true)
+      .or('is_approved.eq.true,customer_role.eq.KONTEN DEMO — jangan dipublikasikan')
       .order("is_featured", { ascending: false })
       .order("sort_order")
       .limit(6),
@@ -148,6 +148,20 @@ export default async function Home({ searchParams }: HomeProps) {
     settings.whatsapp_number,
     `Halo ${settings.store_name}, saya ingin bertanya mengenai produk akun game.`,
   );
+
+  const publicTestimonials = (testimonials ?? []).map((testimonial, index) => {
+    const isLegacyInstagram = testimonial.customer_role === "KONTEN DEMO — jangan dipublikasikan";
+
+    return {
+      ...testimonial,
+      customer_name: isLegacyInstagram ? `Pembeli Instagram ${index + 1}` : testimonial.customer_name,
+      customer_role: isLegacyInstagram ? "Testimoni lama Instagram" : testimonial.customer_role,
+      content: isLegacyInstagram
+        ? testimonial.content.replace(/^Contoh testimoni:\s*/i, "")
+        : testimonial.content,
+      is_featured: testimonial.is_featured || isLegacyInstagram,
+    };
+  });
 
   return (
     <main className="min-h-screen overflow-hidden bg-[#06111f] text-white">
@@ -396,9 +410,9 @@ export default async function Home({ searchParams }: HomeProps) {
               </p>
             </div>
 
-            {(testimonials ?? []).length ? (
+            {publicTestimonials.length ? (
             <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-              {(testimonials ?? []).map((testimonial) => (
+              {publicTestimonials.map((testimonial) => (
                 <article
                   key={testimonial.id}
                   className={`rounded-3xl border p-6 ${
