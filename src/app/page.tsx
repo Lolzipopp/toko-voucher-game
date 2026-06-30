@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import HomeBannerCarousel, { type HomeBanner } from "@/components/store/home-banner-carousel";
+import HomeHero from "@/components/store/home-hero";
 import ProductCard from "@/components/store/product-card";
 import ProductSearchForm from "@/components/store/product-search-form";
 import SectionLink from "@/components/store/section-link";
@@ -54,7 +54,6 @@ export default async function Home({ searchParams }: HomeProps) {
     { data, error },
     { data: games },
     settings,
-    { data: announcements },
     { data: testimonials },
     { data: faqItems },
   ] = await Promise.all([
@@ -70,11 +69,6 @@ export default async function Home({ searchParams }: HomeProps) {
       .eq("is_active", true)
       .order("sort_order"),
     getPublicStoreSettings(),
-    supabase
-      .from("site_announcements")
-      .select("id, title, message, button_label, button_url, tone, image_path")
-      .order("sort_order")
-      .limit(3),
     supabase
       .from("customer_testimonials")
       .select("id, customer_name, customer_role, content, rating, product_label, is_featured")
@@ -116,81 +110,69 @@ export default async function Home({ searchParams }: HomeProps) {
     <main className="min-h-screen overflow-hidden bg-[#06111f] text-white">
       <StoreHeader />
 
-      <HomeBannerCarousel
+      <HomeHero
         whatsappUrl={whatsapp}
-        banners={(announcements ?? []).map((announcement) => {
-          const imagePath = announcement.image_path as string | null;
-          const imageUrl = imagePath
-            ? supabase.storage.from("product-images").getPublicUrl(imagePath).data.publicUrl
-            : null;
-
-          return {
-            id: announcement.id,
-            title: announcement.title,
-            message: announcement.message,
-            button_label: announcement.button_label,
-            button_url:
-              announcement.button_label?.toLowerCase().includes("hubungi admin") && whatsapp
-                ? whatsapp
-                : announcement.button_url,
-            tone: announcement.tone,
-            image_url: imageUrl,
-          } satisfies HomeBanner;
-        })}
+        availableProducts={availableProducts.length}
+        totalStock={totalAvailableStock}
       />
 
       <section
         id="kebutuhan"
-        className="scroll-mt-20 mx-auto max-w-7xl px-3 py-8 sm:px-6 sm:py-12 lg:py-16"
+        className="scroll-mt-20 mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10"
       >
-        <div className="text-center">
-          <p className="text-xs font-black uppercase tracking-[0.22em] text-emerald-300">
-            Layanan RIKU STORE
+        <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.22em] text-emerald-300">
+              Mulai dari sini
+            </p>
+            <h2 className="mt-2 text-2xl font-black tracking-tight sm:text-3xl">
+              Mau ngapain hari ini?
+            </h2>
+          </div>
+          <p className="max-w-md text-sm leading-6 text-slate-400">
+            Pilih jalur yang paling cepat. Kalau cuma mau beli akun, langsung cek stok.
           </p>
-          <h2 className="mt-3 text-3xl font-black italic sm:text-4xl">
-            PILIH KEBUTUHANMU
-          </h2>
         </div>
 
-        <div className="mt-6 grid grid-cols-4 gap-2 sm:mt-8 sm:gap-4">
+        <div className="mt-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
           <SectionLink
             href="/#produk"
-            className="group flex min-h-28 flex-col items-center justify-center rounded-2xl border border-emerald-400/25 bg-[radial-gradient(circle_at_80%_0%,rgba(52,211,153,.18),transparent_45%),#0a1a2e] px-2 py-4 text-center transition hover:-translate-y-1 hover:border-emerald-300/60 sm:min-h-72 sm:items-start sm:justify-start sm:rounded-3xl sm:p-6 sm:text-left"
+            className="group flex min-h-28 flex-col justify-between rounded-2xl border border-white/10 bg-[#0a1727] p-4 transition hover:border-emerald-300/45 hover:bg-[#0d1d31]"
           >
             <NeedIcon label="BA" tone="emerald" />
-            <h3 className="mt-2 text-[11px] font-black italic leading-tight sm:mt-7 sm:text-xl">BELI AKUN</h3>
+            <h3 className="mt-4 text-sm font-black leading-tight text-white sm:text-base">BELI AKUN</h3>
             <p className="mt-2 hidden text-sm leading-6 text-slate-400 sm:block">
               Cari akun berdasarkan game, harga, dan spesifikasi.
             </p>
-            <span className="mt-2 text-[9px] font-black uppercase tracking-wide text-emerald-300 sm:mt-6 sm:text-xs sm:tracking-wider">
+            <span className="mt-3 text-[10px] font-black uppercase tracking-wide text-emerald-300">
               Lihat →
             </span>
           </SectionLink>
 
           <SectionLink
             href="/#exclusive-offer"
-            className="group flex min-h-28 flex-col items-center justify-center rounded-2xl border border-amber-400/20 bg-[radial-gradient(circle_at_80%_0%,rgba(251,191,36,.16),transparent_45%),#0a1a2e] px-2 py-4 text-center transition hover:-translate-y-1 hover:border-amber-300/55 sm:min-h-72 sm:items-start sm:justify-start sm:rounded-3xl sm:p-6 sm:text-left"
+            className="group flex min-h-28 flex-col justify-between rounded-2xl border border-white/10 bg-[#0a1727] p-4 transition hover:border-amber-300/45 hover:bg-[#0d1d31]"
           >
             <NeedIcon label="PR" tone="amber" />
-            <h3 className="mt-2 text-[11px] font-black italic leading-tight sm:mt-7 sm:text-xl">PROMO</h3>
+            <h3 className="mt-4 text-sm font-black leading-tight text-white sm:text-base">PROMO</h3>
             <p className="mt-2 hidden text-sm leading-6 text-slate-400 sm:block">
               Cek akun dengan harga khusus yang sedang aktif.
             </p>
-            <span className="mt-2 text-[9px] font-black uppercase tracking-wide text-amber-300 sm:mt-6 sm:text-xs sm:tracking-wider">
+            <span className="mt-3 text-[10px] font-black uppercase tracking-wide text-amber-300">
               Cek →
             </span>
           </SectionLink>
 
           <Link
             href="/akun"
-            className="group flex min-h-28 flex-col items-center justify-center rounded-2xl border border-sky-400/20 bg-[radial-gradient(circle_at_80%_0%,rgba(56,189,248,.16),transparent_45%),#0a1a2e] px-2 py-4 text-center transition hover:-translate-y-1 hover:border-sky-300/55 sm:min-h-72 sm:items-start sm:justify-start sm:rounded-3xl sm:p-6 sm:text-left"
+            className="group flex min-h-28 flex-col justify-between rounded-2xl border border-white/10 bg-[#0a1727] p-4 transition hover:border-sky-300/45 hover:bg-[#0d1d31]"
           >
             <NeedIcon label="PS" tone="sky" />
-            <h3 className="mt-2 text-[11px] font-black italic leading-tight sm:mt-7 sm:text-xl">PESANAN</h3>
+            <h3 className="mt-4 text-sm font-black leading-tight text-white sm:text-base">PESANAN</h3>
             <p className="mt-2 hidden text-sm leading-6 text-slate-400 sm:block">
               Masuk lewat email untuk melihat order dan data akun.
             </p>
-            <span className="mt-2 text-[9px] font-black uppercase tracking-wide text-sky-300 sm:mt-6 sm:text-xs sm:tracking-wider">
+            <span className="mt-3 text-[10px] font-black uppercase tracking-wide text-sky-300">
               Buka →
             </span>
           </Link>
@@ -200,21 +182,21 @@ export default async function Home({ searchParams }: HomeProps) {
               href={whatsapp}
               target="_blank"
               rel="noreferrer"
-              className="group flex min-h-28 flex-col items-center justify-center rounded-2xl border border-violet-400/20 bg-[radial-gradient(circle_at_80%_0%,rgba(167,139,250,.16),transparent_45%),#0a1a2e] px-2 py-4 text-center transition hover:-translate-y-1 hover:border-violet-300/55 sm:min-h-72 sm:items-start sm:justify-start sm:rounded-3xl sm:p-6 sm:text-left"
+              className="group flex min-h-28 flex-col justify-between rounded-2xl border border-white/10 bg-[#0a1727] p-4 transition hover:border-violet-300/45 hover:bg-[#0d1d31]"
             >
               <NeedIcon label="WA" tone="violet" />
-              <h3 className="mt-2 text-[11px] font-black italic leading-tight sm:mt-7 sm:text-xl">JUAL / CARI</h3>
+              <h3 className="mt-4 text-sm font-black leading-tight text-white sm:text-base">JUAL / CARI</h3>
               <p className="mt-2 hidden text-sm leading-6 text-slate-400 sm:block">
                 Hubungi admin untuk menjual akun atau mencari spesifikasi khusus.
               </p>
-              <span className="mt-2 text-[9px] font-black uppercase tracking-wide text-violet-300 sm:mt-6 sm:text-xs sm:tracking-wider">
+              <span className="mt-3 text-[10px] font-black uppercase tracking-wide text-violet-300">
                 Chat →
               </span>
             </a>
           ) : (
-            <div className="flex min-h-28 flex-col items-center justify-center rounded-2xl border border-white/10 bg-[#091625] px-2 py-4 text-center opacity-70 sm:min-h-72 sm:items-start sm:justify-start sm:rounded-3xl sm:p-6 sm:text-left">
+            <div className="flex min-h-28 flex-col justify-between rounded-2xl border border-white/10 bg-[#091625] p-4 opacity-70">
               <NeedIcon label="WA" tone="violet" />
-              <h3 className="mt-2 text-[11px] font-black italic leading-tight sm:mt-7 sm:text-xl">JUAL / CARI</h3>
+              <h3 className="mt-4 text-sm font-black leading-tight text-white sm:text-base">JUAL / CARI</h3>
               <p className="mt-2 hidden text-sm leading-6 text-slate-400 sm:block">Layanan WhatsApp sedang tidak tersedia.</p>
             </div>
           )}
