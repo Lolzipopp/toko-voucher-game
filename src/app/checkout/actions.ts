@@ -5,6 +5,7 @@ import { headers } from "next/headers";
 
 import { checkoutErrorMessage } from "@/lib/checkout/errors";
 import { STORE_CONFIG } from "@/lib/config/store";
+import { sendWebsiteTelegramMessage, telegramSafe } from "@/lib/notifications/telegram";
 import { createClient } from "@/lib/supabase/server";
 
 export type PromoResult =
@@ -72,6 +73,18 @@ export async function createCheckoutOrder(input: CheckoutInput): Promise<Checkou
 
   const result = data as { ok?: boolean; order_number?: string; access_token?: string; subtotal?: number; discount_amount?: number; total_amount?: number; promo_code?: string | null; payment_expires_at?: string } | null;
   if (!result?.ok || !result.order_number || !result.access_token || !result.payment_expires_at) return { ok: false, message: "Respons checkout tidak lengkap." };
+
+  await sendWebsiteTelegramMessage(
+    [
+      "🛒 <b>Order website baru</b>",
+      `Order: <b>${telegramSafe(result.order_number)}</b>`,
+      `Email: ${telegramSafe(email)}`,
+      `Item: ${telegramSafe(input.items.length)} jenis`,
+      `Total: Rp ${telegramSafe(Number(result.total_amount ?? 0).toLocaleString("id-ID"))}`,
+      `Expired: ${telegramSafe(new Date(result.payment_expires_at).toLocaleString("id-ID", { timeZone: "Asia/Jakarta" }))}`,
+      "Status: menunggu pembayaran manual/konfirmasi admin.",
+    ].join("\n"),
+  );
 
   return {
     ok: true,

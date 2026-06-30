@@ -24,12 +24,22 @@ function getFallbackBanners(whatsappUrl?: string | null): HomeBanner[] {
   return [
     {
       id: "buy-account",
-      title: "Cari akun game yang sesuai kebutuhanmu",
+      title: "Akun Roblox ready, stok dikunci saat checkout",
       message:
-        "Lihat stok nyata, spesifikasi lengkap, dan harga sebelum melakukan checkout.",
-      button_label: "Lihat akun tersedia",
+        "Pilih akun, cek spesifikasi, lalu buat pesanan. Stok dikunci 20 menit dan pembayaran dikonfirmasi lewat WhatsApp admin.",
+      button_label: "Cek stok ready",
       button_url: "/#produk",
       tone: "promo",
+      image_url: null,
+    },
+    {
+      id: "safe-checkout",
+      title: "Jangan transfer sebelum instruksi admin",
+      message:
+        "RIKU STORE menampilkan harga dan stok lebih dulu. Setelah checkout, lanjutkan konfirmasi pembayaran manual lewat WhatsApp resmi.",
+      button_label: "Lihat cara order",
+      button_url: "/#faq",
+      tone: "warning",
       image_url: null,
     },
     {
@@ -214,7 +224,7 @@ export default function HomeBannerCarousel({ banners, whatsappUrl }: Props) {
                     <div className="absolute inset-0 bg-gradient-to-r from-[#06111f]/95 via-[#06111f]/72 to-[#06111f]/10" />
                     <div className="relative flex h-full max-w-3xl flex-col justify-center px-7 py-8 sm:px-14 lg:px-20">
                       <p className="text-[9px] font-black uppercase tracking-[0.2em] text-emerald-300 sm:text-xs sm:tracking-[0.24em]">
-                        RIKU STORE EVENT
+                        STOK REAL · CHECKOUT AMAN · WA ADMIN
                       </p>
                       <h2 className="mt-2 max-w-2xl text-xl font-black italic leading-tight sm:mt-3 sm:text-5xl">
                         {slide.title}
@@ -222,6 +232,20 @@ export default function HomeBannerCarousel({ banners, whatsappUrl }: Props) {
                       <p className="mt-2 max-w-xl text-[11px] leading-5 text-slate-300 sm:mt-4 sm:text-base sm:leading-7">
                         {slide.message}
                       </p>
+                      <div className="mt-3 hidden flex-wrap gap-2 sm:flex">
+                        {[
+                          "Stok ready",
+                          "Reservasi 20 menit",
+                          "Konfirmasi via WhatsApp",
+                        ].map((item) => (
+                          <span
+                            key={item}
+                            className="rounded-full border border-white/10 bg-white/8 px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-slate-200"
+                          >
+                            {item}
+                          </span>
+                        ))}
+                      </div>
                       {slide.button_label && slide.button_url ? (
                         <SectionLink
                           href={slide.button_url}

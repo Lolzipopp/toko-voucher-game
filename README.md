@@ -22,6 +22,18 @@ npm.cmd run dev -- -p 3001
 
 Buat `.env.local` sendiri. Jangan pernah commit secret, service-role key, encryption key, atau credential stok.
 
+### Notifikasi Telegram topic WEBSITE
+
+Opsional untuk mengirim alert website ke Telegram:
+
+```env
+TELEGRAM_BOT_TOKEN=isi_di_vercel_env
+TELEGRAM_WEBSITE_CHAT_ID=-1004424243447
+TELEGRAM_WEBSITE_TOPIC_ID=8
+```
+
+Saat ini event awal yang dikirim: order checkout website baru. Simpan semua nilai di Vercel Environment Variables, bukan di Git.
+
 ## Pemeriksaan sebelum deploy
 
 - `npm run lint`
