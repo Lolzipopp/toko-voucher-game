@@ -7,7 +7,6 @@ import FavoriteButton from "@/components/store/favorite-button";
 import ProductImageCarousel from "@/components/store/product-image-carousel";
 import RecentlyViewedRecorder from "@/components/store/recently-viewed-recorder";
 import RestockRequestButton from "@/components/store/restock-request-button";
-import StoreHeader from "@/components/store/store-header";
 import { humanizeProductDescription } from "@/lib/catalog/display-text";
 import { formatRupiah, productImageUrl } from "@/lib/public-store/format";
 import { getPublicStoreSettings } from "@/lib/public-store/settings";
@@ -104,8 +103,6 @@ export default async function ProductDetailPage({
   return (
     <main className="min-h-screen overflow-x-hidden bg-[#f6f7f9] text-slate-950">
       <RecentlyViewedRecorder product={viewedProduct} />
-
-      <StoreHeader />
 
       <div className="mx-auto max-w-7xl px-4 py-5 sm:px-6 sm:py-8 lg:py-12">
         <Link
