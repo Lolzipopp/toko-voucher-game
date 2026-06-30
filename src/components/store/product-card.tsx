@@ -24,8 +24,8 @@ export default function ProductCard({
   };
 
   return (
-    <article className="group relative overflow-hidden rounded-3xl border border-white/10 bg-[#0a1727] transition duration-200 hover:border-emerald-300/45 hover:bg-[#0d1d31]">
-      <Link href={`/products/${product.slug}`} className="block">
+    <article className="group relative overflow-hidden rounded-3xl border border-white/10 bg-[#0a1727] transition duration-200 hover:-translate-y-0.5 hover:border-emerald-300/45 hover:bg-[#0d1d31] active:scale-[0.99]">
+      <Link href={`/products/${product.slug}`} className="block touch-manipulation focus:outline-none focus:ring-4 focus:ring-emerald-300/20">
         <div className="relative aspect-[16/9] overflow-hidden bg-[#081322]">
           {imageUrl ? (
             <div

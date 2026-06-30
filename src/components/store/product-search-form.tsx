@@ -54,7 +54,7 @@ export default function ProductSearchForm({ initialQuery = "", game }: ProductSe
       />
       <button
         type="submit"
-        className="touch-manipulation rounded-2xl bg-emerald-400 px-5 py-3 text-sm font-black text-emerald-950 transition hover:bg-emerald-300"
+        className="touch-manipulation rounded-2xl bg-emerald-400 px-5 py-3 text-sm font-black text-emerald-950 transition hover:bg-emerald-300 focus:outline-none focus:ring-4 focus:ring-emerald-300/25 active:scale-[0.96]"
       >
         Cari
       </button>

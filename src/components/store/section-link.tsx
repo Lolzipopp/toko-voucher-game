@@ -39,8 +39,14 @@ export default function SectionLink({ href, children, className, onNavigate }: P
     onNavigate?.();
   }
 
+  const interactiveClass = "touch-manipulation transition focus:outline-none focus:ring-4 focus:ring-emerald-300/25 active:scale-[0.98]";
+
   return (
-    <a href={href} onClick={handleClick} className={className}>
+    <a
+      href={href}
+      onClick={handleClick}
+      className={className ? `${className} ${interactiveClass}` : interactiveClass}
+    >
       {children}
     </a>
   );

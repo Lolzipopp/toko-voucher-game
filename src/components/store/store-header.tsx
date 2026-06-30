@@ -44,7 +44,7 @@ export default function StoreHeader() {
   return (
     <header className="sticky top-0 z-50 w-full max-w-full overflow-x-clip border-b border-emerald-400/15 bg-[#06111f]/94 text-white backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
-        <Link href="/" className="group flex min-w-0 items-center gap-3">
+        <Link href="/" className="group flex min-w-0 touch-manipulation items-center gap-3 rounded-2xl transition active:scale-[0.98]">
           <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl border border-emerald-400/35 bg-emerald-400/10 text-xl font-black text-emerald-300 shadow-[0_0_28px_rgba(52,211,153,.16)] transition group-hover:border-emerald-300/70">
             R
           </span>
@@ -67,7 +67,7 @@ export default function StoreHeader() {
               aria-label="Buka menu"
               aria-expanded={menuOpen}
               onClick={() => setMenuOpen((open) => !open)}
-              className="grid h-11 w-11 place-items-center rounded-xl border border-white/10 bg-white/5 transition hover:border-emerald-300/40 hover:bg-emerald-400/10"
+              className="grid h-11 w-11 touch-manipulation place-items-center rounded-xl border border-white/10 bg-white/5 transition hover:border-emerald-300/40 hover:bg-emerald-400/10 focus:outline-none focus:ring-4 focus:ring-emerald-300/20 active:scale-95"
             >
               <span className="space-y-1.5">
                 <span className="block h-0.5 w-5 rounded-full bg-white" />
@@ -89,14 +89,14 @@ export default function StoreHeader() {
                     <Link
                       href="/akun/login?mode=login"
                       onClick={() => setMenuOpen(false)}
-                      className="rounded-xl bg-emerald-400 px-3 py-2.5 text-center text-xs font-black text-emerald-950"
+                      className="rounded-xl bg-emerald-400 px-3 py-2.5 text-center text-xs font-black text-emerald-950 transition active:scale-[0.97]"
                     >
                       Masuk
                     </Link>
                     <Link
                       href="/akun/login?mode=register"
                       onClick={() => setMenuOpen(false)}
-                      className="rounded-xl border border-emerald-400/25 bg-emerald-400/10 px-3 py-2.5 text-center text-xs font-black text-emerald-200"
+                      className="rounded-xl border border-emerald-400/25 bg-emerald-400/10 px-3 py-2.5 text-center text-xs font-black text-emerald-200 transition active:scale-[0.97]"
                     >
                       Daftar
                     </Link>

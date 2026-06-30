@@ -25,15 +25,15 @@ export default function ProductSlider({ products, pageSize = 10 }: ProductSlider
 
   function goToPage(nextPage: number) {
     const safePage = Math.min(totalPages - 1, Math.max(0, nextPage));
+    if (safePage === page) return;
     setPage(safePage);
-    document.getElementById("produk")?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
   if (!products.length) return null;
 
   return (
-    <div className="mt-6 sm:mt-8">
-      <div className="grid gap-4 sm:grid-cols-2 sm:gap-5 xl:grid-cols-3">
+    <div className="mt-6 sm:mt-8" aria-live="polite">
+      <div key={page} className="grid animate-[fadeIn_.18s_ease-out] gap-4 sm:grid-cols-2 sm:gap-5 xl:grid-cols-3">
         {currentProducts.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
@@ -50,7 +50,7 @@ export default function ProductSlider({ products, pageSize = 10 }: ProductSlider
               type="button"
               onClick={() => goToPage(page - 1)}
               disabled={page === 0}
-              className="flex-1 touch-manipulation rounded-2xl border border-white/10 px-4 py-3 text-sm font-black text-white transition hover:bg-white/5 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-35 sm:flex-none"
+              className="flex-1 touch-manipulation rounded-2xl border border-white/10 px-4 py-3 text-sm font-black text-white transition hover:bg-white/5 focus:outline-none focus:ring-4 focus:ring-emerald-300/20 active:scale-[0.96] disabled:cursor-not-allowed disabled:opacity-35 sm:flex-none"
             >
               ← Sebelumnya
             </button>
@@ -58,7 +58,7 @@ export default function ProductSlider({ products, pageSize = 10 }: ProductSlider
               type="button"
               onClick={() => goToPage(page + 1)}
               disabled={page >= totalPages - 1}
-              className="flex-1 touch-manipulation rounded-2xl bg-emerald-400 px-4 py-3 text-sm font-black text-emerald-950 transition hover:bg-emerald-300 active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-slate-700 disabled:text-slate-400 sm:flex-none"
+              className="flex-1 touch-manipulation rounded-2xl bg-emerald-400 px-4 py-3 text-sm font-black text-emerald-950 transition hover:bg-emerald-300 focus:outline-none focus:ring-4 focus:ring-emerald-300/25 active:scale-[0.96] disabled:cursor-not-allowed disabled:bg-slate-700 disabled:text-slate-400 sm:flex-none"
             >
               Berikutnya →
             </button>
