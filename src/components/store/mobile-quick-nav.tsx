@@ -5,7 +5,12 @@ import { usePathname } from "next/navigation";
 
 export default function MobileQuickNav() {
   const pathname = usePathname();
-  if (pathname.startsWith("/admin") || pathname.startsWith("/checkout") || pathname.startsWith("/order/")) return null;
+  if (
+    pathname.startsWith("/admin") ||
+    pathname.startsWith("/checkout") ||
+    pathname.startsWith("/order/") ||
+    pathname.startsWith("/products/")
+  ) return null;
   const items = [
     ["/", "⌂", "Home"],
     ["/favorit", "♡", "Favorit"],
