@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { requireAdminAction } from "@/lib/auth/require-admin";
 import { databaseErrorMessage } from "@/lib/errors/database";
 import { logServerError } from "@/lib/observability/server-log";
+import { createServiceRoleClient } from "@/lib/supabase/service-role";
 
 export type TestOrderActionResult = {
   ok: boolean;
@@ -276,19 +277,32 @@ export async function releasePendingOrder(
   if (!auth.ok) return { ok: false, message: auth.message };
   const { supabase } = auth;
 
-  const { data, error } = await supabase.rpc("admin_release_pending_order", {
+  let data: unknown = null;
+  const { data: rpcData, error } = await supabase.rpc("admin_release_pending_order", {
     p_order_id: orderId,
     p_reason: "admin_released_pending_order",
   });
 
+  data = rpcData;
+
   if (error) {
     logServerError("admin_release_pending_order_failed", error, { orderId });
-    return {
-      ok: false,
-      message: databaseErrorMessage(
-        error,
-        "Order belum dapat dibatalkan dan stok belum dikembalikan.",
-      ),
+
+    const fallback = await releasePendingOrderFallback(orderId);
+    if (!fallback.ok) {
+      return {
+        ok: false,
+        message: databaseErrorMessage(
+          error,
+          fallback.message || "Order belum dapat dibatalkan dan stok belum dikembalikan.",
+        ),
+      };
+    }
+
+    data = {
+      ok: true,
+      already_processed: false,
+      released_count: fallback.releasedCount,
     };
   }
 
@@ -310,4 +324,115 @@ export async function releasePendingOrder(
       ? "Order ini sudah kedaluwarsa dan stoknya sudah dilepas."
       : `${result?.released_count ?? 0} stok dikembalikan menjadi tersedia.`,
   };
+}
+
+async function releasePendingOrderFallback(orderId: string): Promise<{
+  ok: boolean;
+  releasedCount: number;
+  message?: string;
+}> {
+  const supabase = createServiceRoleClient();
+
+  const { data: order, error: orderError } = await supabase
+    .from("orders")
+    .select("id, status, payment_status, delivery_status, internal_notes")
+    .eq("id", orderId)
+    .single();
+
+  if (orderError || !order) {
+    logServerError("admin_release_pending_order_fallback_order_failed", orderError, { orderId });
+    return { ok: false, releasedCount: 0, message: "Order tidak ditemukan." };
+  }
+
+  if (
+    order.payment_status === "paid" ||
+    ["paid", "delivered", "refunded"].includes(order.status) ||
+    order.delivery_status === "delivered"
+  ) {
+    return {
+      ok: false,
+      releasedCount: 0,
+      message: "Order sudah paid/delivered, tidak boleh dibatalkan dari tombol ini.",
+    };
+  }
+
+  const { data: reservations, error: reservationError } = await supabase
+    .from("stock_reservations")
+    .select("id, inventory_account_id, released_at")
+    .eq("order_id", orderId)
+    .is("released_at", null);
+
+  if (reservationError) {
+    logServerError("admin_release_pending_order_fallback_reservations_failed", reservationError, { orderId });
+    return { ok: false, releasedCount: 0, message: "Reservasi stok order ini belum bisa dibaca." };
+  }
+
+  const inventoryIds = (reservations ?? [])
+    .map((reservation) => reservation.inventory_account_id)
+    .filter(Boolean);
+
+  const now = new Date().toISOString();
+
+  if (inventoryIds.length > 0) {
+    const { error: inventoryError } = await supabase
+      .from("inventory_accounts")
+      .update({ status: "available", updated_at: now })
+      .in("id", inventoryIds)
+      .eq("status", "reserved");
+
+    if (inventoryError) {
+      logServerError("admin_release_pending_order_fallback_inventory_failed", inventoryError, { orderId });
+      return { ok: false, releasedCount: 0, message: "Stok reserved belum bisa dikembalikan." };
+    }
+
+    const { error: releaseError } = await supabase
+      .from("stock_reservations")
+      .update({
+        released_at: now,
+        release_reason: "admin_released_pending_order_fallback",
+      })
+      .eq("order_id", orderId)
+      .is("released_at", null);
+
+    if (releaseError) {
+      logServerError("admin_release_pending_order_fallback_release_failed", releaseError, { orderId });
+      return { ok: false, releasedCount: 0, message: "Catatan reservasi belum bisa ditutup." };
+    }
+  }
+
+  const nextNotes = [
+    order.internal_notes,
+    `Order pending dibatalkan admin dan stok dikembalikan pada ${now}`,
+  ]
+    .filter(Boolean)
+    .join("\n");
+
+  const { error: updateOrderError } = await supabase
+    .from("orders")
+    .update({
+      status: "expired",
+      payment_status: "expired",
+      delivery_status: order.delivery_status === "delivered" ? order.delivery_status : "pending",
+      reservation_expires_at: now,
+      updated_at: now,
+      internal_notes: nextNotes,
+    })
+    .eq("id", orderId);
+
+  if (updateOrderError) {
+    logServerError("admin_release_pending_order_fallback_order_update_failed", updateOrderError, { orderId });
+    return { ok: false, releasedCount: 0, message: "Status order belum bisa diubah." };
+  }
+
+  const { error: paymentError } = await supabase
+    .from("payments")
+    .update({ status: "expired", expired_at: now, updated_at: now })
+    .eq("order_id", orderId)
+    .in("status", ["pending", "processing"]);
+
+  if (paymentError) {
+    logServerError("admin_release_pending_order_fallback_payment_update_failed", paymentError, { orderId });
+  }
+
+  return { ok: true, releasedCount: inventoryIds.length };
 }

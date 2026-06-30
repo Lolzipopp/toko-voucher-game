@@ -338,9 +338,17 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
                   <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-start">
                     <div>
                       <p className="font-black text-slate-900">{item.product_name_snapshot}</p>
-                      <p className="mt-1 text-xs text-slate-500">
-                        {item.quantity} × {formatRupiah(item.unit_price)}
-                      </p>
+                      <div className="mt-2 flex flex-wrap items-center gap-2 text-xs font-bold">
+                        <span className="text-slate-500">
+                          {item.quantity} × {formatRupiah(item.unit_price)}
+                        </span>
+                        <Link
+                          href={`/admin/products/${item.product_id}/edit`}
+                          className="rounded-full bg-white px-3 py-1 text-emerald-700 ring-1 ring-emerald-200 hover:bg-emerald-50"
+                        >
+                          Cek produk
+                        </Link>
+                      </div>
                     </div>
                     <p className="font-black text-emerald-700">{formatRupiah(item.line_total)}</p>
                   </div>
