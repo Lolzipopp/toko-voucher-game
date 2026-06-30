@@ -89,10 +89,24 @@ export default async function Home({ searchParams }: HomeProps) {
   }
 
   const products = (data ?? []) as PublicCatalogProduct[];
-  const displayedProducts = products.filter((product) =>
-    productMatchesSearch(product, query.q),
-  );
-  const promoProducts = products.filter((product) => product.price_promo);
+  const displayedProducts = products
+    .filter((product) => productMatchesSearch(product, query.q))
+    .toSorted((a, b) => {
+      const aSoldOut = a.available_stock <= 0;
+      const bSoldOut = b.available_stock <= 0;
+
+      if (aSoldOut !== bSoldOut) return aSoldOut ? 1 : -1;
+      return 0;
+    });
+  const promoProducts = products
+    .filter((product) => product.price_promo)
+    .toSorted((a, b) => {
+      const aSoldOut = a.available_stock <= 0;
+      const bSoldOut = b.available_stock <= 0;
+
+      if (aSoldOut !== bSoldOut) return aSoldOut ? 1 : -1;
+      return 0;
+    });
   const availableProducts = displayedProducts.filter(
     (product) => product.available_stock > 0,
   );
