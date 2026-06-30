@@ -9,7 +9,7 @@ import { useCart } from "./cart-provider";
 
 export default function AddToCartButton({ item }: { item: AddCartItem }) {
   const router = useRouter();
-  const { replaceCartWithItem } = useCart();
+  const { addItem, replaceCartWithItem } = useCart();
   const soldOut = item.availableStock <= 0;
   const maxQuantity = item.productType === "unique"
     ? 1
@@ -18,6 +18,11 @@ export default function AddToCartButton({ item }: { item: AddCartItem }) {
 
   function changeQuantity(next: number) {
     setQuantity(Math.min(maxQuantity, Math.max(1, Math.floor(next))));
+  }
+
+  function handleAddToCart() {
+    if (soldOut) return;
+    addItem(item, quantity);
   }
 
   function handleBuyNow() {
@@ -64,14 +69,25 @@ export default function AddToCartButton({ item }: { item: AddCartItem }) {
         </div>
       ) : null}
 
-      <button
-        type="button"
-        disabled={soldOut}
-        onClick={handleBuyNow}
-        className="w-full touch-manipulation rounded-2xl bg-emerald-700 px-5 py-4 text-base font-black text-white transition hover:bg-emerald-800 disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-500"
-      >
-        {soldOut ? "Habis" : `Beli · ${formatRupiah(item.unitPrice * quantity)}`}
-      </button>
+      <div className="grid gap-2 sm:grid-cols-[1fr_1.25fr]">
+        <button
+          type="button"
+          disabled={soldOut}
+          onClick={handleAddToCart}
+          className="w-full touch-manipulation rounded-2xl border border-slate-300 bg-white px-5 py-4 text-sm font-black text-slate-800 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400"
+        >
+          {soldOut ? "Habis" : "Tambah keranjang"}
+        </button>
+
+        <button
+          type="button"
+          disabled={soldOut}
+          onClick={handleBuyNow}
+          className="w-full touch-manipulation rounded-2xl bg-emerald-700 px-5 py-4 text-base font-black text-white transition hover:bg-emerald-800 disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-500"
+        >
+          {soldOut ? "Habis" : `Beli sekarang · ${formatRupiah(item.unitPrice * quantity)}`}
+        </button>
+      </div>
     </div>
   );
 }
