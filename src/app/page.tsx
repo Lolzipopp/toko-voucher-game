@@ -166,14 +166,14 @@ export default async function Home({ searchParams }: HomeProps) {
         <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
           <div>
             <p className="text-xs font-black uppercase tracking-[0.22em] text-emerald-300">
-              Menu utama
+              POPULER
             </p>
             <h2 className="mt-2 text-2xl font-black tracking-tight sm:text-3xl">
-              Pilih kebutuhanmu
+              Layanan RIKU STORE
             </h2>
           </div>
           <p className="max-w-md text-sm leading-6 text-slate-400">
-            Pilih menu yang dibutuhkan. Untuk membeli, langsung lihat daftar akun.
+            Pilih layanan yang kamu butuhkan.
           </p>
         </div>
 
@@ -187,7 +187,7 @@ export default async function Home({ searchParams }: HomeProps) {
               <MenuIcon type="buy" tone="emerald" />
             </div>
             <p className="mt-4 text-sm leading-6 text-slate-400">
-              Lihat akun yang tersedia.
+              Stok akun Roblox siap beli.
             </p>
           </SectionLink>
 
@@ -200,7 +200,7 @@ export default async function Home({ searchParams }: HomeProps) {
               <MenuIcon type="promo" tone="amber" />
             </div>
             <p className="mt-4 text-sm leading-6 text-slate-400">
-              Lihat promo aktif.
+              Akun diskon dan harga khusus.
             </p>
           </SectionLink>
 
@@ -229,7 +229,7 @@ export default async function Home({ searchParams }: HomeProps) {
                 <MenuIcon type="admin" tone="violet" />
               </div>
               <p className="mt-4 text-sm leading-6 text-slate-400">
-                Cari akun khusus lewat admin.
+                Tanya stok atau akun khusus.
               </p>
             </a>
           ) : (
@@ -291,10 +291,10 @@ export default async function Home({ searchParams }: HomeProps) {
           <div className="flex flex-col justify-between gap-5 lg:flex-row lg:items-end">
             <div>
               <p className="text-xs font-black uppercase tracking-[0.22em] text-emerald-300">
-                Daftar akun
+                PILIHAN STOCK
               </p>
               <h2 className="mt-2 text-3xl font-black tracking-tight sm:text-4xl">
-                Akun ready
+                Akun Blox Fruits ready
               </h2>
               <p className="mt-3 text-sm leading-6 text-slate-400">
                 {query.q ? (
