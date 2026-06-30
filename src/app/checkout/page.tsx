@@ -7,7 +7,7 @@ import { useState, useTransition } from "react";
 import StoreFooter from "@/components/store/store-footer";
 import StoreHeader from "@/components/store/store-header";
 import { useCart } from "@/components/store/cart-provider";
-import { formatRupiah } from "@/lib/public-store/format";
+import { formatRupiah, productImageUrl } from "@/lib/public-store/format";
 import { createCheckoutOrder, validatePromo, type PromoResult } from "./actions";
 
 export default function CheckoutPage() {
@@ -75,6 +75,40 @@ export default function CheckoutPage() {
       <div className="mx-auto w-full min-w-0 max-w-5xl px-3 py-6 sm:px-6 sm:py-8 lg:py-12">
         <Link href="/cart" className="text-sm font-bold text-emerald-700">← Kembali ke keranjang</Link>
 
+        <div className="mt-3 space-y-3">
+          {!hydrated ? (
+            <div className="rounded-3xl border border-slate-200 bg-white p-4 text-sm font-bold text-slate-500 shadow-sm">
+              Loading produk...
+            </div>
+          ) : items.length ? (
+            items.map((item) => {
+              const imageUrl = productImageUrl(item.imagePath);
+
+              return (
+                <div key={item.productId} className="flex gap-3 rounded-3xl border border-slate-200 bg-white p-3 shadow-sm sm:items-center sm:p-4">
+                  <div className="relative h-20 w-24 flex-shrink-0 overflow-hidden rounded-2xl border border-slate-200 bg-slate-100 sm:h-24 sm:w-32">
+                    {imageUrl ? (
+                      <div className="absolute inset-0 bg-contain bg-center bg-no-repeat" style={{ backgroundImage: `url(${imageUrl})` }} />
+                    ) : (
+                      <div className="grid h-full place-items-center text-xs font-black text-slate-400">GAME</div>
+                    )}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="line-clamp-2 text-sm font-black leading-snug text-slate-950 sm:text-base">{item.name}</p>
+                    <div className="mt-2 flex flex-wrap gap-1.5">
+                      <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-black text-emerald-700">{item.gameName}</span>
+                      <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-bold text-slate-600">{item.productType === "unique" ? "Akun unik" : "Stok massal"}</span>
+                      <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-bold text-slate-600">Qty {item.quantity}</span>
+                      <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-bold text-slate-600">Stok {item.availableStock}</span>
+                    </div>
+                    <p className="mt-2 text-sm font-black text-emerald-700">{formatRupiah(item.unitPrice * item.quantity)}</p>
+                  </div>
+                </div>
+              );
+            })
+          ) : null}
+        </div>
+
         <div className="mt-5 grid min-w-0 gap-5 lg:grid-cols-[minmax(0,1fr)_390px] lg:gap-6">
           <section className="min-w-0 overflow-hidden rounded-3xl border border-slate-200 bg-white p-4 shadow-sm sm:p-7">
             <p className="text-xs font-black uppercase tracking-[0.2em] text-emerald-700">Checkout tanpa login</p>
@@ -126,9 +160,6 @@ export default function CheckoutPage() {
               <span className="text-xs leading-5 text-slate-600">Saya sudah memeriksa detail akun dan akan konfirmasi ke admin setelah membuat pesanan.</span>
             </label>
 
-            <div className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-xs leading-5 text-amber-800">
-              Setelah membuat pesanan, lanjutkan konfirmasi lewat WhatsApp. Jangan bayar sebelum admin memberi arahan.
-            </div>
           </section>
 
           <aside className="h-fit min-w-0 overflow-hidden rounded-3xl bg-[#103d2b] p-6 text-white shadow-xl shadow-emerald-950/10 lg:sticky lg:top-24">
