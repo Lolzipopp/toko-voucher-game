@@ -20,7 +20,7 @@ export default function HomeHero({ whatsappUrl, availableProducts, totalStock }:
             Cari akun Roblox ready.
           </h1>
           <p className="mt-5 max-w-2xl text-base leading-7 text-slate-300 sm:text-lg">
-            Pilih akun, klik beli, lalu chat admin WA.
+            Pilih akun, buat pesanan, lalu konfirmasi via WhatsApp.
           </p>
 
           <div className="mt-6 flex flex-col gap-3 sm:flex-row">
@@ -37,7 +37,7 @@ export default function HomeHero({ whatsappUrl, availableProducts, totalStock }:
                 rel="noreferrer"
                 className="inline-flex items-center justify-center rounded-2xl border border-white/12 bg-white/6 px-5 py-3 text-sm font-black text-white transition hover:border-emerald-300/40 hover:bg-white/10"
               >
-                Chat admin WA
+                Hubungi admin WA
               </a>
             ) : null}
           </div>

@@ -151,7 +151,7 @@ export default function PaymentCountdown({
           eyebrow: "Bayar gagal",
           title: "Pesanan gagal",
           description:
-            "Buat pesanan baru. Kalau uang kepotong, chat admin.",
+            "Buat pesanan baru. Jika pembayaran terlanjur masuk, hubungi admin.",
           tone: "red",
         };
       case "error":
@@ -167,7 +167,7 @@ export default function PaymentCountdown({
         return {
           icon: "⏱",
           eyebrow: "Belum bayar",
-          title: "Chat admin sebelum waktu habis",
+          title: "Hubungi admin sebelum waktu habis",
           description:
             "Kalau waktu habis, pesanan batal.",
           tone: "amber",

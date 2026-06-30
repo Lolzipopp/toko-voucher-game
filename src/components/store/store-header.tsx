@@ -116,7 +116,7 @@ export default function StoreHeader() {
                     onNavigate={() => setMenuOpen(false)}
                     className="rounded-xl px-4 py-3 text-slate-200 hover:bg-white/5"
                   >
-                    Menu
+                    Menu utama
                   </SectionLink>
                   <SectionLink
                     href="/#exclusive-offer"
@@ -144,7 +144,7 @@ export default function StoreHeader() {
                     onClick={() => setMenuOpen(false)}
                     className="rounded-xl px-4 py-3 text-slate-200 hover:bg-white/5"
                   >
-                    Chat admin
+                    Hubungi admin
                   </Link>
                 </nav>
               </div>

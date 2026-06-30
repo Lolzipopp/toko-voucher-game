@@ -123,11 +123,11 @@ export default function CheckoutPage() {
 
             <label className="mt-5 flex cursor-pointer items-start gap-3 rounded-2xl bg-slate-50 p-4">
               <input type="checkbox" checked={agreed} onChange={(event) => setAgreed(event.target.checked)} className="mt-1 h-4 w-4 accent-emerald-600" />
-              <span className="text-xs leading-5 text-slate-600">Saya sudah cek akunnya. Setelah pesan, saya chat admin WA.</span>
+              <span className="text-xs leading-5 text-slate-600">Saya sudah memeriksa detail akun dan akan konfirmasi ke admin setelah membuat pesanan.</span>
             </label>
 
             <div className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-xs leading-5 text-amber-800">
-              Setelah klik pesan, lanjut chat admin WA. Jangan bayar dulu sebelum admin balas.
+              Setelah membuat pesanan, lanjutkan konfirmasi lewat WhatsApp. Jangan bayar sebelum admin memberi arahan.
             </div>
           </section>
 
@@ -135,7 +135,7 @@ export default function CheckoutPage() {
             <p className="text-xs font-black uppercase tracking-[0.18em] text-emerald-200">Total bayar</p>
 
             {!hydrated ? <p className="mt-5 text-sm text-white/60">Loading...</p> : items.length === 0 ? (
-              <div className="mt-5"><p className="text-sm font-bold">Belum ada akun.</p><Link href="/#produk" className="mt-4 inline-flex text-sm font-black text-emerald-300">Pilih akun</Link></div>
+              <div className="mt-5"><p className="text-sm font-bold">Belum ada produk di pesanan.</p><Link href="/#produk" className="mt-4 inline-flex text-sm font-black text-emerald-300">Pilih akun</Link></div>
             ) : (
               <>
                 <div className="mt-5 max-h-72 space-y-3 overflow-auto pr-1">
@@ -154,7 +154,7 @@ export default function CheckoutPage() {
                 </dl>
 
                 <button type="button" disabled={isPending || items.length === 0 || !email.trim()} onClick={submitCheckout} className="mt-5 w-full rounded-2xl bg-emerald-400 px-5 py-4 text-sm font-black text-emerald-950 transition hover:bg-emerald-300 disabled:cursor-not-allowed disabled:bg-white/10 disabled:text-white/35">
-                  {isPending ? "Membuat pesanan..." : `Pesan & chat WA · ${formatRupiah(finalTotal)}`}
+                  {isPending ? "Membuat pesanan..." : `Buat pesanan · ${formatRupiah(finalTotal)}`}
                 </button>
               </>
             )}

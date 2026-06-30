@@ -128,10 +128,10 @@ export default async function ProductDetailPage({
 
             <div className="mt-4 rounded-3xl border border-slate-200 bg-white p-4 sm:mt-5 sm:p-6">
               <h2 className="text-lg font-black text-slate-950">
-                Isi akun
+                Detail akun
               </h2>
               <p className="mt-1 text-sm text-slate-500">
-                Cek dulu sebelum beli.
+                Periksa detail akun sebelum membeli.
               </p>
 
               <div className="mt-4 grid gap-3 sm:grid-cols-2">
@@ -193,7 +193,7 @@ export default async function ProductDetailPage({
                     Dikirim setelah bayar
                   </p>
                   <p className="mt-1 text-[11px] text-slate-500">
-                    Setelah admin cek
+                    Setelah pembayaran dicek admin
                   </p>
                 </div>
 
@@ -202,7 +202,7 @@ export default async function ProductDetailPage({
                     Garansi {product.warranty_days} hari
                   </p>
                   <p className="mt-1 text-[11px] text-slate-500">
-                    Ikuti aturan toko
+                    Sesuai aturan toko
                   </p>
                 </div>
               </div>
@@ -216,7 +216,7 @@ export default async function ProductDetailPage({
                       rel="noreferrer"
                       className="flex w-full items-center justify-center rounded-2xl bg-amber-400 px-5 py-4 text-base font-black text-amber-950"
                     >
-                      Chat admin
+                      Hubungi admin
                     </a>
                   ) : (
                     <RestockRequestButton productName={product.name} />
@@ -244,12 +244,12 @@ export default async function ProductDetailPage({
                   rel="noreferrer"
                   className="mt-3 flex w-full items-center justify-center rounded-2xl border border-slate-200 px-5 py-3 text-xs font-black text-slate-700 hover:bg-slate-50"
                 >
-                  Chat admin
+                  Hubungi admin
                 </a>
               ) : null}
 
               <div className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 p-3 text-center text-[11px] font-bold leading-5 text-amber-800">
-                Jangan bayar sebelum admin kasih arahan.
+                Jangan melakukan pembayaran sebelum mendapat arahan dari admin.
               </div>
             </div>
           </aside>

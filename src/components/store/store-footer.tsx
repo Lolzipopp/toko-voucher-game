@@ -37,7 +37,7 @@ export default function StoreFooter() {
               <p className="text-xs font-semibold uppercase tracking-[0.15em] text-emerald-200">{settings.store_tagline}</p>
             </div>
           </div>
-          <p className="mt-3 max-w-sm text-xs leading-5 text-white/55 sm:text-sm sm:leading-6">Toko akun Roblox ready. Pilih akun, pesan, lalu chat admin.</p>
+          <p className="mt-3 max-w-sm text-xs leading-5 text-white/55 sm:text-sm sm:leading-6">Toko akun Roblox siap beli. Pilih akun, buat pesanan, lalu konfirmasi ke admin.</p>
         </div>
         <div>
           <p className="text-xs font-black uppercase tracking-[0.18em] text-emerald-300">Belanja</p>

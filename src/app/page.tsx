@@ -16,7 +16,7 @@ import { productMatchesSearch } from "@/lib/catalog/search";
 export const metadata: Metadata = {
   title: "RIKU STORE — Akun Game Digital",
   description:
-    "Akun Roblox ready. Pilih akun, pesan, lalu chat admin.",
+    "Akun Roblox siap beli. Pilih akun, buat pesanan, lalu konfirmasi ke admin.",
 };
 
 export const dynamic = "force-dynamic";
@@ -137,14 +137,14 @@ export default async function Home({ searchParams }: HomeProps) {
         <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
           <div>
             <p className="text-xs font-black uppercase tracking-[0.22em] text-emerald-300">
-              Menu
+              Menu utama
             </p>
             <h2 className="mt-2 text-2xl font-black tracking-tight sm:text-3xl">
-              Mau apa?
+              Pilih kebutuhanmu
             </h2>
           </div>
           <p className="max-w-md text-sm leading-6 text-slate-400">
-            Kalau mau beli, langsung lihat akun ready.
+            Pilih menu yang dibutuhkan. Untuk membeli, langsung lihat daftar akun.
           </p>
         </div>
 
@@ -158,7 +158,7 @@ export default async function Home({ searchParams }: HomeProps) {
               <MenuArrow tone="emerald" />
             </div>
             <p className="mt-4 text-sm leading-6 text-slate-400">
-              Lihat akun ready.
+              Lihat akun yang tersedia.
             </p>
           </SectionLink>
 
@@ -171,7 +171,7 @@ export default async function Home({ searchParams }: HomeProps) {
               <MenuArrow tone="amber" />
             </div>
             <p className="mt-4 text-sm leading-6 text-slate-400">
-              Cek harga promo.
+              Lihat promo aktif.
             </p>
           </SectionLink>
 
@@ -184,7 +184,7 @@ export default async function Home({ searchParams }: HomeProps) {
               <MenuArrow tone="sky" />
             </div>
             <p className="mt-4 text-sm leading-6 text-slate-400">
-              Cek pesananmu.
+              Cek status pesanan.
             </p>
           </Link>
 
@@ -196,20 +196,20 @@ export default async function Home({ searchParams }: HomeProps) {
               className="group flex min-h-28 flex-col justify-between rounded-2xl border border-white/10 bg-[#0a1727] p-4 transition hover:border-violet-300/45 hover:bg-[#0d1d31]"
             >
               <div className="flex items-start justify-between gap-3">
-                <h3 className="text-base font-black leading-tight text-white sm:text-lg">Chat admin</h3>
+                <h3 className="text-base font-black leading-tight text-white sm:text-lg">Hubungi admin</h3>
                 <MenuArrow tone="violet" />
               </div>
               <p className="mt-4 text-sm leading-6 text-slate-400">
-                Cari akun lain.
+                Cari akun khusus lewat admin.
               </p>
             </a>
           ) : (
             <div className="flex min-h-28 flex-col justify-between rounded-2xl border border-white/10 bg-[#091625] p-4 opacity-70">
               <div className="flex items-start justify-between gap-3">
-                <h3 className="text-base font-black leading-tight text-white sm:text-lg">Chat admin</h3>
+                <h3 className="text-base font-black leading-tight text-white sm:text-lg">Hubungi admin</h3>
                 <MenuArrow tone="violet" />
               </div>
-              <p className="mt-4 text-sm leading-6 text-slate-400">WA belum aktif.</p>
+              <p className="mt-4 text-sm leading-6 text-slate-400">WhatsApp belum tersedia.</p>
             </div>
           )}
         </div>
@@ -460,7 +460,7 @@ export default async function Home({ searchParams }: HomeProps) {
               Total bayar muncul sebelum bayar
             </h2>
             <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-400">
-              Totalnya dicek dulu sebelum bayar. Kalau bingung, chat admin.
+              Total pesanan dapat dicek sebelum pembayaran. Jika perlu bantuan, hubungi admin.
             </p>
           </div>
           <span className="rounded-2xl border border-amber-300/25 bg-amber-300/10 px-5 py-3 text-center text-xs font-black uppercase tracking-wider text-amber-200">
