@@ -1,4 +1,4 @@
-import { humanizeProductDescription, humanizeProductSpec } from "@/lib/catalog/display-text";
+import { humanizeProductSpec } from "@/lib/catalog/display-text";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -168,13 +168,6 @@ export default async function ProductDetailPage({
               <h1 className="mt-4 break-words text-2xl font-black leading-tight tracking-tight text-slate-950 sm:text-3xl">
                 {product.name}
               </h1>
-
-              <p className="mt-4 whitespace-pre-line break-words text-sm leading-7 text-slate-600">
-                {humanizeProductDescription(
-                  product.description ??
-                    "Akun dikirim setelah bayar dicek admin.",
-                )}
-              </p>
 
               <div className="mt-5">
                 <FavoriteButton product={viewedProduct} />
