@@ -97,9 +97,9 @@ export default function CheckoutPage() {
                     <p className="line-clamp-2 text-sm font-black leading-snug text-slate-950 sm:text-base">{item.name}</p>
                     <div className="mt-2 flex flex-wrap gap-1.5">
                       <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-black text-emerald-700">{item.gameName}</span>
-                      <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-bold text-slate-600">{item.productType === "unique" ? "Akun unik" : "Stok massal"}</span>
-                      <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-bold text-slate-600">Qty {item.quantity}</span>
-                      <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-bold text-slate-600">Stok {item.availableStock}</span>
+                      {item.quantity > 1 ? (
+                        <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-bold text-slate-600">Qty {item.quantity}</span>
+                      ) : null}
                     </div>
                     <p className="mt-2 text-sm font-black text-emerald-700">{formatRupiah(item.unitPrice * item.quantity)}</p>
                   </div>
