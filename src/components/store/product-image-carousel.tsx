@@ -52,7 +52,7 @@ export default function ProductImageCarousel({
   return (
     <div className="min-w-0 max-w-full">
       <div
-        className="relative aspect-[4/3] max-w-full cursor-grab touch-pan-y select-none overflow-hidden rounded-[24px] bg-gradient-to-br from-[#103d2b] via-emerald-700 to-emerald-400 shadow-2xl shadow-emerald-950/15 active:cursor-grabbing sm:aspect-[2/1] sm:rounded-[32px]"
+        className="relative aspect-[4/3] max-w-full cursor-grab touch-pan-y select-none overflow-hidden rounded-[24px] bg-slate-100 shadow-sm active:cursor-grabbing sm:aspect-[2/1] sm:rounded-[32px]"
         onPointerDown={(event) => {
           if (event.button !== 0) return;
           pointerStartX.current = event.clientX;
@@ -106,7 +106,7 @@ export default function ProductImageCarousel({
           ))}
         </div>
 
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950/55 via-transparent to-transparent" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950/35 via-transparent to-transparent" />
 
         <div className="pointer-events-none absolute bottom-4 left-4 right-4 flex flex-wrap gap-2 sm:bottom-5 sm:left-5 sm:right-auto">
           <span className="rounded-full bg-white/90 px-3 py-1.5 text-[11px] font-black text-emerald-800 sm:px-4 sm:py-2 sm:text-xs">
@@ -116,7 +116,7 @@ export default function ProductImageCarousel({
             className={`rounded-full px-3 py-1.5 text-[11px] font-black sm:px-4 sm:py-2 sm:text-xs ${
               soldOut
                 ? "bg-red-500 text-white"
-                : "bg-emerald-300 text-emerald-950"
+                : "bg-white text-slate-800"
             }`}
           >
             {soldOut ? "Stok habis" : `${availableStock} stok tersedia`}
@@ -162,7 +162,7 @@ export default function ProductImageCarousel({
                   }}
                   className={`h-2.5 rounded-full border border-black/20 shadow transition-all ${
                     index === activeIndex
-                      ? "w-8 bg-emerald-300"
+                      ? "w-8 bg-emerald-700"
                       : "w-2.5 bg-white/75 hover:bg-white"
                   }`}
                 />

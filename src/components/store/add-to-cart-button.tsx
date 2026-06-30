@@ -47,25 +47,25 @@ export default function AddToCartButton({ item }: { item: AddCartItem }) {
   return (
     <div className="mt-6">
       {!soldOut ? (
-        <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-4">
+        <div className="rounded-3xl border border-slate-200 bg-slate-50 p-4">
           <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
             <div>
-              <p className="text-xs font-black uppercase tracking-[0.16em] text-emerald-300">
+              <p className="text-xs font-black uppercase tracking-[0.16em] text-emerald-700">
                 Pilih jumlah
               </p>
-              <p className="mt-1 text-xs text-slate-400">
+              <p className="mt-1 text-xs text-slate-500">
                 Maksimal {maxQuantity} akun sesuai stok saat ini.
               </p>
             </div>
 
             <div className="flex items-center justify-between gap-3 sm:justify-end">
-              <div className="flex items-center overflow-hidden rounded-2xl border border-white/10 bg-[#07111f]">
+              <div className="flex items-center overflow-hidden rounded-2xl border border-slate-200 bg-white">
                 <button
                   type="button"
                   onClick={() => changeQuantity(quantity - 1)}
                   disabled={quantity <= 1}
                   aria-label="Kurangi jumlah"
-                  className="h-12 w-12 touch-manipulation text-xl font-black text-emerald-200 transition hover:bg-white/[0.05] disabled:text-slate-600"
+                  className="h-12 w-12 touch-manipulation text-xl font-black text-emerald-900 transition hover:bg-emerald-50 disabled:text-slate-300"
                 >
                   −
                 </button>
@@ -76,7 +76,7 @@ export default function AddToCartButton({ item }: { item: AddCartItem }) {
                   max={maxQuantity}
                   value={quantity}
                   onChange={(event) => changeQuantity(Number(event.target.value))}
-                  className="h-12 w-16 border-x border-white/10 bg-[#07111f] text-center text-base font-black text-white outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                  className="h-12 w-16 border-x border-slate-200 bg-white text-center text-base font-black text-slate-950 outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                   aria-label="Jumlah akun"
                 />
                 <button
@@ -84,7 +84,7 @@ export default function AddToCartButton({ item }: { item: AddCartItem }) {
                   onClick={() => changeQuantity(quantity + 1)}
                   disabled={quantity >= maxQuantity}
                   aria-label="Tambah jumlah"
-                  className="h-12 w-12 touch-manipulation text-xl font-black text-emerald-200 transition hover:bg-white/[0.05] disabled:text-slate-600"
+                  className="h-12 w-12 touch-manipulation text-xl font-black text-emerald-900 transition hover:bg-emerald-50 disabled:text-slate-300"
                 >
                   +
                 </button>
@@ -94,7 +94,7 @@ export default function AddToCartButton({ item }: { item: AddCartItem }) {
                 <p className="text-[10px] font-black uppercase tracking-wider text-slate-400">
                   Total
                 </p>
-                <p className="mt-1 text-sm font-black text-emerald-300">
+                <p className="mt-1 text-sm font-black text-emerald-700">
                   {formatRupiah(total)}
                 </p>
               </div>
@@ -104,7 +104,7 @@ export default function AddToCartButton({ item }: { item: AddCartItem }) {
       ) : null}
 
       {message ? (
-        <div className="mt-3 rounded-2xl border border-emerald-300/20 bg-emerald-300/10 px-4 py-3 text-sm font-bold text-emerald-100">
+        <div className="mt-3 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-bold text-emerald-800">
           ✓ {message}
         </div>
       ) : null}
@@ -114,7 +114,7 @@ export default function AddToCartButton({ item }: { item: AddCartItem }) {
           type="button"
           onClick={handleAdd}
           disabled={soldOut}
-          className="touch-manipulation rounded-2xl border border-white/12 px-5 py-4 text-sm font-black text-white transition hover:bg-white/[0.05] disabled:cursor-not-allowed disabled:border-white/8 disabled:bg-white/[0.03] disabled:text-slate-500"
+          className="touch-manipulation rounded-2xl border border-slate-300 bg-white px-5 py-4 text-sm font-black text-slate-900 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-slate-100 disabled:text-slate-400"
         >
           {soldOut ? "Stok sedang habis" : `+ Keranjang (${quantity})`}
         </button>
@@ -123,7 +123,7 @@ export default function AddToCartButton({ item }: { item: AddCartItem }) {
           type="button"
           disabled={soldOut}
           onClick={handleBuyNow}
-          className="touch-manipulation rounded-2xl bg-emerald-400 px-5 py-4 text-sm font-black text-emerald-950 transition hover:bg-emerald-300 disabled:cursor-not-allowed disabled:bg-white/[0.06] disabled:text-slate-500"
+          className="touch-manipulation rounded-2xl bg-emerald-700 px-5 py-4 text-sm font-black text-white transition hover:bg-emerald-800 disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-500"
         >
           {soldOut ? "Tidak tersedia" : `Beli ${quantity} sekarang`}
         </button>
