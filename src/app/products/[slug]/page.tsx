@@ -145,15 +145,20 @@ export default async function ProductDetailPage({
                 {product.name}
               </h1>
 
-              {product.description ? (
-                <p className="mt-3 whitespace-pre-line break-words text-sm leading-7 text-slate-600">
-                  {humanizeProductDescription(product.description)}
-                </p>
-              ) : null}
-
               <div className="mt-5">
                 <FavoriteButton product={viewedProduct} />
               </div>
+
+              {product.description ? (
+                <div className="mt-5 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                  <p className="text-xs font-black uppercase tracking-[0.16em] text-slate-500">
+                    Keterangan
+                  </p>
+                  <p className="mt-2 whitespace-pre-line break-words text-sm leading-7 text-slate-700">
+                    {humanizeProductDescription(product.description)}
+                  </p>
+                </div>
+              ) : null}
 
               <div className="mt-6 border-y border-slate-100 py-5">
                 {product.price_promo ? (
