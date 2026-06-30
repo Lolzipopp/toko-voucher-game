@@ -149,13 +149,16 @@ export default async function Home({ searchParams }: HomeProps) {
     `Halo ${settings.store_name}, saya ingin bertanya mengenai produk akun game.`,
   );
 
+  const censoredNames = ["R***", "A***", "D***", "M***", "F***", "N***"];
   const publicTestimonials = (testimonials ?? []).map((testimonial, index) => {
     const isLegacyInstagram = testimonial.customer_role === "KONTEN DEMO — jangan dipublikasikan";
 
     return {
       ...testimonial,
-      customer_name: isLegacyInstagram ? `Pembeli Instagram ${index + 1}` : testimonial.customer_name,
-      customer_role: isLegacyInstagram ? "Testimoni lama Instagram" : testimonial.customer_role,
+      customer_name: isLegacyInstagram
+        ? censoredNames[index % censoredNames.length]
+        : testimonial.customer_name,
+      customer_role: isLegacyInstagram ? "Pembeli RIKU STORE" : testimonial.customer_role,
       content: isLegacyInstagram
         ? testimonial.content.replace(/^Contoh testimoni:\s*/i, "")
         : testimonial.content,
