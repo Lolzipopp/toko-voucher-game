@@ -1,4 +1,4 @@
 {
-  "installCommand": "npm ci --no-audit --no-fund",
+  "installCommand": "npx --yes npm@10 ci --no-audit --no-fund --cache .vercel-npm-cache",
   "buildCommand": "npm run build"
 }
