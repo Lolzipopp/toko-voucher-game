@@ -244,39 +244,41 @@ export default async function Home({ searchParams }: HomeProps) {
 
       <section
         id="produk"
-        className="scroll-mt-20 mx-auto max-w-7xl px-3 py-10 sm:px-6 sm:py-14 lg:py-20"
+        className="scroll-mt-20 mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:py-18"
       >
-        <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
-          <div>
-            <p className="text-xs font-black uppercase tracking-[0.22em] text-emerald-300">
-              Pilihan stok
-            </p>
-            <h2 className="mt-2 text-3xl font-black italic sm:text-4xl">
-              AKUN YANG TERSEDIA
-            </h2>
-            <p className="mt-3 text-sm text-slate-400">
-              {query.q ? (
-                <>
-                  {displayedProducts.length} hasil untuk “{query.q}” · {totalAvailableStock} akun tersedia
-                </>
-              ) : (
-                <>
-                  {availableProducts.length} produk aktif dengan total {totalAvailableStock} akun tersedia.
-                </>
-              )}
-            </p>
-          </div>
+        <div className="rounded-[2rem] border border-white/10 bg-[#081322] p-4 sm:p-6">
+          <div className="flex flex-col justify-between gap-5 lg:flex-row lg:items-end">
+            <div>
+              <p className="text-xs font-black uppercase tracking-[0.22em] text-emerald-300">
+                Katalog akun
+              </p>
+              <h2 className="mt-2 text-3xl font-black tracking-tight sm:text-4xl">
+                Akun yang ready
+              </h2>
+              <p className="mt-3 text-sm leading-6 text-slate-400">
+                {query.q ? (
+                  <>
+                    {displayedProducts.length} hasil untuk “{query.q}” · {totalAvailableStock} stok tersedia.
+                  </>
+                ) : (
+                  <>
+                    {availableProducts.length} produk ready · total {totalAvailableStock} stok tersedia.
+                  </>
+                )}
+              </p>
+            </div>
 
-          <ProductSearchForm initialQuery={query.q} game={query.game} />
+            <ProductSearchForm initialQuery={query.q} game={query.game} />
+          </div>
         </div>
 
-        <div className="mt-7 flex gap-2 overflow-x-auto pb-2">
+        <div className="mt-5 flex gap-2 overflow-x-auto pb-2">
           <Link
             href={query.q ? `/?q=${encodeURIComponent(query.q)}` : "/"}
             className={`whitespace-nowrap rounded-2xl border px-4 py-2.5 text-xs font-black ${
               !query.game
-                ? "border-emerald-400 bg-emerald-400 text-emerald-950 shadow-[0_0_20px_rgba(52,211,153,.18)]"
-                : "border-white/10 bg-white/5 text-slate-300"
+                ? "border-emerald-400 bg-emerald-400 text-emerald-950"
+                : "border-white/10 bg-[#0a1727] text-slate-300 hover:border-white/20"
             }`}
           >
             Semua game
@@ -290,7 +292,7 @@ export default async function Home({ searchParams }: HomeProps) {
               className={`whitespace-nowrap rounded-2xl border px-4 py-2.5 text-xs font-black ${
                 query.game === game.slug
                   ? "border-emerald-400 bg-emerald-400 text-emerald-950"
-                  : "border-white/10 bg-white/5 text-slate-300"
+                  : "border-white/10 bg-[#0a1727] text-slate-300 hover:border-white/20"
               }`}
             >
               {game.name}
