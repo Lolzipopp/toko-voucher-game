@@ -183,25 +183,6 @@ export default async function CustomerOrderPage({
                   {formatDate(delivery.warranty_ends_at)}
                 </p>
               </div>
-
-              <div className="rounded-2xl border border-emerald-100 bg-white p-4 shadow-sm">
-                <p className="text-[10px] font-black uppercase tracking-wider text-slate-400">
-                  Data terlihat sampai
-                </p>
-                <p className="mt-2 text-sm font-black">
-                  {formatDate(delivery.credentials_hidden_at)}
-                </p>
-              </div>
-            </section>
-
-            <section className="mt-5 rounded-3xl border border-emerald-200 bg-emerald-50 p-5 sm:p-6">
-              <p className="text-sm font-black text-emerald-900">
-                Simpan data akun sekarang
-              </p>
-              <p className="mt-1 text-xs leading-5 text-emerald-800">
-                Simpan data akun ini di tempat yang aman. Demi keamanan,
-                informasi login hanya tersedia selama 7 hari setelah pengiriman.
-              </p>
             </section>
 
             <section className="mt-5 space-y-4">
@@ -224,22 +205,6 @@ export default async function CustomerOrderPage({
                       {formatRupiah(item.unit_price)}
                     </p>
                   </div>
-
-                  {item.product_attributes &&
-                  Object.keys(item.product_attributes).length > 0 ? (
-                    <div className="mt-4 flex flex-wrap gap-2">
-                      {Object.entries(item.product_attributes).map(
-                        ([key, value]) => (
-                          <span
-                            key={key}
-                            className="rounded-xl bg-slate-100 px-3 py-1.5 text-[11px] font-semibold text-slate-600"
-                          >
-                            {key}: {String(value)}
-                          </span>
-                        ),
-                      )}
-                    </div>
-                  ) : null}
 
                   <div className="mt-5 space-y-3">
                     {item.credentials.map((credential, index) => (
@@ -291,7 +256,7 @@ export default async function CustomerOrderPage({
         <footer className="mt-8 text-center">
           <Link
             href="/"
-            className="text-sm font-bold text-emerald-700 hover:text-emerald-800"
+            className="inline-flex items-center justify-center rounded-2xl bg-[#103d2b] px-6 py-3.5 text-sm font-black text-white transition hover:bg-emerald-700"
           >
             Kembali ke RIKU STORE
           </Link>

@@ -126,8 +126,8 @@ export default function PaymentCountdown({
       case "delivered":
         return {
           icon: "✓",
-          eyebrow: "Pesanan siap",
-          title: "Akunmu sudah siap dilihat",
+          eyebrow: "Berhasil",
+          title: "Pembayaran berhasil",
           description:
             "Pembayaran masuk dan akun sudah dikirim dengan aman.",
           tone: "emerald",
@@ -288,7 +288,7 @@ export default function PaymentCountdown({
             {status.state === "awaiting_payment"
               ? "Belum bayar"
               : status.state === "delivered"
-                ? "Akun siap"
+                ? "Berhasil"
                 : status.state === "paid"
                   ? "Diproses"
                   : status.state === "expired"
@@ -314,13 +314,34 @@ export default function PaymentCountdown({
           >
             Bayar sekarang
           </a>
+
+          <div className="mt-3 flex items-center justify-center gap-3">
+            <button
+              type="button"
+              disabled={refreshing}
+              onClick={() => void refreshStatus()}
+              className="rounded-xl border border-emerald-200 bg-white px-3 py-2 text-xs font-bold text-emerald-700 transition hover:bg-emerald-50 disabled:opacity-50"
+            >
+              {refreshing ? "Memuat..." : "↻ Refresh"}
+            </button>
+            {manualWhatsappUrl ? (
+              <a
+                href={manualWhatsappUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="rounded-xl border border-emerald-200 bg-white px-3 py-2 text-xs font-bold text-emerald-700 transition hover:bg-emerald-50"
+              >
+                💬 Chat admin
+              </a>
+            ) : null}
+          </div>
         </div>
       ) : null}
 
-      {status.state === "awaiting_payment" ? (
+      {status.state === "awaiting_payment" && !pakasirPayment.enabled ? (
         <div className="mt-5 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-4 text-left text-sm text-amber-900">
           <p className="font-black">
-            {pakasirPayment.enabled ? "Butuh bantuan admin?" : "Bayar lewat admin"}
+            Bayar lewat admin
           </p>
           <p className="mt-1 leading-6">
             {manualSales.instructions}
@@ -344,6 +365,29 @@ export default function PaymentCountdown({
         </div>
       ) : null}
 
+      {status.state === "awaiting_payment" && pakasirPayment.enabled && !pakasirPayment.paymentUrl ? (
+        <div className="mt-5 flex items-center justify-center gap-3">
+          <button
+            type="button"
+            disabled={refreshing}
+            onClick={() => void refreshStatus()}
+            className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-600 transition hover:bg-slate-50 disabled:opacity-50"
+          >
+            {refreshing ? "Memuat..." : "↻ Refresh"}
+          </button>
+          {manualWhatsappUrl ? (
+            <a
+              href={manualWhatsappUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-600 transition hover:bg-slate-50"
+            >
+              💬 Chat admin
+            </a>
+          ) : null}
+        </div>
+      ) : null}
+
       <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
         {status.state === "delivered" ? (
           <Link
@@ -363,20 +407,11 @@ export default function PaymentCountdown({
           </Link>
         ) : null}
 
-        <button
-          type="button"
-          disabled={refreshing}
-          onClick={() => void refreshStatus()}
-          className="rounded-2xl border border-slate-200 px-5 py-3.5 text-sm font-black text-slate-600 transition hover:bg-slate-50 disabled:opacity-50"
-        >
-          {refreshing ? "Memeriksa..." : "Periksa status"}
-        </button>
-
         <Link
-          href="/#produk"
+          href="/"
           className="rounded-2xl border border-slate-200 px-5 py-3.5 text-sm font-black text-slate-600 transition hover:bg-slate-50"
         >
-          Pilih akun lagi
+          Kembali ke RIKU STORE
         </Link>
       </div>
     </section>
