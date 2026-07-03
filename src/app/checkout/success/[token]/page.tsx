@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import StoreFooter from "@/components/store/store-footer";
 import StoreHeader from "@/components/store/store-header";
 import { createClient } from "@/lib/supabase/server";
+import { buildPublicOrderPakasirPayment } from "@/lib/payments/pakasir/order";
 
 import PaymentCountdown from "./payment-countdown";
 
@@ -68,6 +69,11 @@ export default async function CheckoutSuccessPage({
 
   const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3001").replace(/\/$/, "");
   const statusUrl = `${siteUrl}/checkout/success/${encodeURIComponent(token)}`;
+  const pakasirPayment = buildPublicOrderPakasirPayment({
+    orderNumber: status.order_number,
+    totalAmount: status.total_amount,
+    accessToken: token,
+  });
 
   return (
     <main className="min-h-screen bg-[#f7fbf8] text-slate-950">
@@ -96,6 +102,7 @@ export default async function CheckoutSuccessPage({
               } | null)?.manual_payment_instructions ??
               "Pembayaran otomatis belum tersedia. Hubungi admin melalui WhatsApp untuk menerima instruksi pembayaran.",
           }}
+          pakasirPayment={pakasirPayment}
         />
       </div>
           <StoreFooter />

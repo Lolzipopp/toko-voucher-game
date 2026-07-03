@@ -35,6 +35,10 @@ type Props = {
     storeName: string;
     instructions: string;
   };
+  pakasirPayment: {
+    enabled: boolean;
+    paymentUrl: string | null;
+  };
   statusUrl: string;
 };
 
@@ -57,6 +61,7 @@ export default function PaymentCountdown({
   token,
   initialStatus,
   manualSales,
+  pakasirPayment,
   statusUrl,
 }: Props) {
   const [status, setStatus] = useState(initialStatus);
@@ -167,13 +172,13 @@ export default function PaymentCountdown({
         return {
           icon: "⏱",
           eyebrow: "Belum bayar",
-          title: "Hubungi admin sebelum waktu habis",
+          title: pakasirPayment.enabled ? "Bayar otomatis sebelum waktu habis" : "Hubungi admin sebelum waktu habis",
           description:
             "Kalau waktu habis, pesanan batal.",
           tone: "amber",
         };
     }
-  }, [status]);
+  }, [status, pakasirPayment.enabled]);
 
 
   const manualWhatsappUrl = useMemo(() => {
@@ -293,10 +298,29 @@ export default function PaymentCountdown({
         </div>
       </dl>
 
+      {status.state === "awaiting_payment" && pakasirPayment.enabled && pakasirPayment.paymentUrl ? (
+        <div className="mt-5 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-4 text-left text-sm text-emerald-900">
+          <p className="font-black">
+            Bayar otomatis via QRIS
+          </p>
+          <p className="mt-1 leading-6">
+            Klik tombol di bawah, selesaikan pembayaran di Pakasir, lalu halaman ini akan otomatis memperbarui status.
+          </p>
+          <a
+            href={pakasirPayment.paymentUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-4 flex w-full items-center justify-center rounded-2xl bg-emerald-600 px-5 py-3.5 text-sm font-black text-white transition hover:bg-emerald-700"
+          >
+            Bayar sekarang
+          </a>
+        </div>
+      ) : null}
+
       {status.state === "awaiting_payment" ? (
         <div className="mt-5 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-4 text-left text-sm text-amber-900">
           <p className="font-black">
-            Bayar lewat admin
+            {pakasirPayment.enabled ? "Butuh bantuan admin?" : "Bayar lewat admin"}
           </p>
           <p className="mt-1 leading-6">
             {manualSales.instructions}
