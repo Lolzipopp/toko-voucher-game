@@ -235,10 +235,27 @@ export async function POST(request: Request) {
       return NextResponse.json({ ok: true, ignored: true });
     }
 
-    const detail = (await fetchPakasirTransactionDetail({
-      orderNumber: typedOrder.order_number,
-      amount: typedOrder.total_amount,
-    })) as PakasirDetail;
+    const isSandboxWebhook = payload.is_sandbox === true;
+    let detail: PakasirDetail;
+
+    if (isSandboxWebhook) {
+      // Pakasir sandbox transaction detail can be unavailable/ephemeral.
+      // Keep strict local checks above, but do not block sandbox callback testing.
+      detail = {
+        amount: payload.amount,
+        order_id: payload.order_id,
+        project: payload.project,
+        status: payload.status,
+        payment_method: payload.payment_method,
+        completed_at: payload.completed_at,
+        is_sandbox: true,
+      };
+    } else {
+      detail = (await fetchPakasirTransactionDetail({
+        orderNumber: typedOrder.order_number,
+        amount: typedOrder.total_amount,
+      })) as PakasirDetail;
+    }
 
     const verifiedExternalEventId = stableEventIdFromDetail(detail, externalEventId);
 
