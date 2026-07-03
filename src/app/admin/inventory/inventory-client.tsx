@@ -133,7 +133,7 @@ export default function InventoryClient({
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   const [bulkProductId, setBulkProductId] = useState(
-    products.find((product) => product.product_type === "mass")?.id ?? "",
+    products[0]?.id ?? "",
   );
   const [rawAccounts, setRawAccounts] = useState("");
   const [purchaseCost, setPurchaseCost] = useState("0");
@@ -303,7 +303,7 @@ export default function InventoryClient({
             Bulk Paste
           </p>
           <h2 className="mt-1 text-lg font-bold text-slate-900">
-            Tambah stok produk massal
+            Tambah stok (Massal & Unik)
           </h2>
           <p className="mt-1 text-sm text-slate-500">
             Satu Enter berarti satu akun berbeda.
@@ -313,7 +313,7 @@ export default function InventoryClient({
         <div className="grid gap-4 md:grid-cols-2">
           <div>
             <label className="mb-1.5 block text-xs font-semibold text-slate-600">
-              Produk massal
+              Produk (Massal & Unik)
             </label>
             <select
               value={bulkProductId}
@@ -322,10 +322,9 @@ export default function InventoryClient({
             >
               <option value="">Pilih produk</option>
               {products
-                .filter((product) => product.product_type === "mass")
                 .map((product) => (
                   <option key={product.id} value={product.id}>
-                    {product.name} ({product.product_code})
+                    {product.name} ({product.product_code}) {product.product_type === "unique" ? "[Unik]" : "[Massal]"}
                   </option>
                 ))}
             </select>
