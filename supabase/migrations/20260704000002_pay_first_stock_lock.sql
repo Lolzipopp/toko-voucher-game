@@ -279,7 +279,7 @@ BEGIN
 
   UPDATE public.orders
   SET
-    status = 'completed',
+    status = 'paid',
     delivery_status = 'delivered',
     delivered_at = COALESCE(delivered_at, NOW()),
     warranty_ends_at = COALESCE(warranty_ends_at, NOW() + make_interval(days => v_warranty_days)),
