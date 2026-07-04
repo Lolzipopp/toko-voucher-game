@@ -224,7 +224,7 @@ export async function retryPaidOrderDelivery(orderId: string): Promise<TestOrder
       ok: false,
       message: databaseErrorMessage(
         error,
-        "Pengiriman akun belum bisa diulang. Pastikan stok produk masih available.",
+        `Pengiriman akun belum bisa diulang: ${error.message}`,
       ),
     };
   }
