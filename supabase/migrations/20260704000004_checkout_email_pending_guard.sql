@@ -74,10 +74,10 @@ BEGIN
   ), updated_orders AS (
     UPDATE public.orders o
     SET
-      status = 'cancelled',
+      status = 'expired',
       payment_status = 'expired',
-      delivery_status = 'cancelled',
-      internal_notes = concat_ws(E'\n', NULLIF(o.internal_notes, ''), 'Cancelled: customer started a new checkout with the same email.'),
+      delivery_status = 'pending',
+      internal_notes = concat_ws(E'\n', NULLIF(o.internal_notes, ''), 'Expired: customer started a new checkout with the same email.'),
       updated_at = NOW()
     FROM target_orders t
     WHERE o.id = t.id
