@@ -11,15 +11,41 @@ import {
 import CartLink from "./cart-link";
 import SectionLink from "./section-link";
 
+type AuthUser = { email: string | null; name: string | null } | null;
+
+async function fetchAuthUser(): Promise<AuthUser> {
+  try {
+    // Hit server action via fetch to avoid bundling supabase browser client
+    // Instead, use the Supabase client directly
+    const { createClient } = await import("@/lib/supabase/client");
+    const supabase = createClient();
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.user) return null;
+    const meta = session.user.user_metadata ?? {};
+    const name = meta.full_name ?? meta.name ?? meta.display_name ?? null;
+    return {
+      email: session.user.email ?? null,
+      name: typeof name === "string" ? name : null,
+    };
+  } catch {
+    return null;
+  }
+}
+
 export default function StoreHeader() {
   const [settings, setSettings] = useState(DEFAULT_CLIENT_SETTINGS);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [authUser, setAuthUser] = useState<AuthUser>(undefined as unknown as AuthUser);
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const controller = new AbortController();
     void fetchPublicSettings(controller.signal).then(setSettings);
     return () => controller.abort();
+  }, []);
+
+  useEffect(() => {
+    void fetchAuthUser().then(setAuthUser);
   }, []);
 
   useEffect(() => {
@@ -82,32 +108,71 @@ export default function StoreHeader() {
                   <p className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-300">
                     Akun Pembeli
                   </p>
-                  <p className="mt-1 text-sm text-slate-300">
-                    Cek pesanan kamu di sini.
-                  </p>
-                  <div className="mt-3 grid grid-cols-2 gap-2">
-                    <Link
-                      href="/akun/login?mode=login"
-                      onClick={() => setMenuOpen(false)}
-                      className="rounded-xl bg-emerald-400 px-3 py-2.5 text-center text-xs font-black text-emerald-950 transition active:scale-[0.97]"
-                    >
-                      Masuk
-                    </Link>
-                    <Link
-                      href="/akun/login?mode=register"
-                      onClick={() => setMenuOpen(false)}
-                      className="rounded-xl border border-emerald-400/25 bg-emerald-400/10 px-3 py-2.5 text-center text-xs font-black text-emerald-200 transition active:scale-[0.97]"
-                    >
-                      Daftar
-                    </Link>
-                  </div>
-                  <Link
-                    href="/akun"
-                    onClick={() => setMenuOpen(false)}
-                    className="mt-2 block rounded-xl px-3 py-2 text-center text-xs font-bold text-slate-300 hover:bg-white/5"
-                  >
-                    Cek pesanan
-                  </Link>
+                  {authUser ? (
+                    <>
+                      <p className="mt-1 truncate text-sm font-bold text-white">
+                        {authUser.name ?? authUser.email ?? "Akun saya"}
+                      </p>
+                      {authUser.name && authUser.email ? (
+                        <p className="mt-0.5 truncate text-xs text-slate-400">{authUser.email}</p>
+                      ) : null}
+                      <div className="mt-3 grid grid-cols-2 gap-2">
+                        <Link
+                          href="/akun"
+                          onClick={() => setMenuOpen(false)}
+                          className="rounded-xl bg-emerald-400 px-3 py-2.5 text-center text-xs font-black text-emerald-950 transition active:scale-[0.97]"
+                        >
+                          Pesanan saya
+                        </Link>
+                        <form action="/akun" method="get">
+                          <Link
+                            href="/akun"
+                            onClick={async (e) => {
+                              e.preventDefault();
+                              setMenuOpen(false);
+                              const { createClient } = await import("@/lib/supabase/client");
+                              const supabase = createClient();
+                              await supabase.auth.signOut();
+                              setAuthUser(null);
+                              window.location.href = "/";
+                            }}
+                            className="rounded-xl border border-white/15 px-3 py-2.5 text-center text-xs font-black text-slate-300 transition hover:bg-white/10 active:scale-[0.97]"
+                          >
+                            Keluar
+                          </Link>
+                        </form>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <p className="mt-1 text-sm text-slate-300">
+                        Cek pesanan kamu di sini.
+                      </p>
+                      <div className="mt-3 grid grid-cols-2 gap-2">
+                        <Link
+                          href="/akun/login?mode=login"
+                          onClick={() => setMenuOpen(false)}
+                          className="rounded-xl bg-emerald-400 px-3 py-2.5 text-center text-xs font-black text-emerald-950 transition active:scale-[0.97]"
+                        >
+                          Masuk
+                        </Link>
+                        <Link
+                          href="/akun/login?mode=register"
+                          onClick={() => setMenuOpen(false)}
+                          className="rounded-xl border border-emerald-400/25 bg-emerald-400/10 px-3 py-2.5 text-center text-xs font-black text-emerald-200 transition active:scale-[0.97]"
+                        >
+                          Daftar
+                        </Link>
+                      </div>
+                      <Link
+                        href="/akun"
+                        onClick={() => setMenuOpen(false)}
+                        className="mt-2 block rounded-xl px-3 py-2 text-center text-xs font-bold text-slate-300 hover:bg-white/5"
+                      >
+                        Cek pesanan
+                      </Link>
+                    </>
+                  )}
                 </div>
 
                 <nav className="mt-2 grid gap-1 text-sm font-bold">
