@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
-import { simulateTestPaidDelivery } from "../actions";
+import { retryPaidOrderDelivery, simulateTestPaidDelivery } from "../actions";
 
 type PaidDeliveryPanelProps = {
   orderId: string;
@@ -25,16 +25,21 @@ export default function PaidDeliveryPanel({
     text: string;
   } | null>(null);
 
-  if (!isTestOrder) return null;
+  const canRetryDelivery =
+    paymentStatus === "paid" && deliveryStatus === "delivery_failed";
+
+  if (!isTestOrder && !canRetryDelivery) return null;
 
   const alreadyDelivered =
     paymentStatus === "paid" && deliveryStatus === "delivered";
 
-  function runSimulation() {
+  function runDeliveryAction() {
     setMessage(null);
 
     startTransition(async () => {
-      const result = await simulateTestPaidDelivery(orderId);
+      const result = canRetryDelivery
+        ? await retryPaidOrderDelivery(orderId)
+        : await simulateTestPaidDelivery(orderId);
 
       setMessage({
         type: result.ok ? "success" : "error",
@@ -48,15 +53,15 @@ export default function PaidDeliveryPanel({
   return (
     <section className="mt-5 rounded-3xl border border-emerald-200 bg-emerald-50 p-5 shadow-sm sm:p-6">
       <p className="text-[10px] font-black uppercase tracking-[0.18em] text-emerald-700">
-        Internal Payment Test
+        {canRetryDelivery ? "Delivery Recovery" : "Internal Payment Test"}
       </p>
       <h2 className="mt-2 text-lg font-black text-slate-950">
-        Simulasi Paid + Auto-Delivery
+        {canRetryDelivery ? "Kirim ulang data akun" : "Simulasi Paid + Auto-Delivery"}
       </h2>
       <p className="mt-1 text-sm leading-6 text-slate-600">
-        Khusus order dummy. Proses ini mengubah payment menjadi paid,
-        mengonversi stok reserved menjadi sold, memulai garansi, dan aman
-        diklik ulang tanpa menjual stok dua kali.
+        {canRetryDelivery
+          ? "Order sudah paid, tapi pengiriman akun gagal. Pastikan stok produk masih available, lalu klik tombol ini untuk mencoba kirim akun lagi."
+          : "Khusus order dummy. Proses ini mengubah payment menjadi paid, mengonversi stok reserved menjadi sold, memulai garansi, dan aman diklik ulang tanpa menjual stok dua kali."}
       </p>
 
       {message ? (
@@ -79,14 +84,16 @@ export default function PaidDeliveryPanel({
         <button
           type="button"
           disabled={isPending}
-          onClick={runSimulation}
+          onClick={runDeliveryAction}
           className="rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-black text-white shadow-lg shadow-emerald-600/20 transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {isPending
             ? "Memproses..."
             : alreadyDelivered
               ? "Tes idempotency (klik ulang)"
-              : "Simulasikan Paid & Delivery"}
+              : canRetryDelivery
+                ? "Kirim ulang akun"
+                : "Simulasikan Paid & Delivery"}
         </button>
       </div>
     </section>

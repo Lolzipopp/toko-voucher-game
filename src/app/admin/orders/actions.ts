@@ -200,6 +200,42 @@ export async function simulateTestPaidDelivery(
   };
 }
 
+export async function retryPaidOrderDelivery(orderId: string): Promise<TestOrderActionResult> {
+  if (!orderId) {
+    return { ok: false, message: "ID order tidak valid." };
+  }
+
+  const auth = await requireAdminAction();
+  if (!auth.ok) return { ok: false, message: auth.message };
+  const { supabase } = auth;
+
+  const { data, error } = await supabase.rpc("fulfill_order_delivery", {
+    p_order_id: orderId,
+  });
+
+  revalidatePath("/admin");
+  revalidatePath("/admin/orders");
+  revalidatePath(`/admin/orders/${orderId}`);
+  revalidatePath("/admin/inventory");
+
+  if (error) {
+    logServerError("admin_retry_paid_delivery_failed", error, { orderId });
+    return {
+      ok: false,
+      message: databaseErrorMessage(
+        error,
+        "Pengiriman akun belum bisa diulang. Pastikan stok produk masih available.",
+      ),
+    };
+  }
+
+  return {
+    ok: true,
+    orderId,
+    message: `${Number(data ?? 0)} akun berhasil dikirim ulang ke order ini.`,
+  };
+}
+
 export async function confirmManualPaymentAndDeliver(input: {
   orderId: string;
   paymentReference: string;
