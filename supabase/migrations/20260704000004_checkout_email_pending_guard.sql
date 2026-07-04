@@ -75,7 +75,7 @@ BEGIN
     UPDATE public.orders o
     SET
       status = 'cancelled',
-      payment_status = 'cancelled',
+      payment_status = 'expired',
       delivery_status = 'cancelled',
       internal_notes = concat_ws(E'\n', NULLIF(o.internal_notes, ''), 'Cancelled: customer started a new checkout with the same email.'),
       updated_at = NOW()
@@ -85,7 +85,8 @@ BEGIN
   ), updated_payments AS (
     UPDATE public.payments p
     SET
-      status = 'cancelled',
+      status = 'expired',
+      expired_at = COALESCE(expired_at, NOW()),
       updated_at = NOW()
     FROM updated_orders u
     WHERE p.order_id = u.id
