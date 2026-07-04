@@ -52,9 +52,24 @@ function secondsRemaining(expiresAt?: string | null) {
 }
 
 function formatTimer(totalSeconds: number) {
-  const minutes = Math.floor(totalSeconds / 60);
+  const days = Math.floor(totalSeconds / 86400);
+  const hours = Math.floor((totalSeconds % 86400) / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
   const seconds = totalSeconds % 60;
-  return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+
+  if (days > 0) {
+    return `${days} hari ${hours} jam`;
+  }
+
+  if (hours > 0) {
+    return `${hours} jam ${minutes} menit`;
+  }
+
+  if (minutes > 0) {
+    return `${minutes} menit ${seconds} detik`;
+  }
+
+  return `${seconds} detik`;
 }
 
 export default function PaymentCountdown({
