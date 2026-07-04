@@ -8,7 +8,7 @@ import StoreFooter from "@/components/store/store-footer";
 import StoreHeader from "@/components/store/store-header";
 import { useCart } from "@/components/store/cart-provider";
 import { formatRupiah, productImageUrl } from "@/lib/public-store/format";
-import { createCheckoutOrder, validatePromo, type PromoResult } from "./actions";
+import { createCheckoutOrder, getPendingCheckout, validatePromo, type PendingCheckoutResult, type PromoResult } from "./actions";
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -19,6 +19,8 @@ export default function CheckoutPage() {
   const [agreed, setAgreed] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [promoMessage, setPromoMessage] = useState<string | null>(null);
+  const [pendingCheckout, setPendingCheckout] = useState<Extract<PendingCheckoutResult, { ok: true; hasPending: true }> | null>(null);
+  const [replacePendingConfirmed, setReplacePendingConfirmed] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [isPromoPending, startPromoTransition] = useTransition();
 
@@ -55,10 +57,24 @@ export default function CheckoutPage() {
       return;
     }
     startTransition(async () => {
+      if (!replacePendingConfirmed) {
+        const pending = await getPendingCheckout({ email });
+        if (!pending.ok) {
+          setError(pending.message);
+          return;
+        }
+        if (pending.hasPending) {
+          setPendingCheckout(pending);
+          setError("Email ini masih punya pesanan yang belum dibayar. Pilih lanjutkan jika mau mengganti pesanan lama.");
+          return;
+        }
+      }
+
       const result = await createCheckoutOrder({
         email,
         promoCode: appliedPromo?.code,
         items: checkoutItems,
+        replacePending: replacePendingConfirmed,
       });
       if (!result.ok) {
         setError(result.message);
@@ -123,6 +139,8 @@ export default function CheckoutPage() {
               value={email}
               onChange={(event) => {
                 setEmail(event.target.value);
+                setPendingCheckout(null);
+                setReplacePendingConfirmed(false);
                 if (appliedPromo) removePromo();
               }}
               placeholder="nama@email.com"
@@ -155,9 +173,42 @@ export default function CheckoutPage() {
               {appliedPromo?.description ? <p className="mt-1 text-xs text-slate-500">{appliedPromo.description}</p> : null}
             </div>
 
+            {pendingCheckout ? (
+              <div className="mt-5 rounded-3xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-950">
+                <p className="font-black">Email ini masih punya pesanan belum dibayar.</p>
+                <p className="mt-2 text-xs leading-5">
+                  Pesanan lama: <b>{pendingCheckout.orderNumber}</b> · Total {formatRupiah(pendingCheckout.totalAmount)}.
+                  Kalau lanjut bikin pesanan baru, semua pesanan lama yang belum dibayar dengan email ini akan dibatalkan dan link bayar lama tidak dipakai lagi.
+                </p>
+                <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setPendingCheckout(null);
+                      setError(null);
+                    }}
+                    className="rounded-2xl border border-amber-300 bg-white px-4 py-3 text-xs font-black text-amber-800"
+                  >
+                    Batal dulu
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setReplacePendingConfirmed(true);
+                      setPendingCheckout(null);
+                      setError(null);
+                    }}
+                    className="rounded-2xl bg-amber-500 px-4 py-3 text-xs font-black text-white"
+                  >
+                    Buat pesanan baru, batalkan yang lama
+                  </button>
+                </div>
+              </div>
+            ) : null}
+
             <label className="mt-5 flex cursor-pointer items-start gap-3 rounded-2xl bg-slate-50 p-4">
               <input type="checkbox" checked={agreed} onChange={(event) => setAgreed(event.target.checked)} className="mt-1 h-4 w-4 accent-emerald-600" />
-              <span className="text-xs leading-5 text-slate-600">Saya sudah memeriksa detail akun dan akan konfirmasi ke admin setelah membuat pesanan.</span>
+              <span className="text-xs leading-5 text-slate-600">Saya sudah memeriksa detail akun dan paham pesanan yang belum dibayar bisa diganti kalau membuat pesanan baru dengan email yang sama.</span>
             </label>
 
           </section>
