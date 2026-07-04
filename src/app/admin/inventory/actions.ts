@@ -99,24 +99,80 @@ export async function bulkAddInventory(input: {
       },
     );
 
-    if (error) {
-      logServerError("admin_inventory_bulk_add_failed", error, {
-        productId: input.productId,
-        accountCount: accounts.length,
-      });
-      return {
-        ok: false,
-        message: databaseErrorMessage(
-          error,
-          "Stok belum dapat disimpan. Periksa data lalu coba lagi.",
-        ),
-      };
-    }
-
-    const result = data as {
+    let result = data as {
       inserted_count?: number;
       rejected_count?: number;
+      skipped_count?: number;
+      reason?: string;
     } | null;
+
+    if (error) {
+      const { data: product, error: productError } = await supabase
+        .from("products")
+        .select("product_type")
+        .eq("id", input.productId)
+        .single();
+
+      if (!productError && product?.product_type === "unique") {
+        if (accounts.length !== 1) {
+          return {
+            ok: false,
+            message: "Produk unik hanya boleh diisi 1 akun per produk.",
+          };
+        }
+
+        const account = accounts[0];
+        const fallback = await supabase.rpc("admin_import_single_inventory_stock", {
+          p_product_id: input.productId,
+          p_username: account.username,
+          p_password: account.password,
+          p_purchase_cost: input.purchaseCost,
+          p_supplier: input.supplier.trim() || null,
+          p_notes: input.notes.trim() || null,
+        });
+
+        if (!fallback.error) {
+          result = fallback.data as {
+            inserted_count?: number;
+            skipped_count?: number;
+            reason?: string;
+          } | null;
+
+          if ((result?.skipped_count ?? 0) > 0) {
+            return {
+              ok: false,
+              message:
+                result?.reason === "product_already_has_inventory"
+                  ? "Produk unik ini sudah punya stok. Arsipkan/hapus stok lama dulu kalau mau ganti akun."
+                  : "Stok produk unik tidak disimpan karena terdeteksi duplikat.",
+            };
+          }
+        } else {
+          logServerError("admin_inventory_unique_fallback_failed", fallback.error, {
+            productId: input.productId,
+          });
+          return {
+            ok: false,
+            message: databaseErrorMessage(
+              fallback.error,
+              "Stok produk unik belum dapat disimpan. Periksa data lalu coba lagi.",
+            ),
+          };
+        }
+      } else {
+        logServerError("admin_inventory_bulk_add_failed", error, {
+          productId: input.productId,
+          accountCount: accounts.length,
+        });
+        return {
+          ok: false,
+          message: databaseErrorMessage(
+            error,
+            "Stok belum dapat disimpan. Periksa data lalu coba lagi.",
+          ),
+        };
+      }
+    }
 
     const inserted = result?.inserted_count ?? 0;
     const rejected = result?.rejected_count ?? 0;
