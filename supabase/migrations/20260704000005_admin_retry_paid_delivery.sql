@@ -93,7 +93,7 @@ BEGIN
     END IF;
 
     FOR v_inventory IN
-      SELECT ia.id
+      SELECT ia.id, ia.purchase_cost
       FROM public.inventory_accounts ia
       WHERE ia.product_id = v_item.product_id
         AND ia.status = 'available'
@@ -102,8 +102,8 @@ BEGIN
       LIMIT v_needed
       FOR UPDATE SKIP LOCKED
     LOOP
-      INSERT INTO public.order_item_inventory(order_item_id, inventory_account_id, delivered_at)
-      VALUES(v_item.order_item_id, v_inventory.id, NOW())
+      INSERT INTO public.order_item_inventory(order_item_id, inventory_account_id, purchase_cost_snapshot, delivered_at)
+      VALUES(v_item.order_item_id, v_inventory.id, COALESCE(v_inventory.purchase_cost, 0), NOW())
       ON CONFLICT DO NOTHING;
 
       UPDATE public.inventory_accounts
