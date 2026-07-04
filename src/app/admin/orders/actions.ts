@@ -209,7 +209,7 @@ export async function retryPaidOrderDelivery(orderId: string): Promise<TestOrder
   if (!auth.ok) return { ok: false, message: auth.message };
   const { supabase } = auth;
 
-  const { data, error } = await supabase.rpc("fulfill_order_delivery", {
+  const { data, error } = await supabase.rpc("admin_retry_paid_order_delivery", {
     p_order_id: orderId,
   });
 
@@ -229,10 +229,33 @@ export async function retryPaidOrderDelivery(orderId: string): Promise<TestOrder
     };
   }
 
+  const result = data as {
+    ok?: boolean;
+    already_delivered?: boolean;
+    delivered_count?: number;
+    reason?: string;
+    product_name?: string;
+    needed?: number;
+    available?: number;
+  } | null;
+
+  if (!result?.ok) {
+    const detail = result?.reason === "insufficient_available_stock_for_order_product"
+      ? `Produk ${result.product_name ?? "ini"} butuh ${result.needed ?? 1} stok sesuai order, tapi available yang cocok hanya ${result.available ?? 0}. Pastikan stok available ada di produk yang sama dengan order.`
+      : result?.reason ?? "Pengiriman akun gagal.";
+
+    return {
+      ok: false,
+      message: detail,
+    };
+  }
+
   return {
     ok: true,
     orderId,
-    message: `${Number(data ?? 0)} akun berhasil dikirim ulang ke order ini.`,
+    message: result.already_delivered
+      ? `Order sudah delivered. ${result.delivered_count ?? 0} akun terhubung.`
+      : `${result.delivered_count ?? 0} akun berhasil dikirim ulang ke order ini.`,
   };
 }
 
