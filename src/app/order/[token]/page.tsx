@@ -54,16 +54,13 @@ function formatDate(value?: string | null) {
 }
 
 
-function maskEmail(email?: string) {
-  if (!email) return "-";
+function customerDisplayName(user: { email?: string; user_metadata?: Record<string, unknown> } | null) {
+  const metadata = user?.user_metadata ?? {};
+  const name = metadata.full_name ?? metadata.name ?? metadata.display_name;
 
-  const [name, domain] = email.split("@");
-
-  if (!domain) return email;
-
-  const visible = name.slice(0, Math.min(3, name.length));
-
-  return `${visible}${"*".repeat(Math.max(3, name.length - visible.length))}@${domain}`;
+  return typeof name === "string" && name.trim().length > 0
+    ? name.trim()
+    : user?.email ?? null;
 }
 
 export default async function CustomerOrderPage({
@@ -76,6 +73,10 @@ export default async function CustomerOrderPage({
   }
 
   const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   const { data, error } = await supabase.rpc(
     "get_order_delivery_by_token",
@@ -95,6 +96,8 @@ export default async function CustomerOrderPage({
   }
 
   const available = delivery.ok && delivery.state === "available";
+  const accountName = customerDisplayName(user);
+  const accountEmail = user?.email ?? null;
 
   return (
     <main className="min-h-screen bg-[#f4faf6] px-4 py-8 text-slate-900 sm:py-12">
@@ -153,11 +156,16 @@ export default async function CustomerOrderPage({
             <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               <div className="rounded-2xl border border-emerald-100 bg-white p-4 shadow-sm">
                 <p className="text-[10px] font-black uppercase tracking-wider text-slate-400">
-                  Email
+                  Akun login
                 </p>
                 <p className="mt-2 break-all text-sm font-black">
-                  {maskEmail(delivery.customer_email)}
+                  {accountName ?? delivery.customer_email ?? "-"}
                 </p>
+                {accountEmail && accountEmail !== accountName ? (
+                  <p className="mt-1 break-all text-xs font-semibold text-slate-500">
+                    {accountEmail}
+                  </p>
+                ) : null}
               </div>
 
               <div className="rounded-2xl border border-emerald-100 bg-white p-4 shadow-sm">
