@@ -401,7 +401,12 @@ export async function POST(request: Request) {
         ].join("\n"),
       );
 
-      return NextResponse.json({ ok: false, message: "delivery_failed" }, { status: 500 });
+      return NextResponse.json({
+        ok: true,
+        paid: true,
+        deliveryFailed: true,
+        message: "payment_verified_delivery_failed",
+      });
     }
 
     await recordProviderEvent({
