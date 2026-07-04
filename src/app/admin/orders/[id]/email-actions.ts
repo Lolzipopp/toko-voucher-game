@@ -41,7 +41,7 @@ export async function sendOrderDeliveryEmail(
   const { data: order, error } = await supabase
     .from("orders")
     .select(
-      `id, order_number, customer_email, access_token, payment_status, delivery_status, warranty_ends_at, credentials_hidden_at, order_items(product_name_snapshot, quantity)`,
+      `id, order_number, customer_email, access_token, payment_status, delivery_status, warranty_ends_at, order_items(product_name_snapshot, quantity)`,
     )
     .eq("id", orderId)
     .single();
@@ -71,13 +71,7 @@ export async function sendOrderDeliveryEmail(
         timeStyle: "short",
       }).format(new Date(order.warranty_ends_at))
     : "-";
-  const hiddenAt = order.credentials_hidden_at
-    ? new Intl.DateTimeFormat("id-ID", {
-        dateStyle: "long",
-        timeStyle: "short",
-      }).format(new Date(order.credentials_hidden_at))
-    : "-";
-  const html = `<!doctype html><html><body style="margin:0;background:#f4faf6;font-family:Arial,sans-serif;color:#0f172a"><div style="max-width:620px;margin:0 auto;padding:32px 16px"><div style="background:#103d2b;color:white;padding:28px;border-radius:24px 24px 0 0"><div style="font-size:12px;font-weight:800;letter-spacing:2px;color:#a7f3d0">RIKU STORE</div><h1 style="margin:10px 0 0;font-size:26px">Pesananmu sudah siap 🎮</h1></div><div style="background:white;padding:28px;border:1px solid #d1fae5;border-top:0;border-radius:0 0 24px 24px"><p style="margin-top:0;line-height:1.7">Pembayaran order <strong>${escapeHtml(order.order_number)}</strong> sudah terverifikasi dan akunmu siap dilihat.</p><ul style="padding-left:20px">${items}</ul><a href="${deliveryUrl}" style="display:block;margin:24px 0;background:#059669;color:white;text-decoration:none;text-align:center;padding:15px 20px;border-radius:14px;font-weight:800">Lihat Akun Saya</a><div style="background:#f1f5f9;padding:16px;border-radius:14px;font-size:13px;line-height:1.7"><strong>Garansi sampai:</strong> ${escapeHtml(warranty)}<br><strong>Data akun terlihat sampai:</strong> ${escapeHtml(hiddenAt)}</div><p style="font-size:12px;color:#64748b;line-height:1.7;margin-bottom:0">Jangan bagikan email atau link ini. Password tidak ditulis di email demi keamanan.</p></div></div></body></html>`;
+  const html = `<!doctype html><html><body style="margin:0;background:#f4faf6;font-family:Arial,sans-serif;color:#0f172a"><div style="max-width:620px;margin:0 auto;padding:32px 16px"><div style="background:#103d2b;color:white;padding:28px;border-radius:24px 24px 0 0"><div style="font-size:12px;font-weight:800;letter-spacing:2px;color:#a7f3d0">RIKU STORE</div><h1 style="margin:10px 0 0;font-size:26px">Pesananmu sudah siap 🎮</h1></div><div style="background:white;padding:28px;border:1px solid #d1fae5;border-top:0;border-radius:0 0 24px 24px"><p style="margin-top:0;line-height:1.7">Pembayaran order <strong>${escapeHtml(order.order_number)}</strong> sudah terverifikasi dan akunmu siap dilihat.</p><ul style="padding-left:20px">${items}</ul><a href="${deliveryUrl}" style="display:block;margin:24px 0;background:#059669;color:white;text-decoration:none;text-align:center;padding:15px 20px;border-radius:14px;font-weight:800">Lihat Akun Saya</a><div style="background:#f1f5f9;padding:16px;border-radius:14px;font-size:13px;line-height:1.7"><strong>Garansi sampai:</strong> ${escapeHtml(warranty)}<br><strong>Akses data akun:</strong> tersedia permanen melalui link pesanan ini</div><p style="font-size:12px;color:#64748b;line-height:1.7;margin-bottom:0">Jangan bagikan email atau link ini. Password tidak ditulis di email demi keamanan.</p></div></div></body></html>`;
 
   let providerId: string | null = null;
   try {

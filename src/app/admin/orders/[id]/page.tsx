@@ -310,9 +310,7 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
                 Halaman aman untuk pembeli
               </h2>
               <p className="mt-1 text-sm leading-6 text-slate-500">
-                Kredensial hanya terlihat sampai {formatDate(
-                  order.credentials_hidden_at,
-                )}. Jangan membagikan link ini selain kepada pembeli.
+                Kredensial tersedia permanen melalui link ini. Jangan membagikan link ini selain kepada pembeli.
               </p>
             </div>
 

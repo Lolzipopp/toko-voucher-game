@@ -31,7 +31,7 @@ type DeliveryItem = {
 
 type DeliveryPayload = {
   ok: boolean;
-  state: "available" | "not_found" | "not_ready" | "hidden";
+  state: "available" | "not_found" | "not_ready";
   order_number?: string;
   customer_email?: string;
   total_amount?: number;
@@ -122,19 +122,15 @@ export default async function CustomerOrderPage({
         {!available ? (
           <section className="rounded-3xl border border-amber-200 bg-white p-6 shadow-sm sm:p-8">
             <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-100 text-2xl">
-              {delivery.state === "hidden" ? "🔒" : "⏳"}
+              ⏳
             </div>
 
             <h2 className="mt-5 text-xl font-black">
-              {delivery.state === "hidden"
-                ? "Data akun sudah disembunyikan"
-                : "Pesanan belum siap dikirim"}
+              Pesanan belum siap dikirim
             </h2>
 
             <p className="mt-2 text-sm leading-6 text-slate-600">
-              {delivery.state === "hidden"
-                ? "Masa tampil kredensial selama tujuh hari telah berakhir. Hubungi admin RIKU STORE melalui WhatsApp apabila memerlukan bantuan."
-                : `Status pembayaran: ${delivery.payment_status ?? "-"} · status pengiriman: ${delivery.delivery_status ?? "-"}.`}
+              Status pembayaran: {delivery.payment_status ?? "-"} · status pengiriman: {delivery.delivery_status ?? "-"}.
             </p>
 
             <dl className="mt-5 grid gap-3 rounded-2xl bg-slate-50 p-4 text-sm sm:grid-cols-2">
@@ -145,11 +141,9 @@ export default async function CustomerOrderPage({
                 </dd>
               </div>
               <div>
-                <dt className="text-xs text-slate-400">
-                  Data disembunyikan
-                </dt>
+                <dt className="text-xs text-slate-400">Garansi sampai</dt>
                 <dd className="mt-1 font-bold">
-                  {formatDate(delivery.credentials_hidden_at)}
+                  {formatDate(delivery.warranty_ends_at)}
                 </dd>
               </div>
             </dl>
