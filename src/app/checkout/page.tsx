@@ -10,6 +10,21 @@ import { useCart } from "@/components/store/cart-provider";
 import { formatRupiah, productImageUrl } from "@/lib/public-store/format";
 import { createCheckoutOrder, getPendingCheckout, validatePromo, type PendingCheckoutResult, type PromoResult } from "./actions";
 
+function calculatePakasirQrisGrossAmount(netAmount: number) {
+  const net = Math.max(0, Math.round(netAmount));
+  if (net <= 0) return { grossAmount: 0, feeAmount: 0 };
+
+  let grossAmount = Math.ceil((net + 310) / 0.993);
+  if (grossAmount > 105000) {
+    grossAmount = Math.ceil(net / 0.99);
+  }
+
+  return {
+    grossAmount,
+    feeAmount: Math.max(0, grossAmount - net),
+  };
+}
+
 export default function CheckoutPage() {
   const router = useRouter();
   const { items, subtotal, hydrated, clearCart } = useCart();
@@ -26,7 +41,9 @@ export default function CheckoutPage() {
 
   const checkoutItems = items.map((item) => ({ productId: item.productId, quantity: item.quantity }));
   const finalDiscount = appliedPromo?.discountAmount ?? 0;
-  const finalTotal = appliedPromo?.totalAmount ?? subtotal;
+  const productTotal = appliedPromo?.totalAmount ?? subtotal;
+  const feeEstimate = calculatePakasirQrisGrossAmount(productTotal);
+  const finalTotal = feeEstimate.grossAmount;
 
   function applyPromo() {
     setError(null);
@@ -232,6 +249,7 @@ export default function CheckoutPage() {
                 <dl className="mt-5 space-y-3 border-t border-white/10 pt-5 text-sm">
                   <div className="flex justify-between text-white/65"><dt>Subtotal</dt><dd>{formatRupiah(appliedPromo?.subtotal ?? subtotal)}</dd></div>
                   <div className="flex justify-between text-emerald-300"><dt>Diskon{appliedPromo ? ` (${appliedPromo.code})` : ""}</dt><dd>-{formatRupiah(finalDiscount)}</dd></div>
+                  <div className="flex justify-between text-white/65"><dt>Biaya layanan QRIS</dt><dd>{formatRupiah(feeEstimate.feeAmount)}</dd></div>
                   <div className="flex items-center justify-between border-t border-white/10 pt-4"><dt className="font-bold">Total bayar</dt><dd className="text-xl font-black text-emerald-300">{formatRupiah(finalTotal)}</dd></div>
                 </dl>
 
