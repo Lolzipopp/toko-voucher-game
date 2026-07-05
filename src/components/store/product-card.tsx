@@ -38,14 +38,29 @@ export default function ProductCard({
             </div>
           )}
 
-          <div className="absolute inset-0 bg-gradient-to-t from-[#07111f] via-[#07111f]/15 to-transparent" />
+          {soldOut ? (
+            <div className="absolute inset-0 bg-[#07111f]/55" />
+          ) : null}
 
-          <div className="absolute right-3 top-3 z-20">
-            <FavoriteButton product={engagementProduct} compact />
+          {soldOut ? (
+            <span className="absolute bottom-3 left-3 rounded-full bg-red-500 px-2.5 py-1 text-[10px] font-black text-white">
+              Habis
+            </span>
+          ) : null}
+        </div>
+
+        <div className="p-4 sm:p-5">
+          <div className="flex items-start justify-between gap-3">
+            <h2 className="line-clamp-2 min-w-0 text-base font-black leading-snug text-white sm:text-lg">
+              {product.name}
+            </h2>
+            <div className="shrink-0">
+              <FavoriteButton product={engagementProduct} compact />
+            </div>
           </div>
 
-          <div className="absolute left-3 top-3 flex max-w-[62%] flex-wrap gap-1.5">
-            <span className="rounded-full border border-white/12 bg-[#06111f]/80 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-slate-100 backdrop-blur">
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            <span className="rounded-full border border-white/8 bg-white/[0.04] px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-slate-300">
               {product.game.name}
             </span>
             {product.is_popular ? (
@@ -53,26 +68,6 @@ export default function ProductCard({
                 Populer
               </span>
             ) : null}
-          </div>
-
-          <span
-            className={`absolute bottom-3 left-3 rounded-full px-2.5 py-1 text-[10px] font-black ${
-              soldOut
-                ? "bg-red-500 text-white"
-                : product.available_stock <= 3
-                  ? "bg-amber-300 text-amber-950"
-                  : "bg-emerald-400 text-emerald-950"
-            }`}
-          >
-            {soldOut ? "Habis" : `${product.available_stock} stok`}
-          </span>
-        </div>
-
-        <div className="p-4 sm:p-5">
-          <div className="flex items-start justify-between gap-3">
-            <h2 className="line-clamp-2 text-base font-black leading-snug text-white sm:text-lg">
-              {product.name}
-            </h2>
           </div>
 
           <div className="mt-3 flex flex-wrap gap-1.5">
