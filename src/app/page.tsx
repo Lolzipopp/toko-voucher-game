@@ -26,6 +26,7 @@ type HomeProps = {
   searchParams: Promise<{
     q?: string;
     game?: string;
+    sort?: "default" | "price-asc" | "price-desc" | "stock-ready" | "popular";
   }>;
 };
 
@@ -118,11 +119,32 @@ export default async function Home({ searchParams }: HomeProps) {
   }
 
   const products = (data ?? []) as PublicCatalogProduct[];
+  const selectedSort = query.sort ?? "default";
+  const productPrice = (product: PublicCatalogProduct) => Number(product.price_promo ?? product.price_normal);
   const displayedProducts = products
     .filter((product) => productMatchesSearch(product, query.q))
     .toSorted((a, b) => {
       const aSoldOut = a.available_stock <= 0;
       const bSoldOut = b.available_stock <= 0;
+
+      if (selectedSort === "popular") {
+        if (a.is_popular !== b.is_popular) return a.is_popular ? -1 : 1;
+      }
+
+      if (selectedSort === "price-asc") {
+        if (aSoldOut !== bSoldOut) return aSoldOut ? 1 : -1;
+        return productPrice(a) - productPrice(b);
+      }
+
+      if (selectedSort === "price-desc") {
+        if (aSoldOut !== bSoldOut) return aSoldOut ? 1 : -1;
+        return productPrice(b) - productPrice(a);
+      }
+
+      if (selectedSort === "stock-ready") {
+        if (aSoldOut !== bSoldOut) return aSoldOut ? 1 : -1;
+        return Number(b.available_stock) - Number(a.available_stock);
+      }
 
       if (aSoldOut !== bSoldOut) return aSoldOut ? 1 : -1;
       return 0;
@@ -343,13 +365,16 @@ export default async function Home({ searchParams }: HomeProps) {
               </p>
             </div>
 
-            <ProductSearchForm initialQuery={query.q} game={query.game} />
+            <ProductSearchForm initialQuery={query.q} game={query.game} sort={selectedSort} />
           </div>
         </div>
 
         <div className="mt-5 flex gap-2 overflow-x-auto pb-2">
           <Link
-            href={query.q ? `/?q=${encodeURIComponent(query.q)}` : "/"}
+            href={`/${query.q || selectedSort !== "default" ? `?${new URLSearchParams({
+              ...(query.q ? { q: query.q } : {}),
+              ...(selectedSort !== "default" ? { sort: selectedSort } : {}),
+            }).toString()}` : ""}#produk`}
             className={`whitespace-nowrap rounded-2xl border px-4 py-2.5 text-xs font-black ${
               !query.game
                 ? "border-emerald-400 bg-emerald-400 text-emerald-950"
@@ -361,9 +386,11 @@ export default async function Home({ searchParams }: HomeProps) {
           {(games ?? []).map((game) => (
             <Link
               key={game.slug}
-              href={`/?game=${game.slug}${
-                query.q ? `&q=${encodeURIComponent(query.q)}` : ""
-              }#produk`}
+              href={`/?${new URLSearchParams({
+                game: game.slug,
+                ...(query.q ? { q: query.q } : {}),
+                ...(selectedSort !== "default" ? { sort: selectedSort } : {}),
+              }).toString()}#produk`}
               className={`whitespace-nowrap rounded-2xl border px-4 py-2.5 text-xs font-black ${
                 query.game === game.slug
                   ? "border-emerald-400 bg-emerald-400 text-emerald-950"
