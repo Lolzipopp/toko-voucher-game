@@ -54,7 +54,7 @@ export default function ProductImageCarousel({
   return (
     <div className="min-w-0 max-w-full">
       <div
-        className="relative min-h-[calc(100svh-88px)] max-w-full cursor-grab touch-pan-y select-none overflow-hidden rounded-[24px] bg-slate-100 shadow-sm active:cursor-grabbing sm:min-h-[calc(100svh-112px)] sm:rounded-[32px] lg:min-h-[calc(100svh-144px)]"
+        className="relative aspect-[3/4] max-h-[78svh] max-w-full cursor-grab touch-pan-y select-none overflow-hidden rounded-[24px] bg-slate-100 shadow-sm active:cursor-grabbing sm:aspect-[4/5] sm:max-h-[82svh] sm:rounded-[32px] lg:aspect-[3/4] lg:max-h-[calc(100svh-144px)]"
         onPointerDown={(event) => {
           if (event.button !== 0) return;
           pointerStartX.current = event.clientX;
