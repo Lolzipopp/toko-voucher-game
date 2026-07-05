@@ -181,7 +181,7 @@ export default async function ProductDetailPage({
                   <p className="text-xs font-black uppercase tracking-[0.16em] text-slate-500">
                     Keterangan
                   </p>
-                  <p className="mt-2 line-clamp-6 whitespace-pre-line break-words text-sm leading-6 text-slate-700">
+                  <p className="mt-2 whitespace-pre-line break-words text-sm leading-6 text-slate-700">
                     {humanizeProductDescription(product.description)}
                   </p>
                 </div>
