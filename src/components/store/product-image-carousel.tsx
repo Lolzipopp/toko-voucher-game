@@ -52,7 +52,7 @@ export default function ProductImageCarousel({
   return (
     <div className="min-w-0 max-w-full">
       <div
-        className="relative aspect-[4/3] max-h-[420px] max-w-full cursor-grab touch-pan-y select-none overflow-hidden rounded-[24px] bg-slate-100 shadow-sm active:cursor-grabbing sm:aspect-[16/10] sm:max-h-[520px] sm:rounded-[32px] lg:aspect-[4/3] lg:max-h-[calc(100svh-220px)]"
+        className="relative aspect-[4/3] max-h-[300px] max-w-full cursor-grab touch-pan-y select-none overflow-hidden rounded-[18px] border border-slate-200 bg-white shadow-sm active:cursor-grabbing sm:max-h-[380px] sm:rounded-[24px] lg:max-h-[460px]"
         onPointerDown={(event) => {
           if (event.button !== 0) return;
           pointerStartX.current = event.clientX;
@@ -109,12 +109,12 @@ export default function ProductImageCarousel({
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950/35 via-transparent to-transparent" />
 
 
-        <div className="pointer-events-none absolute bottom-4 left-4 right-4 flex flex-wrap gap-2 sm:bottom-5 sm:left-5 sm:right-auto">
-          <span className="rounded-full bg-white/90 px-3 py-1.5 text-[11px] font-black text-emerald-800 sm:px-4 sm:py-2 sm:text-xs">
+        <div className="pointer-events-none absolute bottom-3 left-3 right-3 flex flex-wrap gap-2 sm:bottom-4 sm:left-4 sm:right-auto">
+          <span className="rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-black text-emerald-800 sm:px-3 sm:py-1.5 sm:text-xs">
             {gameName}
           </span>
           <span
-            className={`rounded-full px-3 py-1.5 text-[11px] font-black sm:px-4 sm:py-2 sm:text-xs ${
+            className={`rounded-full px-2.5 py-1 text-[10px] font-black sm:px-3 sm:py-1.5 sm:text-xs ${
               soldOut
                 ? "bg-red-500 text-white"
                 : "bg-white text-slate-800"

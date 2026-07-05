@@ -122,7 +122,7 @@ export default async function ProductDetailPage({
     <main className="min-h-screen overflow-x-hidden bg-[#f6f7f9] text-slate-950">
       <RecentlyViewedRecorder product={viewedProduct} />
 
-      <div className="mx-auto max-w-7xl px-4 py-5 sm:px-6 sm:py-8 lg:py-12">
+      <div className="mx-auto max-w-5xl px-4 py-3 sm:px-6 sm:py-5 lg:py-8">
         <div className="flex items-center justify-between gap-3">
           <Link
             href="/#produk"
@@ -143,7 +143,7 @@ export default async function ProductDetailPage({
           </div>
         </div>
 
-        <div className="mt-4 grid min-w-0 gap-5 sm:mt-5 sm:gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,.95fr)]">
+        <div className="mt-3 grid min-w-0 gap-4 sm:mt-4 sm:gap-5 lg:grid-cols-[minmax(0,.82fr)_minmax(0,1.18fr)] lg:items-start">
           <section className="min-w-0">
             <ProductImageCarousel
               images={product.images.map((image) => ({
@@ -158,7 +158,7 @@ export default async function ProductDetailPage({
           </section>
 
           <aside className="min-w-0 lg:sticky lg:top-24 lg:self-start">
-            <div className="min-w-0 rounded-[24px] border border-slate-200 bg-white p-4 sm:rounded-[32px] sm:p-8">
+            <div className="min-w-0 rounded-[20px] border border-slate-200 bg-white p-4 shadow-sm sm:rounded-[24px] sm:p-5">
               <div className="flex flex-wrap gap-2">
                 <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-[10px] font-black uppercase tracking-wider text-slate-600">
                   {product.game.name}
@@ -168,7 +168,7 @@ export default async function ProductDetailPage({
                 </span>
               </div>
 
-              <h1 className="mt-4 break-words text-2xl font-black leading-tight tracking-tight text-slate-950 sm:text-3xl">
+              <h1 className="mt-3 break-words text-xl font-black leading-tight tracking-tight text-slate-950 sm:text-2xl lg:text-3xl">
                 {product.name}
               </h1>
 
@@ -177,29 +177,29 @@ export default async function ProductDetailPage({
               </div>
 
               {product.description ? (
-                <div className="mt-5 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-3 sm:p-4">
                   <p className="text-xs font-black uppercase tracking-[0.16em] text-slate-500">
                     Keterangan
                   </p>
-                  <p className="mt-2 whitespace-pre-line break-words text-sm leading-7 text-slate-700">
+                  <p className="mt-2 line-clamp-6 whitespace-pre-line break-words text-sm leading-6 text-slate-700">
                     {humanizeProductDescription(product.description)}
                   </p>
                 </div>
               ) : null}
 
-              <div className="mt-6 border-y border-slate-100 py-5">
+              <div className="mt-5 border-y border-slate-100 py-4">
                 {product.price_promo ? (
                   <p className="text-sm font-bold text-slate-500 line-through">
                     {formatRupiah(product.price_normal)}
                   </p>
                 ) : null}
 
-                <p className="text-3xl font-black text-emerald-700">
+                <p className="text-2xl font-black text-emerald-700 sm:text-3xl">
                   {formatRupiah(price)}
                 </p>
               </div>
 
-              <div className="mt-4 grid grid-cols-2 gap-2 sm:mt-5 sm:gap-3">
+              <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-3">
                 <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3 sm:p-4">
                   <p className="text-xs font-black text-slate-900">
                     Dikirim setelah bayar
@@ -270,7 +270,7 @@ export default async function ProductDetailPage({
         </div>
 
         {relatedProducts.length ? (
-          <section className="mt-10 sm:mt-14">
+          <section className="mt-8 sm:mt-12">
             <div className="flex items-end justify-between gap-4">
               <div>
                 <p className="text-xs font-black uppercase tracking-[0.2em] text-emerald-700">
@@ -288,7 +288,7 @@ export default async function ProductDetailPage({
               </Link>
             </div>
 
-            <div className="mt-5 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+            <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">
               {relatedProducts.map((relatedProduct) => (
                 <ProductCard key={relatedProduct.id} product={relatedProduct} />
               ))}
