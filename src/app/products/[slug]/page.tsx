@@ -6,13 +6,14 @@ import AddToCartButton from "@/components/store/add-to-cart-button";
 import FavoriteButton from "@/components/store/favorite-button";
 import { CartSvgIcon, WhatsAppSvgIcon } from "@/components/store/icon-button-parts";
 import ProductImageCarousel from "@/components/store/product-image-carousel";
+import ProductCard from "@/components/store/product-card";
 import RecentlyViewedRecorder from "@/components/store/recently-viewed-recorder";
 import RestockRequestButton from "@/components/store/restock-request-button";
 import ShareProductButton from "@/components/store/share-product-button";
 import { humanizeProductDescription } from "@/lib/catalog/display-text";
 import { formatRupiah, productImageUrl } from "@/lib/public-store/format";
 import { getPublicStoreSettings } from "@/lib/public-store/settings";
-import type { PublicProductDetail } from "@/lib/public-store/types";
+import type { PublicCatalogProduct, PublicProductDetail } from "@/lib/public-store/types";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -101,6 +102,21 @@ export default async function ProductDetailPage({
   const whatsappUrl = whatsappNumber
     ? `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`
     : null;
+
+  const supabase = await createClient();
+  const { data: catalogData } = await supabase.rpc("get_public_catalog", {
+    p_game_slug: product.game.slug,
+    p_search: null,
+  });
+  const relatedProducts = ((catalogData ?? []) as PublicCatalogProduct[])
+    .filter((item) => item.id !== product.id)
+    .toSorted((a, b) => {
+      const aSoldOut = a.available_stock <= 0;
+      const bSoldOut = b.available_stock <= 0;
+      if (aSoldOut !== bSoldOut) return aSoldOut ? 1 : -1;
+      return Number(a.price_promo ?? a.price_normal) - Number(b.price_promo ?? b.price_normal);
+    })
+    .slice(0, 8);
 
   return (
     <main className="min-h-screen overflow-x-hidden bg-[#f6f7f9] text-slate-950">
@@ -252,6 +268,33 @@ export default async function ProductDetailPage({
             </div>
           </aside>
         </div>
+
+        {relatedProducts.length ? (
+          <section className="mt-10 sm:mt-14">
+            <div className="flex items-end justify-between gap-4">
+              <div>
+                <p className="text-xs font-black uppercase tracking-[0.2em] text-emerald-700">
+                  Tawaran serupa
+                </p>
+                <h2 className="mt-2 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
+                  Produk mirip yang mungkin cocok
+                </h2>
+              </div>
+              <Link
+                href={`/?game=${product.game.slug}#produk`}
+                className="hidden rounded-2xl border border-slate-200 bg-white px-4 py-2 text-xs font-black text-slate-700 shadow-sm transition hover:bg-slate-50 sm:inline-flex"
+              >
+                Lihat semua
+              </Link>
+            </div>
+
+            <div className="mt-5 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+              {relatedProducts.map((relatedProduct) => (
+                <ProductCard key={relatedProduct.id} product={relatedProduct} />
+              ))}
+            </div>
+          </section>
+        ) : null}
       </div>
 
     </main>
