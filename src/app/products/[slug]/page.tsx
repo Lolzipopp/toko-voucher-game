@@ -107,12 +107,25 @@ export default async function ProductDetailPage({
       <RecentlyViewedRecorder product={viewedProduct} />
 
       <div className="mx-auto max-w-7xl px-4 py-5 sm:px-6 sm:py-8 lg:py-12">
-        <Link
-          href="/#produk"
-          className="text-sm font-bold text-slate-600 hover:text-emerald-700"
-        >
-          ← Kembali
-        </Link>
+        <div className="flex items-center justify-between gap-3">
+          <Link
+            href="/#produk"
+            className="text-sm font-bold text-slate-600 hover:text-emerald-700"
+          >
+            ← Kembali
+          </Link>
+
+          <div className="flex items-center gap-2">
+            <Link
+              href="/cart"
+              aria-label="Buka keranjang"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-900 shadow-sm transition hover:bg-slate-50 active:scale-95"
+            >
+              <CartSvgIcon className="h-5 w-5" />
+            </Link>
+            <ShareProductButton title={product.name} />
+          </div>
+        </div>
 
         <div className="mt-4 grid min-w-0 gap-5 sm:mt-5 sm:gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,.95fr)]">
           <section className="min-w-0">
@@ -123,18 +136,6 @@ export default async function ProductDetailPage({
               }))}
               gameName={product.game.name}
               availableStock={Number(product.available_stock)}
-              topActions={(
-                <>
-                  <Link
-                    href="/cart"
-                    aria-label="Buka keranjang"
-                    className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/70 bg-white/90 text-slate-900 shadow-sm backdrop-blur transition hover:bg-white active:scale-95"
-                  >
-                    <CartSvgIcon />
-                  </Link>
-                  <ShareProductButton title={product.name} />
-                </>
-              )}
             />
 
 
