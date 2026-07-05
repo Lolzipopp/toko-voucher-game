@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useCart } from "./cart-provider";
+import { CartSvgIcon } from "./icon-button-parts";
 
 export default function CartLink() {
   const { itemCount, hydrated } = useCart();
@@ -11,7 +12,10 @@ export default function CartLink() {
       href="/cart"
       className="relative rounded-xl border border-emerald-950/10 bg-white px-3 py-2 text-sm font-bold text-slate-600 shadow-sm transition hover:border-emerald-300"
     >
-      Keranjang
+      <span className="inline-flex items-center gap-2">
+        <CartSvgIcon className="h-4 w-4" />
+        Keranjang
+      </span>
       {hydrated && itemCount > 0 ? (
         <span className="absolute -right-2 -top-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-emerald-500 px-1 text-[10px] font-black text-emerald-950">
           {itemCount > 99 ? "99+" : itemCount}

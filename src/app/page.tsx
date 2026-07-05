@@ -530,24 +530,6 @@ export default async function Home({ searchParams }: HomeProps) {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
-        <div className="grid gap-5 rounded-[2rem] border border-emerald-400/20 bg-[linear-gradient(120deg,rgba(16,185,129,.12),rgba(56,189,248,.05))] p-6 sm:p-8 lg:grid-cols-[1fr_auto] lg:items-center">
-          <div>
-            <p className="text-xs font-black uppercase tracking-[0.2em] text-emerald-300">
-              Sebelum bayar
-            </p>
-            <h2 className="mt-2 text-2xl font-black italic">
-              Total bayar muncul sebelum bayar
-            </h2>
-            <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-400">
-              Total pesanan dapat dicek sebelum pembayaran. Jika perlu bantuan, hubungi admin.
-            </p>
-          </div>
-          <span className="rounded-2xl border border-amber-300/25 bg-amber-300/10 px-5 py-3 text-center text-xs font-black uppercase tracking-wider text-amber-200">
-            Bayar manual dulu
-          </span>
-        </div>
-      </section>
 
       <StoreFooter />
     </main>

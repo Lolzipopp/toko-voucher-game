@@ -11,12 +11,14 @@ type Props = {
   images: ProductCarouselImage[];
   gameName: string;
   availableStock: number;
+  topActions?: React.ReactNode;
 };
 
 export default function ProductImageCarousel({
   images,
   gameName,
   availableStock,
+  topActions,
 }: Props) {
   const slides = useMemo(
     () =>
@@ -52,7 +54,7 @@ export default function ProductImageCarousel({
   return (
     <div className="min-w-0 max-w-full">
       <div
-        className="relative aspect-[4/3] max-w-full cursor-grab touch-pan-y select-none overflow-hidden rounded-[24px] bg-slate-100 shadow-sm active:cursor-grabbing sm:aspect-[2/1] sm:rounded-[32px]"
+        className="relative min-h-[calc(100svh-88px)] max-w-full cursor-grab touch-pan-y select-none overflow-hidden rounded-[24px] bg-slate-100 shadow-sm active:cursor-grabbing sm:min-h-[calc(100svh-112px)] sm:rounded-[32px] lg:min-h-[calc(100svh-144px)]"
         onPointerDown={(event) => {
           if (event.button !== 0) return;
           pointerStartX.current = event.clientX;
@@ -107,6 +109,12 @@ export default function ProductImageCarousel({
         </div>
 
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950/35 via-transparent to-transparent" />
+
+        {topActions ? (
+          <div className="absolute right-4 top-4 z-20 flex items-center gap-2 sm:right-5 sm:top-5">
+            {topActions}
+          </div>
+        ) : null}
 
         <div className="pointer-events-none absolute bottom-4 left-4 right-4 flex flex-wrap gap-2 sm:bottom-5 sm:left-5 sm:right-auto">
           <span className="rounded-full bg-white/90 px-3 py-1.5 text-[11px] font-black text-emerald-800 sm:px-4 sm:py-2 sm:text-xs">

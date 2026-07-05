@@ -4,9 +4,11 @@ import { notFound } from "next/navigation";
 
 import AddToCartButton from "@/components/store/add-to-cart-button";
 import FavoriteButton from "@/components/store/favorite-button";
+import { CartSvgIcon, WhatsAppSvgIcon } from "@/components/store/icon-button-parts";
 import ProductImageCarousel from "@/components/store/product-image-carousel";
 import RecentlyViewedRecorder from "@/components/store/recently-viewed-recorder";
 import RestockRequestButton from "@/components/store/restock-request-button";
+import ShareProductButton from "@/components/store/share-product-button";
 import { humanizeProductDescription } from "@/lib/catalog/display-text";
 import { formatRupiah, productImageUrl } from "@/lib/public-store/format";
 import { getPublicStoreSettings } from "@/lib/public-store/settings";
@@ -121,6 +123,18 @@ export default async function ProductDetailPage({
               }))}
               gameName={product.game.name}
               availableStock={Number(product.available_stock)}
+              topActions={(
+                <>
+                  <Link
+                    href="/cart"
+                    aria-label="Buka keranjang"
+                    className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/70 bg-white/90 text-slate-900 shadow-sm backdrop-blur transition hover:bg-white active:scale-95"
+                  >
+                    <CartSvgIcon />
+                  </Link>
+                  <ShareProductButton title={product.name} />
+                </>
+              )}
             />
 
 
@@ -197,6 +211,7 @@ export default async function ProductDetailPage({
                       rel="noreferrer"
                       className="flex w-full items-center justify-center rounded-2xl bg-amber-400 px-5 py-4 text-base font-black text-amber-950"
                     >
+                      <WhatsAppSvgIcon className="mr-2 h-5 w-5" />
                       Hubungi admin
                     </a>
                   ) : (
@@ -225,6 +240,7 @@ export default async function ProductDetailPage({
                   rel="noreferrer"
                   className="mt-3 flex w-full touch-manipulation items-center justify-center rounded-2xl border border-slate-200 px-5 py-3 text-xs font-black text-slate-700 transition hover:bg-slate-50 active:scale-[0.98]"
                 >
+                  <WhatsAppSvgIcon className="mr-2 h-4 w-4" />
                   Hubungi admin WA
                 </a>
               ) : null}

@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import type { AddCartItem } from "@/lib/cart/types";
 import { formatRupiah } from "@/lib/public-store/format";
 import { useCart } from "./cart-provider";
+import { CartSvgIcon } from "./icon-button-parts";
 
 export default function AddToCartButton({ item }: { item: AddCartItem }) {
   const router = useRouter();
@@ -95,7 +96,10 @@ export default function AddToCartButton({ item }: { item: AddCartItem }) {
               : "border-slate-300 bg-white text-slate-800 hover:bg-slate-50"
           }`}
         >
-          {soldOut ? "Habis" : cartAdded ? "Masuk keranjang ✓" : "Tambah keranjang"}
+          <span className="inline-flex items-center justify-center gap-2">
+            <CartSvgIcon className="h-5 w-5" />
+            {soldOut ? "Habis" : cartAdded ? "Masuk keranjang ✓" : "Tambah keranjang"}
+          </span>
         </button>
 
         <button
